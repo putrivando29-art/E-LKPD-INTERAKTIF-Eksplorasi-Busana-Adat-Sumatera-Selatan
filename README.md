@@ -29,7 +29,7 @@ E-LKPD interaktif Matematika SMP kelas VIII: peluang teoretis, frekuensi relatif
 ## Suara
 
 - Efek suara (klik, pilih manekin, simpan berhasil, pasangan ganda, spin, detak roda, roda berhenti, kumpulkan) dibuat oleh browser lewat Web Audio, tanpa file.
-- Musik latar diputar berulang dari `audio/musik-latar.mp3`: komposisi orisinal gitar petik dan kendang bingkai sintetis, **bukan rekaman alat musik tradisional**. Cara mengganti dengan rekaman asli ada di `audio/README.md`.
+- Musik latar diputar berulang dari `audio/musik-latar.mp3`: komposisi orisinal berupa melodi dan petikan senar sintetis (G mayor, tempo 112, tanpa bas dan kendang), **bukan rekaman alat musik tradisional**. Cara mengganti dengan rekaman asli ada di `audio/README.md`.
 - Panel Suara di kanan atas: musik aktif atau nonaktif, volume musik, efek suara aktif atau nonaktif, volume efek. Musik otomatis dikecilkan sebentar setiap efek suara berbunyi.
 
 ## Mengirim jawaban ke guru (opsional)
