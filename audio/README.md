@@ -1,6 +1,6 @@
 # Musik latar
 
-`musik-latar.mp3` adalah komposisi instrumental orisinal (sekitar 46 detik, diputar berulang),
+`musik-latar.mp3` adalah komposisi instrumental orisinal yang ceria (G mayor, tempo 112, sekitar 51 detik, diputar berulang),
 dibuat dengan `tools/buat-musik-latar.py`:
 
 - Bunyi gitar petik dari sintesis senar Karplus-Strong. Formatnya mengikuti gitar tunggal

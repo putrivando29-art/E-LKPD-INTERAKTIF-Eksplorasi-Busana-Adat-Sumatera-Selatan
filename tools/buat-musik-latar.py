@@ -16,7 +16,7 @@ import wave
 import numpy as np
 
 SR = 44100
-BPM = 84
+BPM = 112
 BEAT = 60 / BPM
 BAR = 4 * BEAT
 RNG = np.random.default_rng(1945)
@@ -69,36 +69,45 @@ def add(track, start_s, sig, gain):
     track[i:end] += sig[:end - i] * gain
 
 
-# Akord: (bass, tiga nada atas) dalam nomor MIDI
+# Akord: (bass, tiga nada atas) dalam nomor MIDI. Kunci G mayor agar terdengar ceria.
 CHORDS = {
-    'Am': (45, (57, 60, 64)),
-    'Dm': (50, (57, 62, 65)),
-    'E': (40, (56, 59, 64)),
     'G': (43, (55, 59, 62)),
+    'D': (50, (54, 57, 62)),
+    'Em': (40, (55, 59, 64)),
     'C': (48, (55, 60, 64)),
-    'F': (41, (53, 57, 60)),
 }
-PROGRESSION = ['Am', 'Dm', 'E', 'Am', 'Am', 'Dm', 'G', 'C', 'F', 'Dm', 'E', 'Am', 'Dm', 'Am', 'E', 'Am']
+# Bagian A dan B bermelodi, bagian C hanya petikan agar telinga beristirahat.
+PROGRESSION = ['G', 'D', 'Em', 'C', 'G', 'D', 'C', 'D',
+               'Em', 'C', 'G', 'D', 'C', 'D', 'G', 'G',
+               'G', 'C', 'G', 'D', 'G', 'C', 'D', 'G']
 
 # Melodi orisinal: per birama, daftar (ketukan mulai, nada MIDI, lama ketukan)
 MELODY = [
-    [(0, 76, 1.5), (1.5, 74, .5), (2, 72, 1), (3, 71, 1)],
-    [(0, 74, 2), (2, 77, 1), (3, 76, 1)],
-    [(0, 71, 1.5), (1.5, 72, .5), (2, 71, 1), (3, 68, 1)],
-    [(0, 69, 3)],
-    [(0, 72, 1), (1, 76, 1), (2, 81, 1.5), (3.5, 79, .5)],
-    [(0, 77, 1.5), (1.5, 76, .5), (2, 74, 2)],
-    [(0, 74, 1), (1, 71, 1), (2, 74, 1), (3, 79, 1)],
-    [(0, 76, 3)],
-    [(0, 77, 1), (1, 76, 1), (2, 74, 1), (3, 72, 1)],
-    [(0, 74, 1.5), (1.5, 72, .5), (2, 69, 2)],
-    [(0, 68, 1), (1, 71, 1), (2, 74, 1), (3, 72, .5), (3.5, 71, .5)],
-    [(0, 69, 3)],
-    [(0, 77, 1.5), (1.5, 76, .5), (2, 74, 1), (3, 72, 1)],
-    [(0, 72, 1.5), (1.5, 71, .5), (2, 69, 2)],
-    [(0, 71, 2), (2, 68, 1), (3, 71, 1)],
-    [(0, 69, 4)],
+    [(0, 71, .5), (.5, 74, .5), (1, 79, 1), (2, 78, .5), (2.5, 76, .5), (3, 74, 1)],
+    [(0, 74, .5), (.5, 76, .5), (1, 78, 1), (2, 74, 1), (3, 69, 1)],
+    [(0, 71, 1), (1, 76, .5), (1.5, 74, .5), (2, 71, 1), (3, 67, 1)],
+    [(0, 72, .5), (.5, 74, .5), (1, 76, 1.5), (2.5, 74, .5), (3, 72, 1)],
+    [(0, 71, .5), (.5, 74, .5), (1, 79, 1), (2, 81, .5), (2.5, 79, .5), (3, 78, 1)],
+    [(0, 76, 1), (1, 74, .5), (1.5, 76, .5), (2, 78, 2)],
+    [(0, 76, .5), (.5, 79, .5), (1, 76, 1), (2, 72, 1), (3, 74, 1)],
+    [(0, 78, 1), (1, 81, 1), (2, 78, 1), (3, 74, 1)],
+    [(0, 79, 1.5), (1.5, 78, .5), (2, 76, 1), (3, 71, 1)],
+    [(0, 72, .5), (.5, 76, .5), (1, 79, 1), (2, 76, 1), (3, 72, 1)],
+    [(0, 74, .5), (.5, 71, .5), (1, 74, 1), (2, 79, 1), (3, 83, 1)],
+    [(0, 81, 1.5), (1.5, 79, .5), (2, 78, 1), (3, 76, 1)],
+    [(0, 76, .5), (.5, 79, .5), (1, 84, 1), (2, 83, .5), (2.5, 81, .5), (3, 79, 1)],
+    [(0, 78, .5), (.5, 79, .5), (1, 81, 1), (2, 78, 1), (3, 74, 1)],
+    [(0, 79, 1), (1, 74, .5), (1.5, 71, .5), (2, 74, .5), (2.5, 78, .5), (3, 79, 1)],
+    [(0, 79, 2)],
+    [(0, 83, 2)], [], [(0, 86, 2)], [(2, 81, 2)],
+    [(0, 83, 2)], [], [(0, 81, 1), (2, 78, 1)],
+    [(2, 67, .5), (2.5, 71, .5), (3, 74, 1)],
 ]
+
+
+def swing(beat):
+    """Ketukan setengah digeser sedikit agar ritmenya berayun riang."""
+    return (beat + 0.08) * BEAT if beat % 1 == 0.5 else beat * BEAT
 
 
 def render():
@@ -116,19 +125,24 @@ def render():
     for b, name in enumerate(PROGRESSION):
         bass, upper = CHORDS[name]
         t0 = b * BAR
-        # pola petikan per seperdelapan ketukan
-        pattern = [bass, upper[0], upper[1], upper[2], bass + 7, upper[0], upper[1], upper[2]]
-        for k, m in enumerate(pattern):
-            swing = 0.012 if k % 2 else 0
-            gain = (0.42 if k in (0, 4) else 0.17) * RNG.uniform(.9, 1.05)
-            add(track, t0 + k * BEAT / 2 + swing, note(m, 2.4, 0.35, 0.9965), gain)
+        quiet = b >= 16
+        # pola "dum-crek": bas di ketukan 1 dan 3, genjrengan akord di 2 dan 4
+        for beat, m in ((0, bass), (2, bass + 7 if bass + 7 <= 52 else bass - 5)):
+            add(track, t0 + swing(beat), note(m, 1.6, 0.4, 0.995), 0.40)
+        for beat in (1, 3):
+            for i, m in enumerate(upper):
+                add(track, t0 + swing(beat) + i * 0.012, note(m, 0.9, 0.8, 0.991), 0.17)
+        for beat, m in ((0.5, upper[1]), (1.5, upper[2]), (2.5, upper[1]), (3.5, upper[0])):
+            add(track, t0 + swing(beat), note(m, 0.9, 0.7, 0.992), 0.10)
         for start, m, dur in MELODY[b]:
-            add(track, t0 + start * BEAT, note(m, max(1.2, dur * BEAT + 1.0), 0.6, 0.998), 0.34)
-        # kendang bingkai: dum pada ketukan 1 dan 3+, tak pada 2+ dan 4
-        add(track, t0, drum_low(), 0.09)
-        add(track, t0 + 2.5 * BEAT, drum_low(), 0.065)
-        add(track, t0 + 1.5 * BEAT, drum_slap(), 0.035)
-        add(track, t0 + 3 * BEAT, drum_slap(), 0.045)
+            add(track, t0 + swing(start), note(m, max(0.9, dur * BEAT + 0.5), 0.85, 0.996), 0.26 if quiet else 0.36)
+        # kendang bingkai: dum di 1 dan 3, tak di 2 dan 4, kocokan halus tiap setengah ketukan
+        add(track, t0, drum_low(), 0.08)
+        add(track, t0 + swing(2), drum_low(), 0.06)
+        add(track, t0 + swing(1), drum_slap(), 0.05)
+        add(track, t0 + swing(3), drum_slap(), 0.05)
+        for h in range(8):
+            add(track, t0 + swing(h / 2), drum_slap(0.04), 0.012 if h % 2 else 0.02)
 
     # gema ruang: konvolusi dengan derau yang meluruh
     ir_t = np.arange(int(SR * 1.1)) / SR
