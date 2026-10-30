@@ -33,7 +33,9 @@
     velvetHi: '#3B2D29',
     melati: '#FFFFFF',
     permata: '#C0182B',
-    shoe: '#5A3320'
+    shoe: '#5A3320',
+    mannequin: '#EFE2CB',
+    mannequinDk: '#CDB898'
   };
 
   var TOPS = {
@@ -46,14 +48,8 @@
     J: { code: 'J', name: 'Tenun Jumputan Palembang', short: 'Jumputan' }
   };
 
-  // Warna jumputan dipadankan dengan tiap atasan. Merah, hijau, dan kuning
-  // disebut sumber sebagai warna yang lazim pada jumputan Palembang.
-  var JUMPUTAN = {
-    AG: { base: '#2F5D3A', halo: '#4F7E57', dot: C.cream },
-    AP: { base: '#8A5A22', halo: '#A97B3F', dot: C.cream },
-    BH: { base: '#7E1C2A', halo: '#9D3B46', dot: C.cream },
-    none: { base: '#7E1C2A', halo: '#9D3B46', dot: C.cream }
-  };
+  // Satu kain jumputan merah tua yang sama untuk semua atasan.
+  var JUMPUTAN = { base: '#7E1C2A', halo: '#9D3B46', dot: C.cream };
 
   var uidCounter = 0;
   function uid() { uidCounter += 1; return 'ss' + uidCounter; }
@@ -75,8 +71,8 @@
 
   /* ---------- pola kain ---------- */
 
-  function defs(id, top) {
-    var j = JUMPUTAN[top] || JUMPUTAN.none;
+  function defs(id) {
+    var j = JUMPUTAN;
     // Songket lepus: benang emas rapat menutupi hampir seluruh permukaan kain.
     var lepus =
       '<pattern id="' + id + '-lepus" width="10" height="10" patternUnits="userSpaceOnUse">' +
@@ -137,7 +133,7 @@
 
   var KAIN_D = 'M84,214 C100,211 120,211 136,214 L143,289 Q110,296 77,289 Z';
 
-  function kain(id, bottom, top) {
+  function kain(id, bottom) {
     if (bottom === 'S') {
       // Pada kain perempuan, tumpal (kepala kain) berada di depan dari pinggul
       // hingga mata kaki; tepi kain bermotif pucuk rebung (segitiga).
@@ -157,7 +153,7 @@
     if (bottom === 'J') {
       return '<g clip-path="url(#' + id + '-kain)"><rect x="70" y="205" width="80" height="95" fill="url(#' + id + '-jump)"/></g>' +
         path(KAIN_D, 'none', C.line, 2.4) +
-        path('M118,216 Q121,250 124,290', 'none', JUMPUTAN[top] ? JUMPUTAN[top].halo : JUMPUTAN.none.halo, 1.6);
+        path('M118,216 Q121,250 124,290', 'none', JUMPUTAN.halo, 1.6);
     }
     // rok dasar netral
     return path(KAIN_D, C.brown, C.line, 2.4) + path('M104,222 Q105,256 103,290 M116,222 Q117,256 119,290', 'none', C.brownLt, 1.5);
@@ -288,9 +284,10 @@
   var SLEEK_D = 'M56,118 C52,76 80,58 110,58 C140,58 168,76 164,118 C158,104 150,94 136,90 C126,88 116,90 110,97 C104,90 94,88 84,90 C70,94 62,104 56,118 Z';
   var BANGS_D = 'M55,124 C48,72 80,56 110,56 C140,56 172,72 165,124 C162,112 158,104 152,100 L150,113 C144,104 136,98 127,96 L123,109 C117,100 111,98 104,98 L100,111 C94,103 86,100 78,103 L72,114 C66,109 60,114 55,124 Z';
 
-  function face() {
+  function face(blank) {
     var s = ellipse(58, 122, 7, 9, C.skin, C.line, 2) + ellipse(162, 122, 7, 9, C.skin, C.line, 2);
     s += path(FACE_D, C.skin, C.line, 2.4);
+    if (blank) return s;
     [88, 132].forEach(function (cx, i) {
       s += ellipse(cx, 125, 8.5, 10.5, C.eye);
       s += ellipse(cx, 127, 6, 7.6, C.iris);
@@ -407,7 +404,7 @@
     opts = opts || {};
     var id = uid();
     var view = opts.view === 'bust' ? '30 0 160 262' : '0 0 220 310';
-    var s = svgOpen(view, label(top, bottom)) + defs(id, top);
+    var s = svgOpen(view, label(top, bottom)) + defs(id);
     var bride = top === 'AG' || top === 'AP';
 
     // lapisan belakang
@@ -419,7 +416,7 @@
 
     // kaki dan bawahan
     s += ellipse(99, 296, 9, 4.6, C.shoe, C.line, 1.6) + ellipse(121, 296, 9, 4.6, C.shoe, C.line, 1.6);
-    s += kain(id, bottom, top);
+    s += kain(id, bottom);
 
     // atasan
     if (top === 'AG') s += topAG(id);
@@ -438,11 +435,45 @@
     return s + '</svg>';
   }
 
-  // Kartu bawahan: kain ditampilkan terbentang.
-  function kainCard(bottom) {
+  // Manekin memakai warna netral pengganti kulit.
+  function withMannequinSkin(fn) {
+    var skin = C.skin, shade = C.skinShade;
+    C.skin = C.mannequin;
+    C.skinShade = C.mannequinDk;
+    try { return fn(); } finally { C.skin = skin; C.skinShade = shade; }
+  }
+
+  // Manekin badan: atasan lengkap dengan tata rambut dan hiasan kepalanya,
+  // berdiri di atas tiang berkaki tiga.
+  function mannequinTop(top) {
+    return withMannequinSkin(function () {
+      var id = uid();
+      var s = svgOpen('26 0 168 312', 'Manekin badan memakai ' + TOPS[top].name) + defs(id);
+      if (top === 'AG' || top === 'AP') s += kelapoStandan();
+      if (top === 'AP') s += bun(64, 17);
+      if (top === 'BH') s += bun(66, 16);
+      s += backSleek();
+      s += path('M110,236 L110,290', 'none', C.brown, 5);
+      s += path('M110,288 L86,306 M110,288 L134,306 M110,288 L110,308', 'none', C.brown, 4);
+      s += path('M82,212 C90,222 130,222 138,212 L137,240 Q110,250 83,240 Z', C.mannequin, C.line, 2);
+      if (top === 'AG') s += topAG(id);
+      else if (top === 'AP') s += topAP(id);
+      else s += topBH(id);
+      s += face(true) + sleekHair();
+      if (top === 'AG') s += headAG();
+      else if (top === 'AP') s += headAP();
+      return s + '</svg>';
+    });
+  }
+
+  // Manekin kaki: kain dikenakan dari pinggang sampai mata kaki.
+  function mannequinBottom(bottom) {
     var id = uid();
-    var s = svgOpen('66 202 88 96', BOTTOMS[bottom].name) + defs(id, 'none');
-    s += kain(id, bottom, 'none');
+    var s = svgOpen('62 196 96 116', 'Manekin kaki memakai ' + BOTTOMS[bottom].name) + defs(id);
+    s += '<rect x="78" y="302" width="64" height="7" rx="3" fill="' + C.brown + '" stroke="' + C.line + '" stroke-width="1.6"/>';
+    s += ellipse(99, 297, 8, 4.6, C.mannequin, C.line, 1.6) + ellipse(121, 297, 8, 4.6, C.mannequin, C.line, 1.6);
+    s += path('M86,200 Q110,196 134,200 L136,214 Q110,209 84,214 Z', C.mannequin, C.line, 2);
+    s += kain(id, bottom);
     return s + '</svg>';
   }
 
@@ -451,7 +482,8 @@
     BOTTOMS: BOTTOMS,
     COLORS: C,
     character: character,
-    kainCard: kainCard,
+    mannequinTop: mannequinTop,
+    mannequinBottom: mannequinBottom,
     combos: function () {
       var list = [];
       ['AG', 'AP', 'BH'].forEach(function (t) {
