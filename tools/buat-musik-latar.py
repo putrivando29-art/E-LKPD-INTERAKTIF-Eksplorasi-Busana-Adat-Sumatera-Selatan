@@ -76,34 +76,9 @@ CHORDS = {
     'Em': (40, (55, 59, 64)),
     'C': (48, (55, 60, 64)),
 }
-# Bagian A dan B bermelodi, bagian C hanya petikan agar telinga beristirahat.
 PROGRESSION = ['G', 'D', 'Em', 'C', 'G', 'D', 'C', 'D',
                'Em', 'C', 'G', 'D', 'C', 'D', 'G', 'G',
                'G', 'C', 'G', 'D', 'G', 'C', 'D', 'G']
-
-# Melodi orisinal: per birama, daftar (ketukan mulai, nada MIDI, lama ketukan)
-MELODY = [
-    [(0, 71, .5), (.5, 74, .5), (1, 79, 1), (2, 78, .5), (2.5, 76, .5), (3, 74, 1)],
-    [(0, 74, .5), (.5, 76, .5), (1, 78, 1), (2, 74, 1), (3, 69, 1)],
-    [(0, 71, 1), (1, 76, .5), (1.5, 74, .5), (2, 71, 1), (3, 67, 1)],
-    [(0, 72, .5), (.5, 74, .5), (1, 76, 1.5), (2.5, 74, .5), (3, 72, 1)],
-    [(0, 71, .5), (.5, 74, .5), (1, 79, 1), (2, 81, .5), (2.5, 79, .5), (3, 78, 1)],
-    [(0, 76, 1), (1, 74, .5), (1.5, 76, .5), (2, 78, 2)],
-    [(0, 76, .5), (.5, 79, .5), (1, 76, 1), (2, 72, 1), (3, 74, 1)],
-    [(0, 78, 1), (1, 81, 1), (2, 78, 1), (3, 74, 1)],
-    [(0, 79, 1.5), (1.5, 78, .5), (2, 76, 1), (3, 71, 1)],
-    [(0, 72, .5), (.5, 76, .5), (1, 79, 1), (2, 76, 1), (3, 72, 1)],
-    [(0, 74, .5), (.5, 71, .5), (1, 74, 1), (2, 79, 1), (3, 83, 1)],
-    [(0, 81, 1.5), (1.5, 79, .5), (2, 78, 1), (3, 76, 1)],
-    [(0, 76, .5), (.5, 79, .5), (1, 84, 1), (2, 83, .5), (2.5, 81, .5), (3, 79, 1)],
-    [(0, 78, .5), (.5, 79, .5), (1, 81, 1), (2, 78, 1), (3, 74, 1)],
-    [(0, 79, 1), (1, 74, .5), (1.5, 71, .5), (2, 74, .5), (2.5, 78, .5), (3, 79, 1)],
-    [(0, 79, 2)],
-    [(0, 83, 2)], [], [(0, 86, 2)], [(2, 81, 2)],
-    [(0, 83, 2)], [], [(0, 81, 1), (2, 78, 1)],
-    [(2, 67, .5), (2.5, 71, .5), (3, 74, 1)],
-]
-
 
 def swing(beat):
     """Ketukan setengah digeser sedikit agar ritmenya berayun riang."""
@@ -125,17 +100,13 @@ def render():
     for b, name in enumerate(PROGRESSION):
         bass, upper = CHORDS[name]
         t0 = b * BAR
-        quiet = b >= 16
         # pola "dum-crek": bas di ketukan 1 dan 3, genjrengan akord di 2 dan 4
         for beat, m in ((0, bass), (2, bass + 7 if bass + 7 <= 52 else bass - 5)):
             add(track, t0 + swing(beat), note(m, 1.6, 0.4, 0.995), 0.40)
+        # genjrengan dibuat lembut (bright rendah) agar tidak berdenting
         for beat in (1, 3):
             for i, m in enumerate(upper):
-                add(track, t0 + swing(beat) + i * 0.012, note(m, 0.9, 0.8, 0.991), 0.17)
-        for beat, m in ((0.5, upper[1]), (1.5, upper[2]), (2.5, upper[1]), (3.5, upper[0])):
-            add(track, t0 + swing(beat), note(m, 0.9, 0.7, 0.992), 0.10)
-        for start, m, dur in MELODY[b]:
-            add(track, t0 + swing(start), note(m, max(0.9, dur * BEAT + 0.5), 0.85, 0.996), 0.26 if quiet else 0.36)
+                add(track, t0 + swing(beat) + i * 0.012, note(m, 0.9, 0.2, 0.991), 0.17)
         # kendang bingkai: dum di 1 dan 3, tak di 2 dan 4, kocokan halus tiap setengah ketukan
         add(track, t0, drum_low(), 0.08)
         add(track, t0 + swing(2), drum_low(), 0.06)

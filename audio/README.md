@@ -3,8 +3,8 @@
 `musik-latar.mp3` adalah komposisi instrumental orisinal yang ceria (G mayor, tempo 112, sekitar 51 detik, diputar berulang),
 dibuat dengan `tools/buat-musik-latar.py`:
 
-- Bunyi gitar petik dari sintesis senar Karplus-Strong. Formatnya mengikuti gitar tunggal
-  (satu gitar akustik dipetik), salah satu tradisi musik Sumatera Selatan.
+- Iringan gitar lembut (bas dan genjrengan akord, tanpa melodi) dari sintesis senar
+  Karplus-Strong. Formatnya mengikuti gitar tunggal, salah satu tradisi musik Sumatera Selatan.
 - Bunyi kendang bingkai sintetis yang pelan sebagai ketukan.
 - Tanpa vokal.
 
