@@ -23,12 +23,13 @@ E-LKPD interaktif Matematika SMP kelas VIII: peluang teoretis, frekuensi relatif
 - "Reset Data" hanya menghapus data simulasi. Jawaban dan tabel Aktivitas 1 tetap tersimpan.
 - Jawaban tidak pernah dikunci. Setiap aktivitas hanya menampilkan status "Terisi x dari y"; benar atau salah baru ditampilkan setelah siswa menekan Kumpulkan Jawaban.
 - Jika siswa mengubah jawaban setelah mengumpulkan, halaman Kumpulkan meminta pengumpulan ulang. Nomor pengumpulan ikut tercatat.
+- Cetak / Simpan PDF selalu berisi **hasil pengumpulan pertama** (jawaban, skor, dan data percobaan saat itu), walaupun siswa sudah mengumpulkan ulang. Tombol cetak aktif setelah pengumpulan pertama.
 - Jawaban tersimpan di `sessionStorage` selama tab browser terbuka, termasuk saat halaman dimuat ulang.
 
 ## Suara
 
 - Efek suara (klik, pilih manekin, simpan berhasil, pasangan ganda, spin, detak roda, roda berhenti, kumpulkan) dibuat oleh browser lewat Web Audio, tanpa file.
-- Musik latar diputar berulang dari `audio/musik-latar.mp3`. File ini **belum disertakan**; lihat `audio/README.md`.
+- Musik latar diputar berulang dari `audio/musik-latar.mp3`: komposisi orisinal gitar petik dan kendang bingkai sintetis, **bukan rekaman alat musik tradisional**. Cara mengganti dengan rekaman asli ada di `audio/README.md`.
 - Panel Suara di kanan atas: musik aktif atau nonaktif, volume musik, efek suara aktif atau nonaktif, volume efek. Musik otomatis dikecilkan sebentar setiap efek suara berbunyi.
 
 ## Mengirim jawaban ke guru (opsional)

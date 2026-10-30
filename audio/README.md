@@ -1,13 +1,20 @@
 # Musik latar
 
-Letakkan file musik instrumental di folder ini dengan nama `musik-latar.mp3`
-(atau ubah `musicSrc` di `js/config.js`).
+`musik-latar.mp3` adalah komposisi instrumental orisinal (sekitar 46 detik, diputar berulang),
+dibuat dengan `tools/buat-musik-latar.py`:
 
-Syarat file:
+- Bunyi gitar petik dari sintesis senar Karplus-Strong. Formatnya mengikuti gitar tunggal
+  (satu gitar akustik dipetik), salah satu tradisi musik Sumatera Selatan.
+- Bunyi kendang bingkai sintetis yang pelan sebagai ketukan.
+- Tanpa vokal.
+
+Penting: file ini **bukan rekaman alat musik tradisional dan bukan lagu Batanghari Sembilan**.
+Jangan menyebutnya musik tradisional dalam laporan penelitian.
+
+Untuk menggantinya dengan rekaman asli, timpa file ini dengan nama yang sama (atau ubah
+`musicSrc` di `js/config.js`). Syarat rekaman pengganti:
 
 - Instrumental tanpa vokal.
 - Izin pemakaiannya jelas: rekaman sendiri, izin tertulis dari pemain atau sanggar,
   atau lisensi terbuka yang mengizinkan pemakaian di situs web.
 - Ukuran kecil (disarankan di bawah 3 MB) agar cepat dimuat di jaringan sekolah.
-
-Selama file belum ada, tombol musik di panel Suara nonaktif dan efek suara tetap berfungsi.

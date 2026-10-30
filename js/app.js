@@ -30,6 +30,7 @@
 
   var state = load() || { page: 1, answers: {}, boutique: { top: null, bottom: null, saved: {} }, sim: freshSim() };
   state.submission = state.submission || null;
+  state.firstSubmission = state.firstSubmission || null;
 
   function load() {
     try {
@@ -541,18 +542,28 @@
     });
   }
 
+  function fmtWhen(ms) {
+    var d = new Date(ms);
+    return d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) +
+      ' pukul ' + d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  }
+
   function renderSubmission() {
     var sub = state.submission;
+    var first = state.firstSubmission;
     var box = $('#submit-result');
+    $('#print-btn').disabled = !first;
     if (!sub) {
-      box.innerHTML = '<p>Jawaban belum dikumpulkan. Kamu masih bisa mengubah semua jawaban.</p>';
+      box.innerHTML = '<p>Jawaban belum dikumpulkan. Kamu masih bisa mengubah semua jawaban.</p>' +
+        '<p class="hint">Cetak / Simpan PDF tersedia setelah jawaban dikumpulkan, dan selalu berisi hasil pengumpulan pertama.</p>';
       $('#submit-btn').textContent = 'Kumpulkan Jawaban';
       return;
     }
-    var when = new Date(sub.at);
     var html = '<p class="score">Skor: <b>' + sub.score + '</b> / 100</p>' +
-      '<p>' + sub.correct + ' dari ' + sub.total + ' jawaban benar. Dikumpulkan ' + when.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) +
-      ' pukul ' + when.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' (pengumpulan ke-' + sub.count + ').</p>';
+      '<p>' + sub.correct + ' dari ' + sub.total + ' jawaban benar. Dikumpulkan ' + fmtWhen(sub.at) + ' (pengumpulan ke-' + sub.count + ').</p>';
+    if (first) {
+      html += '<p class="first-note">Cetak / Simpan PDF berisi hasil pengumpulan pertama: skor <b>' + first.score + '</b>, dikumpulkan ' + fmtWhen(first.at) + '.</p>';
+    }
     if (sub.sent === 'ok') html += '<p class="status-ok">Jawaban sudah dikirim ke guru.</p>';
     else if (sub.sent === 'fail') html += '<p class="status-bad">Jawaban gagal dikirim. Simpan sebagai PDF sebagai cadangan.</p>';
     if (sub.changed) html += '<p class="status-bad">Ada jawaban yang diubah setelah dikumpulkan. Tekan Kumpulkan Ulang untuk memperbarui.</p>';
@@ -591,6 +602,19 @@
     var items = allItems();
     items.forEach(function (it) { var ok = !!it.ok(); results[it.id] = ok; if (ok) correct += 1; });
     var prev = state.submission;
+    // Pengumpulan pertama disimpan utuh dan tidak pernah ditimpa; dipakai untuk cetak.
+    if (!state.firstSubmission) {
+      state.firstSubmission = JSON.parse(JSON.stringify({
+        at: Date.now(),
+        correct: correct,
+        total: items.length,
+        score: Math.round(correct / items.length * 100),
+        results: results,
+        answers: state.answers,
+        saved: state.boutique.saved,
+        sim: state.sim
+      }));
+    }
     state.submission = {
       at: Date.now(),
       count: prev ? prev.count + 1 : 1,
@@ -606,6 +630,52 @@
     renderRecap();
     renderSubmission();
     if (CFG.submitUrl) send();
+  }
+
+  // Isi sementara state dengan salinan pengumpulan pertama, agar butir soal
+  // membaca jawaban saat itu, lalu kembalikan.
+  function withSnapshot(snap, fn) {
+    var keep = { answers: state.answers, boutique: state.boutique, sim: state.sim };
+    state.answers = snap.answers;
+    state.boutique = { top: null, bottom: null, saved: snap.saved };
+    state.sim = snap.sim;
+    try { return fn(); } finally {
+      state.answers = keep.answers;
+      state.boutique = keep.boutique;
+      state.sim = keep.sim;
+    }
+  }
+
+  function renderPrintSheet() {
+    var snap = state.firstSubmission;
+    $('#print-sheet').innerHTML = withSnapshot(snap, function () {
+      var members = [];
+      for (var i = 1; i <= MEMBER_ROWS; i++) {
+        var nm = a('id_m' + i + '_nama');
+        if (nm) members.push('<li>' + esc(nm) + ' (No. ' + esc(a('id_m' + i + '_no') || '-') + ')</li>');
+      }
+      var html = '<header class="ps-head"><p>E-LKPD Matematika Kelas VIII · Stylist Studio Palembang Heritage Edition</p>' +
+        '<h1>Hasil Pengumpulan Pertama</h1><p>Dikumpulkan ' + fmtWhen(snap.at) + '</p></header>' +
+        '<div class="ps-top"><dl class="ps-id">' +
+        '<dt>Nama kelompok</dt><dd>' + esc(a('id_kelompok') || '-') + '</dd>' +
+        '<dt>Kelas/Semester</dt><dd>' + esc(a('id_kelas') || '-') + '</dd>' +
+        '<dt>Anggota</dt><dd>' + (members.length ? '<ol>' + members.join('') + '</ol>' : '-') + '</dd></dl>' +
+        '<div class="ps-score">Skor<b>' + snap.score + '</b><span>' + snap.correct + ' dari ' + snap.total + ' benar</span></div></div>';
+      GROUPS.forEach(function (g) {
+        html += '<h2>' + g.title + '</h2><table class="ps-table"><tbody>';
+        g.items.forEach(function (it) {
+          var ok = snap.results[it.id];
+          html += '<tr><th>' + esc(itemLabel(it)) + '</th><td>' + (itemFilled(it) || !it.keys.length ? esc(it.show()) : '(kosong)') + '</td><td class="ps-mark">' + (ok ? '✓' : '✗') + '</td></tr>';
+        });
+        html += '</tbody></table>';
+      });
+      html += '<h2>Data Percobaan Roda Spin (N = ' + state.sim.total + ')</h2><table class="ps-table"><tbody>' +
+        COMBOS.map(function (c) { return '<tr><th>' + comboCode(c.key) + '</th><td>k = ' + state.sim.counts[c.key] + '</td><td></td></tr>'; }).join('') +
+        '</tbody></table>' +
+        '<h2>Kesimpulan Kelompok</h2><p>' + (a('a34_text') ? esc(a('a34_text')) : '(kosong)') + '</p>' +
+        '<div class="ps-sign"><span>Paraf Guru:</span><span class="ps-line"></span></div>';
+      return html;
+    });
   }
 
   // Google Apps Script menerima teks JSON; mode no-cors menghindari preflight.
@@ -656,7 +726,11 @@
     $all('[data-go]').forEach(function (b) { b.addEventListener('click', function () { showPage(Number(b.getAttribute('data-go'))); }); });
     $('#save-set').addEventListener('click', saveSet);
     $('#submit-btn').addEventListener('click', askSubmit);
-    $('#print-btn').addEventListener('click', function () { renderRecap(); window.print(); });
+    $('#print-btn').addEventListener('click', function () {
+      if (!state.firstSubmission) { toast('Kumpulkan jawaban dulu, lalu cetak.'); return; }
+      renderPrintSheet();
+      window.print();
+    });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('#modal').hidden) $('#modal-cancel').click(); });
     bindSpin();
 
