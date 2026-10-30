@@ -1,8 +1,8 @@
 """
 Membuat audio/musik-latar.mp3: komposisi instrumental orisinal untuk musik latar.
 
-Bunyi gitar dibuat dengan sintesis senar petik Karplus-Strong, ditambah bunyi
-kendang bingkai sintetis yang pelan. Ini BUKAN rekaman alat musik tradisional
+Hanya melodi dan petikan nada akord dari sintesis senar petik Karplus-Strong,
+tanpa bas, genjrengan, dan kendang. Ini BUKAN rekaman alat musik tradisional
 dan BUKAN lagu Batanghari Sembilan. Ganti file hasilnya dengan rekaman asli
 yang berizin bila tersedia.
 
@@ -46,23 +46,6 @@ def pluck(freq, dur, bright=0.5, decay=0.996):
     return out
 
 
-def drum_low(dur=0.35):
-    t = np.arange(int(SR * dur)) / SR
-    f = 95 * np.exp(-t * 6) + 55
-    body = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t * 11)
-    hit = RNG.uniform(-1, 1, len(t)) * np.exp(-t * 90) * 0.25
-    return body + hit
-
-
-def drum_slap(dur=0.12):
-    t = np.arange(int(SR * dur)) / SR
-    noise = RNG.uniform(-1, 1, len(t))
-    # bandpass sederhana: selisih dua lowpass
-    a = np.convolve(noise, np.ones(4) / 4, mode='same')
-    b = np.convolve(noise, np.ones(24) / 24, mode='same')
-    return (a - b) * np.exp(-t * 40)
-
-
 def add(track, start_s, sig, gain):
     i = int(start_s * SR)
     end = min(len(track), i + len(sig))
@@ -76,9 +59,34 @@ CHORDS = {
     'Em': (40, (55, 59, 64)),
     'C': (48, (55, 60, 64)),
 }
+# Bagian A dan B bermelodi, bagian C hanya petikan agar telinga beristirahat.
 PROGRESSION = ['G', 'D', 'Em', 'C', 'G', 'D', 'C', 'D',
                'Em', 'C', 'G', 'D', 'C', 'D', 'G', 'G',
                'G', 'C', 'G', 'D', 'G', 'C', 'D', 'G']
+
+# Melodi orisinal: per birama, daftar (ketukan mulai, nada MIDI, lama ketukan)
+MELODY = [
+    [(0, 71, .5), (.5, 74, .5), (1, 79, 1), (2, 78, .5), (2.5, 76, .5), (3, 74, 1)],
+    [(0, 74, .5), (.5, 76, .5), (1, 78, 1), (2, 74, 1), (3, 69, 1)],
+    [(0, 71, 1), (1, 76, .5), (1.5, 74, .5), (2, 71, 1), (3, 67, 1)],
+    [(0, 72, .5), (.5, 74, .5), (1, 76, 1.5), (2.5, 74, .5), (3, 72, 1)],
+    [(0, 71, .5), (.5, 74, .5), (1, 79, 1), (2, 81, .5), (2.5, 79, .5), (3, 78, 1)],
+    [(0, 76, 1), (1, 74, .5), (1.5, 76, .5), (2, 78, 2)],
+    [(0, 76, .5), (.5, 79, .5), (1, 76, 1), (2, 72, 1), (3, 74, 1)],
+    [(0, 78, 1), (1, 81, 1), (2, 78, 1), (3, 74, 1)],
+    [(0, 79, 1.5), (1.5, 78, .5), (2, 76, 1), (3, 71, 1)],
+    [(0, 72, .5), (.5, 76, .5), (1, 79, 1), (2, 76, 1), (3, 72, 1)],
+    [(0, 74, .5), (.5, 71, .5), (1, 74, 1), (2, 79, 1), (3, 83, 1)],
+    [(0, 81, 1.5), (1.5, 79, .5), (2, 78, 1), (3, 76, 1)],
+    [(0, 76, .5), (.5, 79, .5), (1, 84, 1), (2, 83, .5), (2.5, 81, .5), (3, 79, 1)],
+    [(0, 78, .5), (.5, 79, .5), (1, 81, 1), (2, 78, 1), (3, 74, 1)],
+    [(0, 79, 1), (1, 74, .5), (1.5, 71, .5), (2, 74, .5), (2.5, 78, .5), (3, 79, 1)],
+    [(0, 79, 2)],
+    [(0, 83, 2)], [], [(0, 86, 2)], [(2, 81, 2)],
+    [(0, 83, 2)], [], [(0, 81, 1), (2, 78, 1)],
+    [(2, 67, .5), (2.5, 71, .5), (3, 74, 1)],
+]
+
 
 def swing(beat):
     """Ketukan setengah digeser sedikit agar ritmenya berayun riang."""
@@ -98,22 +106,14 @@ def render():
         return cache[key]
 
     for b, name in enumerate(PROGRESSION):
-        bass, upper = CHORDS[name]
+        upper = CHORDS[name][1]
         t0 = b * BAR
-        # pola "dum-crek": bas di ketukan 1 dan 3, genjrengan akord di 2 dan 4
-        for beat, m in ((0, bass), (2, bass + 7 if bass + 7 <= 52 else bass - 5)):
-            add(track, t0 + swing(beat), note(m, 1.6, 0.4, 0.995), 0.40)
-        # genjrengan dibuat lembut (bright rendah) agar tidak berdenting
-        for beat in (1, 3):
-            for i, m in enumerate(upper):
-                add(track, t0 + swing(beat) + i * 0.012, note(m, 0.9, 0.2, 0.991), 0.17)
-        # kendang bingkai: dum di 1 dan 3, tak di 2 dan 4, kocokan halus tiap setengah ketukan
-        add(track, t0, drum_low(), 0.08)
-        add(track, t0 + swing(2), drum_low(), 0.06)
-        add(track, t0 + swing(1), drum_slap(), 0.05)
-        add(track, t0 + swing(3), drum_slap(), 0.05)
-        for h in range(8):
-            add(track, t0 + swing(h / 2), drum_slap(0.04), 0.012 if h % 2 else 0.02)
+        quiet = b >= 16
+        # petikan kecil nada akord di sela ketukan
+        for beat, m in ((0.5, upper[1]), (1.5, upper[2]), (2.5, upper[1]), (3.5, upper[0])):
+            add(track, t0 + swing(beat), note(m, 0.9, 0.7, 0.992), 0.10)
+        for start, m, dur in MELODY[b]:
+            add(track, t0 + swing(start), note(m, max(0.9, dur * BEAT + 0.5), 0.85, 0.996), 0.26 if quiet else 0.36)
 
     # gema ruang: konvolusi dengan derau yang meluruh
     ir_t = np.arange(int(SR * 1.1)) / SR
@@ -130,6 +130,10 @@ def render():
     out = mix[:loop_n].copy()
     rest = mix[loop_n:]
     out[:len(rest)] += rest
+    # buang pergeseran DC dan frekuensi di bawah 40 Hz (filter melingkar agar sambungan tetap mulus)
+    spec = np.fft.rfft(out)
+    spec[np.fft.rfftfreq(len(out), 1 / SR) < 40] = 0
+    out = np.fft.irfft(spec, len(out))
     out = 0.7 * out / np.max(np.abs(out))
     return out
 
@@ -147,7 +151,7 @@ def main():
             w.writeframes(pcm.tobytes())
         subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', wav_path, '-codec:a', 'libmp3lame', '-b:a', '96k',
                         '-metadata', 'title=Musik Latar Stylist Studio',
-                        '-metadata', 'comment=Komposisi orisinal, gitar petik dan kendang bingkai sintetis',
+                        '-metadata', 'comment=Komposisi orisinal, petikan senar sintetis',
                         target], check=True)
     print('Tersimpan:', target, os.path.getsize(target) // 1024, 'KB')
 
