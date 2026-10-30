@@ -1,10 +1,10 @@
-# Stylist Studio – Palembang Heritage Edition
+# Stylist Studio – Sriwijaya Heritage Edition
 
 Dokumen produk lengkap untuk E-LKPD (Lembar Kerja Peserta Didik Elektronik) interaktif Matematika SMP kelas VIII.
 
 | | |
 | --- | --- |
-| Nama produk | Stylist Studio – Palembang Heritage Edition |
+| Nama produk | Stylist Studio – Sriwijaya Heritage Edition |
 | Jenis | E-LKPD interaktif berbasis web (situs statis) |
 | Mata pelajaran | Matematika, Fase D, kelas VIII SMP/MTs |
 | Materi | Peluang teoretis, frekuensi relatif, frekuensi harapan |
@@ -18,7 +18,7 @@ Dokumen produk lengkap untuk E-LKPD (Lembar Kerja Peserta Didik Elektronik) inte
 
 ## 1. Ringkasan
 
-Siswa berperan sebagai penata busana di butik digital. Mereka memasangkan 3 atasan adat dengan 2 kain bawahan untuk menyusun ruang sampel (6 pasangan), menghitung peluang teoretis, lalu melakukan percobaan acak dengan roda spin sebanyak 20 kali untuk membandingkan frekuensi relatif dengan peluang teoretis.
+Siswa berperan sebagai penata busana di butik digital. Mereka memasangkan 3 atasan adat dengan 2 kain bawahan untuk menyusun ruang sampel (6 pasangan), lalu memilih **set kesukaan** yang menjadi kejadian A. Dari set kesukaan itu siswa menghitung peluang teoretis dan frekuensi harapan, melakukan percobaan acak dengan roda spin sebanyak 20 kali, menghitung frekuensi relatif, lalu membandingkan frekuensi harapan dengan frekuensi relatif.
 
 Semua jawaban bisa diubah sampai siswa menekan **Kumpulkan Jawaban**. Setelah itu skor tampil, dan hasil cetak atau PDF selalu memakai pengumpulan pertama.
 
@@ -30,16 +30,50 @@ Semua jawaban bisa diubah sampai siswa menekan **Kumpulkan Jawaban**. Setelah it
 
 > Murid dapat menjelaskan dan menggunakan pengertian peluang dan frekuensi relatif untuk menentukan frekuensi harapan satu kejadian pada suatu percobaan sederhana (semua hasil percobaan dapat muncul secara merata).
 
-Rumusan ini perlu dicocokkan lagi dengan dokumen resmi SK sebelum instrumen divalidasi.
+**Tujuan Pembelajaran** (dari E-LKPD versi sebelumnya, tanpa kode dan alokasi JP; tampil di halaman Petunjuk bagian B). Peserta didik dapat:
 
-**Alur konsep di dalam E-LKPD:**
+1. menjelaskan pengertian peluang teoretis dan menggunakannya untuk menentukan frekuensi harapan suatu kejadian pada percobaan sederhana dengan tepat;
+2. menjelaskan pengertian frekuensi relatif dan menggunakannya untuk memperkirakan frekuensi harapan, serta membandingkannya dengan peluang teoretis pada percobaan sederhana.
+
+Kaitan TP dengan aktivitas: TP 1 dicapai lewat Aktivitas 1, 2, dan 3.1. TP 2 dicapai lewat Aktivitas 3.2 sampai 3.5, termasuk perkiraan 60 putaran memakai frekuensi relatif.
+
+Rumusan CP dan TP perlu dicocokkan lagi dengan dokumen resmi SK sebelum instrumen divalidasi.
+
+**Alur konsep di dalam E-LKPD** (selalu dimulai dari set kesukaan siswa, lalu diperluas ke semua set):
 
 1. Pecahan dan perkalian sebagai prasyarat (apersepsi).
 2. Ruang sampel dengan tabel silang, n(S) = 3 × 2 = 6.
-3. Peluang teoretis P(A) = n(A) / n(S) = 1/6.
-4. Frekuensi harapan F_h = N × P(A) = 20 × 1/6 = 10/3 ≈ 3,33.
-5. Percobaan acak 20 kali, frekuensi relatif F_r = k / N.
-6. Perbandingan F_r dengan P(A) dan kesimpulan bahwa F_r cenderung mendekati P(A) jika percobaan diperbanyak.
+3. Pertanyaan pemantik: siswa memilih set kesukaan, yang menjadi kejadian A.
+4. Pengertian peluang teoretis (contoh butik mini), lalu P(A) set kesukaan = 1/6, lalu peluang set kesukaan teman.
+5. Pengertian frekuensi harapan dan frekuensi relatif dengan contoh set kesukaan.
+6. Frekuensi harapan set kesukaan F_h = 20 × 1/6 = 10/3 ≈ 3,33.
+7. Percobaan acak 20 kali, frekuensi relatif F_r = k / N, mulai dari set kesukaan lalu semua set.
+8. Perbandingan F_h dengan k dan F_r dengan P(A), lalu perkiraan 60 putaran dari F_r dan dari P(A).
+9. Kesimpulan: F_r bisa berbeda dari P(A) dan cenderung mendekatinya jika percobaan diperbanyak.
+
+---
+
+## 2A. Kesesuaian materi dengan kurikulum
+
+**Kesimpulan:** materi sesuai dengan CP Fase D. Fase D mencakup kelas VII sampai IX, sehingga penempatan per kelas ditentukan oleh ATP sekolah. [Kemungkinan Besar]
+
+| Jenjang | Materi peluang | Keterangan |
+| --- | --- | --- |
+| Fase C (SD kelas V–VI) | Menentukan kejadian dengan kemungkinan lebih besar, secara kualitatif | Prasyarat |
+| Fase D, kelas VIII | Buku siswa Kemendikbudristek Bab 6 Peluang: frekuensi relatif dari percobaan, cara menentukan peluang | Posisi E-LKPD ini |
+| Fase D, kelas IX | Buku siswa Kemendikbudristek Bab 4 Peluang dan Pemilihan Sampel: peluang empiris, frekuensi harapan, sampel | Frekuensi harapan dibahas lebih dalam |
+| Fase E (kelas X) | Frekuensi harapan kejadian majemuk, kejadian saling lepas dan saling bebas | Tidak dimasukkan |
+| Fase F (kelas XI–XII) | Peluang bersyarat | Tidak dimasukkan |
+
+Hasil pemeriksaan:
+
+- **Cakupan sesuai:** satu kejadian sederhana dengan 6 hasil berpeluang sama. Tidak ada materi Fase E atau F.
+- **Ruang sampel 3 × 2** hanya memakai perkalian dasar, sesuai kelas VIII.
+- **Frekuensi harapan** tercantum di CP Fase D, tetapi di buku siswa resmi pembahasan utamanya ada di kelas IX. Mengajarkannya di kelas VIII sah jika ATP sekolah menempatkannya di kelas VIII; cantumkan ATP sekolah di laporan penelitian.
+- **Urutan berbeda dari buku kelas VIII:** buku memulai dari percobaan, E-LKPD memulai dari peluang teoretis. Keduanya sah.
+- **20 percobaan** cukup untuk menunjukkan bahwa hasil bisa berbeda dari teori, tetapi tidak cukup untuk membuktikan bahwa F_r mendekati P(A). Kesimpulan itu diberikan sebagai pengetahuan.
+
+Rincian dan tautannya ada di halaman Informasi Media (`informasi-media.html`).
 
 ---
 
@@ -50,21 +84,21 @@ Navigasi berupa 5 tab di bagian atas. Di laptop labelnya panjang, di HP labelnya
 | Tab | Label HP | Isi |
 | --- | --- | --- |
 | 1. Sampul | Sampul | Judul, topik, karakter berganti busana, identitas kelompok |
-| 2. Petunjuk | Petunjuk | Petunjuk, capaian pembelajaran, apersepsi |
-| 3. Butik Digital | Butik | Aktivitas 1 dan Aktivitas 2 |
-| 4. Roda Spin | Spin | Aktivitas 3.1 sampai 3.4 |
+| 2. Petunjuk | Petunjuk | Petunjuk, capaian dan tujuan pembelajaran, apersepsi |
+| 3. Butik Digital | Butik | Aktivitas 1, pertanyaan pemantik, pengertian peluang teoretis, Aktivitas 2 |
+| 4. Roda Spin | Spin | Pengertian frekuensi harapan dan relatif, Aktivitas 3.1 sampai 3.5 |
 | 5. Kumpulkan | Kumpul | Periksa semua jawaban, kumpulkan, skor, cetak |
 
 ### 3.1 Halaman 1: Sampul
 
-- Teks: "Stylist Studio · Palembang Heritage Edition", "Lembar Kerja Peserta Didik (E-LKPD Interaktif)", subjudul "Petualangan Matematika di Butik Digital Stylist Studio", baris topik, dan tiga label: Peluang Teoretis, Frekuensi Relatif, Frekuensi Harapan.
+- Teks: "Stylist Studio · Sriwijaya Heritage Edition", "Lembar Kerja Peserta Didik (E-LKPD Interaktif)", subjudul "Petualangan Matematika di Butik Digital Stylist Studio", baris topik, dan tiga label: Peluang Teoretis, Frekuensi Relatif, Frekuensi Harapan.
 - Karakter chibi di tengah berganti busana **setiap 1 detik** melalui keenam pasangan, dengan efek memudar (crossfade 0,35 detik). Nama pasangan tampil di bawahnya. Animasi berhenti saat siswa pindah halaman atau tab browser disembunyikan.
 - **Identitas kelompok:** nama kelompok, kelas/semester, serta 5 baris nama anggota dengan nomor presensi.
 
 ### 3.2 Halaman 2: Petunjuk
 
 - **A. Petunjuk penggunaan** (6 butir): berdoa, isi identitas, baca petunjuk, gunakan butik digital, kerjakan berurutan, periksa sebelum mengumpulkan.
-- **B. Capaian Pembelajaran** beserta sumber SK.
+- **B. Capaian dan Tujuan Pembelajaran:** CP beserta sumber SK, lalu dua TP bernomor (tanpa kode TP dan tanpa JP).
 - **C. Apersepsi** (3 soal):
   1. Sederhanakan 2/6.
   2. 60 × 1/6.
@@ -84,42 +118,65 @@ Adegan butik:
 Interaksi:
 - Klik manekin badan untuk memilih atasan, klik manekin kaki untuk memilih bawahan. Karakter langsung berganti busana. Manekin terpilih diberi tanda ✓ dan cahaya emas.
 - Tombol **Simpan Set Pakaian**:
-  - Jika atasan atau bawahan belum dipilih, muncul pesan "Pilih satu atasan dan satu bawahan dulu."
-  - Jika pasangan baru, pasangan disimpan ke tabel silang.
-  - Jika pasangan sudah pernah disimpan, muncul "Pasangan pakaian ini sudah kamu pilih!", sel tabelnya berkedip merah, dan data lama tidak ditimpa.
+  - Semua pesan muncul sebagai **notifikasi di tengah layar**: kotak ivory berbingkai emas dengan **ornamen silang emas** di keempat sudut, gambar karakter memakai set tersebut, dan tombol × untuk menutup. Notifikasi hilang sendiri setelah sekitar 2,5 detik, atau ditutup dengan ×, klik di luar kotak, atau Escape.
+  - Jika atasan atau bawahan belum dipilih: "Belum lengkap. Pilih satu atasan dan satu bawahan dulu."
+  - Jika pasangan baru: "Set tersimpan!" beserta nama set dan jumlah set yang sudah tersimpan.
+  - Jika pasangan sudah pernah disimpan: "Pasangan pakaian ini sudah kamu pilih!" dengan bingkai merah, **layar bergetar**, sel tabelnya berkedip merah, dan data lama tidak ditimpa. Getaran dimatikan untuk pengguna yang mengaktifkan mode kurangi gerakan.
 
-Tabel silang 3 × 2 (baris atasan, kolom Songket dan Tenun Jumputan). Sel yang terisi menampilkan gambar karakter mini, kode pasangan, dan bingkai hijau. Keterangan kode: AG = Aesan Gede, AP = Aesan Paksangko, BH = Beludru Hitam, S = Songket, J = Jumputan.
+Tabel silang 3 × 2 (baris atasan, kolom Songket dan Tenun Jumputan). Sel yang terisi menampilkan gambar karakter mini, kode pasangan, dan bingkai hijau. Keterangan kode: AG = Aesan Gede, AP = Aesan Paksangko, BK = Baju Kurung Palembang, S = Songket, J = Jumputan.
 
-Isian: kejadian A = terpilihnya pasangan (AG, S). Siswa mengisi n(S) dan n(A).
+**Pertanyaan pemantik:** "Set pakaian mana yang paling kamu suka?" Siswa memilih satu dari 6 kartu (gambar karakter, kode, dan nama set). Kartu terpilih diberi tanda ★. Set ini menjadi **kejadian A** dan namanya otomatis muncul di Ayo Isi, Aktivitas 2, Aktivitas 3.1, tabel roda spin (★), tabel frekuensi relatif (baris ★), dan bagian 3.4. Set kesukaan tidak dinilai dan bisa diganti kapan saja.
 
-**Aktivitas 2: Menentukan Peluang Teoretis** (terbuka setelah keenam sel tabel terisi)
+**Ayo Isi:** kejadian A = terpilihnya set kesukaan. Isian:
+- n(S): banyak semua set pakaian yang bisa dibuat (semua sel di tabel).
+- n(A): banyak set di tabel yang sama persis dengan set kesukaan.
 
-- Rumus P(A) = n(A) / n(S).
-- Isian n(A), n(S), dan P(A) dalam bentuk kotak pecahan.
-- Pertanyaan: "Berapa peluang terpilihnya satu pasangan pakaian tertentu jika semua pasangan memiliki kesempatan yang sama?" dengan kotak pecahan.
+**Mengenal Peluang Teoretis** (tampil bersama Aktivitas 2): pengertian, rumus P(A) = n(A) / n(S) dengan keterangan simbol tersusun ke bawah, dan contoh butik mini (2 atasan × 2 bawahan = 4 set, P(B) = 1/4). Contoh sengaja memakai butik lain agar tidak memberi jawaban Aktivitas 2.
+
+**Aktivitas 2: Menentukan Peluang Teoretis** (terbuka setelah keenam sel tabel terisi), dalam tiga langkah:
+1. "Lihat tabel Aktivitas 1. Ada berapa set yang sama persis dengan set kesukaanmu? Tulis di n(A)."
+2. "Ada berapa set pakaian seluruhnya di tabel? Tulis di n(S)."
+3. "Bagi n(A) dengan n(S)." (kotak pecahan P(A))
+
+Pertanyaan perluasan: "Temanmu memilih set kesukaan yang berbeda darimu. Berapa peluang teoretis set kesukaan temanmu?"
 
 ### 3.4 Halaman 4: Roda Spin
 
-**3.1 Menghitung Frekuensi Harapan:** rumus F_h = N × P(A), keterangan simbol, isian N, P(A) (pecahan), dan hasil. Hasil boleh berupa pecahan atau desimal.
+**Mengenal Frekuensi Harapan dan Frekuensi Relatif** (di awal halaman, dua kotak berdampingan):
+- Frekuensi harapan: roda diputar 12 kali, peluang set kesukaan 1/6, maka 12 × 1/6 = 2 kali. Dihitung sebelum percobaan, dari peluang teoretis. Rumus umum F_h = N × P(A).
+- Frekuensi relatif: misalnya dari 10 putaran set kesukaan muncul 3 kali, maka 3/10. Dihitung sesudah percobaan, dari data nyata. Disebut juga peluang empiris. Rumus umum F_r = k / N.
+- Contoh memakai N = 12 dan N = 10 supaya tidak memberi jawaban untuk N = 20.
+
+**3.1 Menghitung Frekuensi Harapan:** "Roda akan diputar 20 kali. Tentukan frekuensi harapan munculnya set kesukaanmu." Rumus F_h = N × P(A), keterangan simbol tersusun ke bawah (F_h, N, P(A)), isian N, P(A) (pecahan), dan hasil. Hasil boleh berupa pecahan atau desimal.
 
 **3.2 Eksperimen Digital Roda Spin:**
 
 - Kiri: karakter dengan busana dasar, berganti sesuai hasil spin terakhir.
 - Tengah: roda dengan 6 sektor sama besar (masing-masing 60°), berlabel kode pasangan, dengan penunjuk di atas.
-- Kanan: tabel statistik real-time berisi frekuensi (k) setiap pasangan dan totalnya. Baris hasil terakhir disorot.
+- Kanan: tabel statistik real-time berisi frekuensi (k) setiap pasangan dan totalnya. Baris hasil terakhir disorot, dan set kesukaan diberi tanda ★.
 - Tombol:
   - **Spin 1 Kali:** roda berputar sekitar 2,6 detik. Tombol nonaktif setelah total mencapai 20.
   - **Randomize 20 Kali:** jika sudah ada data, sistem minta konfirmasi, mengosongkan data, lalu memutar tepat 20 kali (sekitar 0,65 detik per putaran).
   - **Reset Data:** mengosongkan data simulasi saja. Jawaban dan tabel Aktivitas 1 tidak terhapus.
 - Di HP: karakter kecil di samping nama hasil, roda di bawahnya, tombol Spin dan Randomize berdampingan, Reset selebar penuh.
 
-**3.3 Menentukan Frekuensi Relatif:** rumus F_r = k / N dengan N = 20. Tabel 6 baris berisi kode pasangan, k (diambil otomatis dari hasil spin), N = 20, dan kotak isian F_r. Kotak baru bisa diisi setelah percobaan genap 20 kali.
+**3.3 Menentukan Frekuensi Relatif:** siswa mulai dari set kesukaan (baris ★ berlatar kuning), lalu semua set. Rumus F_r = k / N dengan N = 20, keterangan simbol tersusun ke bawah. Tabel 6 baris berisi kode pasangan, k (diambil otomatis dari hasil spin), N = 20, dan kotak isian F_r. Kotak baru bisa diisi setelah percobaan genap 20 kali.
 
-**3.4 Membandingkan Hasil Percobaan:** rumus P(A) = 1/6 dan F_r = k/20, tiga soal pilihan ganda, dan satu kotak kesimpulan bebas.
+**3.4 Membandingkan Frekuensi Harapan dan Frekuensi Relatif:**
+- Tabel perbandingan: kapan dihitung (sebelum/sesudah percobaan), diperoleh dari (peluang teoretis/data percobaan), rumus (N × P(A) / k ÷ N), bentuk hasil (banyak kali/pecahan), dibandingkan dengan (k/P(A)).
+- Hubungan: N × F_r = k, jadi membandingkan F_h dengan k sama artinya dengan membandingkan P(A) dengan F_r.
+- Data set kesukaan: "Set kesukaanmu muncul k kali dari 20 putaran" (otomatis).
+- Empat isian (terbuka setelah set kesukaan dipilih dan percobaan genap 20 kali):
+  1. 20 × F_r set kesukaan.
+  2. Dibanding frekuensi harapan, set kesukaan muncul lebih sering, sama persis, atau lebih jarang.
+  3. Perkiraan 60 putaran memakai F_r: 60 × F_r.
+  4. Perkiraan 60 putaran memakai peluang teoretis: 60 × P(A).
+
+**3.5 Kesimpulan:** rumus P(A) = 1/6 dan F_r = k/20, tiga soal pilihan ganda, dan satu kotak kesimpulan bebas.
 
 ### 3.5 Halaman 5: Periksa dan Kumpulkan
 
-- Kartu identitas dan kartu tiap aktivitas. Setiap butir menampilkan nama soal, jawaban siswa (atau "Belum diisi"), dan tombol **Ubah** yang membuka halaman soal sekaligus menempatkan kursor di kotak jawabannya.
+- Kartu identitas (termasuk set kesukaan) dan kartu tiap aktivitas. Setiap butir menampilkan nama soal, jawaban siswa (atau "Belum diisi"), dan tombol **Ubah** yang membuka halaman soal sekaligus menempatkan kursor di kotak jawabannya.
 - Kotak pengumpulan berisi tombol **Kumpulkan Jawaban** (setelah pengumpulan pertama berubah menjadi **Kumpulkan Ulang**) dan **Cetak / Simpan PDF**.
 - Rincian alurnya ada di bagian 7.
 
@@ -135,7 +192,7 @@ Isian: kejadian A = terpilihnya pasangan (AG, S). Siswa mengisi n(S) dan n(A).
 | --- | --- | --- |
 | AG | Aesan Gede | Dodot merah bertabur bintang emas, teratai penutup bahu berbentuk kelopak, kalung kebo munggah tiga susun, pending, selempang sawit, lengan terbuka dengan kecak bahu dan gelang. Kepala: kesuhun tinggi bermotif teratai dengan permata dan melati, gandik beludru merah berhias melati, bungo cempako, kembang goyang, kelapo standan. Rambut disisir licin. |
 | AP | Aesan Paksangko | Baju kurung lengan panjang merah bata bertabur bintang emas, teratai penutup dada, kalung tapak jajo tiga susun, gelang. Kepala: mahkota paksangko di kening dengan motif lingkaran, bunga teratai, dan setangkai mawar, kembang goyang, kelapo standan, sanggul. |
-| BH | Baju Kurung Beludru Hitam | Beludru hitam lengan panjang, sulaman emas timbul (tekat) di kerah dan ujung lengan, selendang songket di bahu kiri. Sanggul sederhana tanpa mahkota. |
+| BK | Baju Kurung Palembang | Baju kurung longgar ungu tua/plum (#4E2A5A), polos, menutupi pinggul; lengan panjang mengecil di pergelangan; leher bulat dengan belahan kecil tanpa kerah; tiga kancing emas di depan; kalung emas besar berbentuk lempeng berukir yang menutupi dada atas; gelang emas di kedua pergelangan. Kepala: rambut disisir ke atas dan disanggul tinggi di puncak kepala tanpa poni, hiasan bunga emas di sisi kanan sanggul, anting emas menjuntai panjang. Tanpa selendang. |
 
 **Bawahan:**
 
@@ -144,7 +201,7 @@ Isian: kejadian A = terpilihnya pasangan (AG, S). Siswa mengisi n(S) dan n(A).
 | S | Songket Palembang | Songket lepus: dasar maroon dengan benang emas rapat bermotif belah ketupat, tumpal (kepala kain) di depan, tepi bermotif pucuk rebung |
 | J | Tenun Jumputan Palembang | Satu desain merah tua (#7E1C2A) untuk semua atasan, motif bintik tujuh (satu titik besar dikelilingi enam titik kecil dalam satu lingkaran) berwarna cream |
 
-**Enam pasangan:** (AG, S), (AG, J), (AP, S), (AP, J), (BH, S), (BH, J).
+**Enam pasangan:** (AG, S), (AG, J), (AP, S), (AP, J), (BK, S), (BK, J).
 
 ### 4.2 Karakter
 
@@ -156,18 +213,19 @@ Isian: kejadian A = terpilihnya pasangan (AG, S). Siswa mengisi n(S) dan n(A).
 
 ### 4.3 Status keakuratan budaya
 
-Rincian per detail beserta tautan sumbernya ada di `referensi.html`. Ringkasnya:
+Rincian per detail beserta tautan sumbernya ada di halaman Informasi Media (`informasi-media.html`). Ringkasnya:
 
-- **Ada di sumber:** komponen busana dan aksesori yang tercantum di tabel 4.1.
+- **Ada di sumber:** komponen busana dan aksesori AG dan AP pada tabel 4.1; pada BK: bentuk baju kurung, lengan mengecil di pergelangan, dan tiga kancing sebagai tanda gadis (satu sumber, perlu dicek).
 - **Disederhanakan:** bentuk kelapo standan dan kembang goyang, jumlah kelopak teratai, jumlah gelang, proporsi mahkota, dan motif songket (dibuat kisi belah ketupat, bukan motif bernama seperti Nago Besaung).
-- **Pilihan desain, bukan klaim autentik:** tata rambut baju beludru, warna merah bata Paksangko, warna kulit, sepatu, dan busana dasar.
+- **Pilihan desain, bukan klaim autentik:** warna plum BK, sanggul tinggi, anting, kalung lempeng, gelang BK (mengikuti foto referensi pengembang), warna merah bata Paksangko, warna kulit, sepatu, dan busana dasar.
+- **Belum terverifikasi:** hiasan bunga emas BK disebut sebagai bunga cempaka dan bunga sundur emas oleh pengembang; sumbernya belum ditemukan dalam penelusuran.
 - Sumber yang dipakai sebagian besar berupa artikel populer, situs pariwisata, dan beberapa jurnal. Antarsumber kadang berbeda istilah dan rincian. Untuk penelitian, ilustrasi perlu divalidasi oleh ahli budaya atau perias pengantin adat Palembang.
 
 ---
 
 ## 5. Kunci jawaban dan penilaian
 
-Total **23 butir**. Skor = pembulatan (benar ÷ 23 × 100).
+Total **27 butir**. Skor = pembulatan (benar ÷ 27 × 100). Set kesukaan tidak dinilai.
 
 | Kelompok | Butir | Kunci | Aturan |
 | --- | --- | --- | --- |
@@ -176,17 +234,21 @@ Total **23 butir**. Skor = pembulatan (benar ÷ 23 × 100).
 | | 3 × 2 | 6 | |
 | Aktivitas 1 | Tabel ruang sampel | 6 dari 6 pasangan tersimpan | Otomatis dari tabel |
 | | n(S) | 6 | |
-| | n(A) | 1 | |
+| | n(A), set kesukaan | 1 | |
 | Aktivitas 2 | n(A) | 1 | |
 | | n(S) | 6 | |
 | | P(A) | 1/6 | Pecahan senilai diterima (misal 2/12) |
-| | Peluang satu pasangan tertentu | 1/6 | Pecahan senilai diterima |
+| | Peluang set kesukaan teman | 1/6 | Pecahan senilai diterima |
 | Aktivitas 3.1 | N | 20 | |
 | | P(A) | 1/6 | Pecahan senilai diterima |
-| | Frekuensi harapan | 10/3 | Diterima: 10/3, 20/6, 3 1/3, 3,33, 3.33 (toleransi 0,006) |
+| | Frekuensi harapan set kesukaan | 10/3 | Diterima: 10/3, 20/6, 3 1/3, 3,33, 3.33 (toleransi 0,006) |
 | Aktivitas 3.2–3.3 | Banyak percobaan | 20 | Otomatis dari roda spin |
 | | F_r untuk tiap 6 pasangan | k/20 sesuai data siswa sendiri | Pecahan atau desimal, koma atau titik |
-| Aktivitas 3.4 | Soal 1 | Tidak, ada yang berbeda | Selalu benar secara matematis: 20/6 bukan bilangan bulat, jadi keenam k tidak mungkin sama |
+| Aktivitas 3.4 | 20 × F_r set kesukaan | k set kesukaan | Butuh set kesukaan dan 20 percobaan |
+| | Dibanding frekuensi harapan | "lebih sering" jika k > 10/3, "lebih jarang" jika k < 10/3 | "Sama persis" tidak pernah benar karena 10/3 bukan bilangan bulat |
+| | 60 × F_r | 3 × k set kesukaan | |
+| | 60 × P(A) | 10 | |
+| Aktivitas 3.5 | Soal 1 | Tidak, ada yang berbeda | Selalu benar secara matematis: 20/6 bukan bilangan bulat, jadi keenam k tidak mungkin sama |
 | | Soal 2 | Hasil setiap putaran acak dan percobaan hanya 20 kali | |
 | | Soal 3 | F_r bisa berbeda, tetapi cenderung mendekati 1/6 jika percobaan diperbanyak | |
 
@@ -226,7 +288,7 @@ Catatan: frekuensi harapan 10/3 bukan bilangan bulat. Hitungan ini benar, tetapi
 
 | Data | Tempat | Masa simpan |
 | --- | --- | --- |
-| Jawaban, tabel, simulasi, halaman terakhir, pengumpulan | `sessionStorage` (kunci `stylist-studio-palembang-v1`) | Selama tab browser terbuka, termasuk saat halaman dimuat ulang |
+| Jawaban, set kesukaan, tabel, simulasi, halaman terakhir, pengumpulan | `sessionStorage` (kunci `stylist-studio-sriwijaya-v2`; kunci baru dipakai karena kode BH diganti BK) | Selama tab browser terbuka, termasuk saat halaman dimuat ulang |
 | Salinan pengumpulan pertama | Di dalam data yang sama (`firstSubmission`) | Sama seperti di atas; tidak pernah ditimpa |
 | Pengaturan suara | `localStorage` (kunci `stylist-studio-audio`) | Permanen di perangkat itu |
 | Hasil pengumpulan | Google Sheet milik guru | Permanen, jika `submitUrl` diisi |
@@ -310,7 +372,7 @@ Situs statis HTML, CSS, dan JavaScript murni, tanpa framework dan tanpa proses b
 
 ```
 index.html                 Struktur 5 halaman, modal, panel suara
-referensi.html             Catatan guru: sumber busana, status detail, musik
+informasi-media.html       Informasi Media: kesesuaian kurikulum, sumber busana, status detail, musik
 product.md                 Dokumen ini
 README.md                  Ringkasan teknis dan cara deploy
 css/style.css              Seluruh gaya, termasuk responsif dan cetak
@@ -329,11 +391,11 @@ vendor/katex/              KaTeX 0.16.9 (lisensi MIT)
 
 **Modul utama:**
 
-- `Outfits.character(top, bottom, opts)`: SVG karakter. `top` ∈ {AG, AP, BH, null}, `bottom` ∈ {S, J, null}, `opts.view = 'bust'` untuk potongan setengah badan.
+- `Outfits.character(top, bottom, opts)`: SVG karakter. `top` ∈ {AG, AP, BK, null}, `bottom` ∈ {S, J, null}, `opts.view = 'bust'` untuk potongan setengah badan.
 - `Outfits.mannequinTop(top)` dan `Outfits.mannequinBottom(bottom)`: SVG manekin.
 - `Outfits.combos()`: daftar 6 pasangan.
 - `Sfx.play(nama)`: efek suara (`click`, `select`, `success`, `error`, `spin`, `tick`, `stop`, `submit`).
-- `app.js`: `state` tunggal disimpan ke `sessionStorage` setiap ada perubahan. `GROUPS` berisi definisi 23 butir (label, kunci isian, tampilan, aturan benar).
+- `app.js`: `state` tunggal disimpan ke `sessionStorage` setiap ada perubahan. `GROUPS` berisi definisi 27 butir (label, kunci isian, tampilan, aturan benar).
 
 ---
 
@@ -378,7 +440,10 @@ Uji otomatis di Chromium headless (Playwright):
 - Randomize menghasilkan tepat 20 percobaan, dan Spin 1 Kali nonaktif di 20.
 - Reset Data tidak menghapus jawaban maupun tabel Aktivitas 1.
 - Jawaban tetap ada setelah halaman dimuat ulang.
-- Penilaian: dua kesalahan yang disengaja menghasilkan 21/23 (skor 91), dan setelah satu diperbaiki menjadi 22/23 (skor 96).
+- Penilaian: dua kesalahan yang disengaja menghasilkan 21/23 (skor 91), dan setelah satu diperbaiki menjadi 22/23 (skor 96). Diuji pada versi 23 butir.
+- Versi 6: set kesukaan (AP, J) tampil di semua bagian yang merujuk kejadian A; keempat isian bagian 3.4 dinilai benar memakai k set kesukaan dari data spin; total 27 butir.
+- Notifikasi set tepat di tengah layar; pasangan ganda memicu getaran pada konten halaman.
+- Halaman Informasi Media terbuka dengan judul baru, dan tidak ada sisa teks "Palembang Heritage" atau kode BH.
 - Tombol Ubah membuka halaman yang benar dan memfokuskan kotak jawaban.
 - Cetak: setelah kumpul ulang dengan jawaban yang sudah diperbaiki, PDF tetap berisi jawaban dan skor pengumpulan pertama.
 - Musik: tidak berbunyi sebelum interaksi, berulang di volume 25% setelah klik, berhenti saat dimatikan. Tanpa file, tombol musik nonaktif.
@@ -393,12 +458,14 @@ Belum diuji: HP fisik, Safari iOS, dan pengiriman ke Google Sheet sungguhan.
 
 | Risiko | Dampak | Penanganan |
 | --- | --- | --- |
-| Detail busana belum divalidasi ahli | Validitas isi instrumen penelitian dipertanyakan | Validasi ahli budaya; lihat `referensi.html` |
+| Detail busana belum divalidasi ahli | Validitas isi instrumen penelitian dipertanyakan | Validasi ahli budaya; lihat Informasi Media |
 | Musik bukan rekaman tradisional | Klaim "musik tradisional" tidak sah | Sebut sebagai musik latar orisinal, atau ganti dengan rekaman berizin |
 | Data hanya di browser | Hilang jika tab ditutup; pengumpulan pertama bisa diakali dengan tab baru | Aktifkan Google Sheet |
 | Kunci jawaban bisa dibaca di kode sumber | Siswa yang paham kode bisa melihat kunci | Wajar untuk LKPD formatif; untuk tes sumatif butuh server |
 | CP mengutip PDF lama | Bisa berbeda dengan teks resmi | Cocokkan dengan SK BSKAP 046/H/KR/2025 |
 | F_h = 10/3 bukan bilangan bulat | Siswa bisa bingung | Guru siapkan penjelasan |
+| Frekuensi harapan di buku resmi dibahas di kelas IX | Penguji bisa mempertanyakan penempatan di kelas VIII | Lampirkan ATP sekolah yang menempatkannya di kelas VIII |
+| Detail BK (sanggul, anting, kalung, hiasan bunga) mengikuti foto, bukan sumber tertulis | Klaim keaslian lemah | Sebut sebagai pilihan desain; validasi ahli |
 
 ---
 
@@ -411,6 +478,7 @@ Belum diuji: HP fisik, Safari iOS, dan pengiriman ke Google Sheet sungguhan.
 | 3 | Musik latar ditambahkan; hasil cetak dikunci pada pengumpulan pertama |
 | 4 | Musik dibuat ceria (G mayor, tempo 112); bas, genjrengan, dan kendang dihapus, melodi dipertahankan |
 | 5 | Kulit kuning langsat; tampilan HP dirapikan (tab, rumus, roda spin, butik, rekap) |
+| 6 | BH diganti Baju Kurung Palembang (BK); tema menjadi Sriwijaya Heritage; catatan guru menjadi Informasi Media dengan analisis kesesuaian kurikulum; TP ditampilkan; pertanyaan pemantik set kesukaan sebagai kejadian A; bahasa Aktivitas 2 diperjelas; pengertian peluang teoretis, frekuensi harapan, dan frekuensi relatif sebelum aktivitas; bagian 3.4 perbandingan frekuensi harapan dan relatif (27 butir); keterangan rumus tersusun ke bawah; notifikasi di tengah dengan ornamen silang dan layar bergetar |
 
 ---
 
@@ -430,6 +498,20 @@ Belum diuji: HP fisik, Safari iOS, dan pengiriman ke Google Sheet sungguhan.
 - [Traveloka: Pakaian adat Palembang](https://www.traveloka.com/id-id/explore/destination/pakaian-adat-palembang-aesan-gede-songket/1005999)
 - [Kabar Sumatra: Sulam angkinan](https://www.kabarsumatra.com/2026/06/19/mengenal-lebih-dekat-kain-sulam-angkinan-kerajinan-khas-palembang-dengan-benang-emas/)
 - [Roots.gov.sg: Baju kurung dari Palembang](https://www.roots.gov.sg/Collection-Landing/listing/1039963)
+
+**Baju Kurung Palembang**
+
+- [Detik Edu: Baju adat Palembang, jenis, makna, dan simbolnya](https://www.detik.com/edu/detikpedia/d-6670077/baju-adat-palembang-jenis-makna-dan-simbolnya)
+
+**Kesesuaian kurikulum**
+
+- [Penelitian.id: daftar isi Buku Siswa Matematika Kelas VIII](https://www.penelitian.id/2023/09/buku-siswa-matematika-kelas-viii.html)
+- [Kherysuryawan.id: sub-bab Bab 6 Peluang kelas VIII](https://www.kherysuryawan.id/2022/08/materi-matematika-kelas-8-semester-1.html)
+- [Kompas.com Skola: frekuensi relatif tutup botol, Bab VI kelas VIII](https://www.kompas.com/skola/read/2022/12/23/160000969/soal-dan-jawaban-kemungkinan-kejadian)
+- [Portal Edukasi: Matematika kelas IX Bab 4](https://portaledukasi.org/2024/07/01/matematika-kelas-9-bab-4-kurikulum-merdeka/)
+- [Defantri.com: CP Matematika Fase D](https://www.defantri.com/2022/05/capaian-pembelajaran-matematika-smp-fase-d.html)
+- [CP Matematika sesuai Keputusan Kepala BSKAP 2025](https://www.mtssmusliminbjp.sch.id/2025/08/cp-matematika-tahun-2025.html)
+- [Kurikulummerdeka.com: CP Matematika Fase E dan F](https://kurikulummerdeka.com/capaian-pembelajaran-cp-matematika-sma-fase-e-dan-f-kurikulum-merdeka-2024/)
 
 **Kain**
 

@@ -5,7 +5,7 @@
   var CFG = window.ELKPD_CONFIG || {};
   var COMBOS = O.combos();
   var N_TRIALS = 20;
-  var STORE_KEY = 'stylist-studio-palembang-v1';
+  var STORE_KEY = 'stylist-studio-sriwijaya-v2';
   var MEMBER_ROWS = 5;
 
   // Warna sektor roda dan swatch tabel statistik
@@ -14,8 +14,8 @@
     'AG-J': { fill: '#D9A82E', text: '#3A2318' },
     'AP-S': { fill: '#B5482F', text: '#FFF4E2' },
     'AP-J': { fill: '#FFF3DC', text: '#7A1F2B' },
-    'BH-S': { fill: '#6B3E26', text: '#FFF4E2' },
-    'BH-J': { fill: '#2B1E1A', text: '#F3D57E' }
+    'BK-S': { fill: '#4E2A5A', text: '#FFF4E2' },
+    'BK-J': { fill: '#2B1E1A', text: '#F3D57E' }
   };
 
   function sfx(name) { if (window.Sfx) window.Sfx.play(name); }
@@ -181,10 +181,15 @@
     return Number(num) * tDen === Number(den) * tNum;
   }
   function near(key, target, tol) { var v = parseNum(a(key)); return !isNaN(v) && Math.abs(v - target) <= tol; }
+  // Set kesukaan siswa menjadi kejadian A pada Aktivitas 1 sampai 3.
+  function fav() { var k = a('fav'); return COMBOS.some(function (c) { return c.key === k; }) ? k : ''; }
+  function favReady() { return !!fav() && state.sim.total === N_TRIALS; }
+  function favK() { return fav() ? state.sim.counts[fav()] : 0; }
   function frac(numKey, denKey) { return (a(numKey) || '…') + '/' + (a(denKey) || '…'); }
   function val(key) { return a(key) || '…'; }
 
   var MCQ = {
+    cmp_dir: { a: 'Lebih sering dari yang diharapkan.', b: 'Sama persis dengan yang diharapkan.', c: 'Lebih jarang dari yang diharapkan.' },
     a34_1: { a: 'Ya, semuanya sama persis.', b: 'Tidak, ada yang berbeda.' },
     a34_2: { a: 'Roda spin tidak adil.', b: 'Hasil setiap putaran acak dan percobaan hanya 20 kali.', c: 'Peluang teoretisnya salah dihitung.' },
     a34_3: { a: 'Hasil percobaan selalu sama dengan peluang teoretis.', b: 'Frekuensi relatif bisa berbeda, tetapi cenderung mendekati 1/6 jika percobaan diperbanyak.', c: 'Pasangan yang paling sering muncul pasti memiliki peluang teoretis terbesar.' }
@@ -200,18 +205,18 @@
     { id: 'akt1', title: 'Aktivitas 1', page: 3, items: [
       { id: 'tabel', label: 'Tabel ruang sampel', keys: [], filled: function () { return savedCount() === COMBOS.length; }, show: function () { return savedCount() + ' dari 6 pasangan'; }, ok: function () { return savedCount() === COMBOS.length; } },
       { id: 'a1_nS', label: 'n(S)', keys: ['a1_nS'], show: function () { return val('a1_nS'); }, ok: function () { return isInt('a1_nS', 6); } },
-      { id: 'a1_nA', label: 'n(A)', keys: ['a1_nA'], show: function () { return val('a1_nA'); }, ok: function () { return isInt('a1_nA', 1); } }
+      { id: 'a1_nA', label: 'n(A), set kesukaan', keys: ['a1_nA'], show: function () { return val('a1_nA'); }, ok: function () { return isInt('a1_nA', 1); } }
     ] },
     { id: 'akt2', title: 'Aktivitas 2', page: 3, items: [
       { id: 'a2_nA', label: 'n(A)', keys: ['a2_nA'], show: function () { return val('a2_nA'); }, ok: function () { return isInt('a2_nA', 1); } },
       { id: 'a2_nS', label: 'n(S)', keys: ['a2_nS'], show: function () { return val('a2_nS'); }, ok: function () { return isInt('a2_nS', 6); } },
       { id: 'a2_p', label: 'P(A)', keys: ['a2_pNum', 'a2_pDen'], show: function () { return frac('a2_pNum', 'a2_pDen'); }, ok: function () { return fracEq('a2_pNum', 'a2_pDen', 1, 6); } },
-      { id: 'a2_q', label: 'Peluang satu pasangan tertentu', keys: ['a2_qNum', 'a2_qDen'], show: function () { return frac('a2_qNum', 'a2_qDen'); }, ok: function () { return fracEq('a2_qNum', 'a2_qDen', 1, 6); } }
+      { id: 'a2_q', label: 'Peluang set kesukaan teman', keys: ['a2_qNum', 'a2_qDen'], show: function () { return frac('a2_qNum', 'a2_qDen'); }, ok: function () { return fracEq('a2_qNum', 'a2_qDen', 1, 6); } }
     ] },
     { id: 'akt31', title: 'Aktivitas 3.1', page: 4, items: [
       { id: 'a31_N', label: 'N', keys: ['a31_N'], show: function () { return val('a31_N'); }, ok: function () { return isInt('a31_N', N_TRIALS); } },
       { id: 'a31_p', label: 'P(A)', keys: ['a31_pNum', 'a31_pDen'], show: function () { return frac('a31_pNum', 'a31_pDen'); }, ok: function () { return fracEq('a31_pNum', 'a31_pDen', 1, 6); } },
-      { id: 'a31_res', label: 'Frekuensi harapan', keys: ['a31_res'], show: function () { return val('a31_res'); }, ok: function () { return near('a31_res', N_TRIALS / 6, 0.006); } }
+      { id: 'a31_res', label: 'Frekuensi harapan set kesukaan', keys: ['a31_res'], show: function () { return val('a31_res'); }, ok: function () { return near('a31_res', N_TRIALS / 6, 0.006); } }
     ] },
     { id: 'akt33', title: 'Aktivitas 3.2 dan 3.3', page: 4, items: [
       { id: 'sim', label: 'Banyak percobaan', keys: [], filled: function () { return state.sim.total === N_TRIALS; }, show: function () { return state.sim.total + ' dari 20'; }, ok: function () { return state.sim.total === N_TRIALS; } }
@@ -221,6 +226,13 @@
         ok: function () { return state.sim.total === N_TRIALS && near('a33_' + c.key, state.sim.counts[c.key] / N_TRIALS, 1e-6); } };
     })) },
     { id: 'akt34', title: 'Aktivitas 3.4', page: 4, items: [
+      { id: 'cmp_nfr', label: '20 × Fr set kesukaan', keys: ['cmp_nfr'], show: function () { return val('cmp_nfr'); }, ok: function () { return favReady() && near('cmp_nfr', favK(), 1e-6); } },
+      { id: 'cmp_dir', label: 'Dibanding frekuensi harapan', keys: ['cmp_dir'], show: function () { return MCQ.cmp_dir[a('cmp_dir')] || '…'; },
+        ok: function () { return favReady() && a('cmp_dir') === (favK() > N_TRIALS / 6 ? 'a' : 'c'); } },
+      { id: 'cmp_60fr', label: 'Perkiraan 60 putaran dari Fr', keys: ['cmp_60fr'], show: function () { return val('cmp_60fr'); }, ok: function () { return favReady() && near('cmp_60fr', favK() * 3, 1e-6); } },
+      { id: 'cmp_60p', label: 'Perkiraan 60 putaran dari P(A)', keys: ['cmp_60p'], show: function () { return val('cmp_60p'); }, ok: function () { return near('cmp_60p', 10, 1e-6); } }
+    ] },
+    { id: 'akt35', title: 'Aktivitas 3.5', page: 4, items: [
       { id: 'a34_1', label: 'Pertanyaan 1', keys: ['a34_1'], show: function () { return MCQ.a34_1[a('a34_1')] || '…'; }, ok: function () { return a('a34_1') === 'b'; } },
       { id: 'a34_2', label: 'Pertanyaan 2', keys: ['a34_2'], show: function () { return MCQ.a34_2[a('a34_2')] || '…'; }, ok: function () { return a('a34_2') === 'b'; } },
       { id: 'a34_3', label: 'Pertanyaan 3', keys: ['a34_3'], show: function () { return MCQ.a34_3[a('a34_3')] || '…'; }, ok: function () { return a('a34_3') === 'b'; } }
@@ -244,11 +256,10 @@
 
   // Status terisi per aktivitas, tanpa membuka benar atau salah.
   function updateStatuses() {
-    var map = { apersepsi: ['apersepsi'], akt1: ['akt1'], akt2: ['akt2'], akt31: ['akt31'], akt33: ['akt33'], akt34: ['akt34'] };
     $all('[data-status]').forEach(function (el) {
       var gid = el.getAttribute('data-status');
       var items = [];
-      GROUPS.forEach(function (g) { if (map[gid].indexOf(g.id) >= 0) items = items.concat(g.items.filter(function (it) { return it.keys.length; })); });
+      GROUPS.forEach(function (g) { if (g.id === gid) items = g.items.filter(function (it) { return it.keys.length; }); });
       var done = items.filter(itemFilled).length;
       el.textContent = 'Terisi ' + done + ' dari ' + items.length + '. Jawaban bisa diubah kapan saja sebelum dikumpulkan.';
       el.classList.toggle('is-done', done === items.length);
@@ -258,7 +269,7 @@
   /* ---------- butik digital ---------- */
 
   function buildWardrobe() {
-    $('#top-choices').innerHTML = ['AG', 'AP', 'BH'].map(function (t) {
+    $('#top-choices').innerHTML = ['AG', 'AP', 'BK'].map(function (t) {
       return '<button type="button" class="mannequin" data-top="' + t + '" data-sfx="select" aria-pressed="false">' +
         '<span class="mq-fig">' + O.mannequinTop(t) + '</span><span class="mq-name">' + O.TOPS[t].name + '</span></button>';
     }).join('');
@@ -287,13 +298,39 @@
     $('#dress-label').textContent = label;
   }
 
+  var noticeTimer;
+  function notice(kind, title, text, key) {
+    var box = $('#notice-box');
+    box.className = 'notice-box notice-' + kind;
+    $('#notice-title').textContent = title;
+    $('#notice-text').textContent = text;
+    var p = key ? key.split('-') : null;
+    $('#notice-fig').innerHTML = p ? O.character(p[0], p[1]) : '';
+    $('#notice').hidden = false;
+    void box.offsetWidth;
+    box.classList.add('pop');
+    clearTimeout(noticeTimer);
+    noticeTimer = setTimeout(hideNotice, kind === 'ok' ? 2400 : 2800);
+  }
+  function hideNotice() { clearTimeout(noticeTimer); $('#notice').hidden = true; }
+
+  // Layar bergetar sebagai tanda pasangan sudah pernah dipilih.
+  function shakeScreen() {
+    if (reduceMotion()) return;
+    var m = $('main');
+    m.classList.remove('shake');
+    void m.offsetWidth;
+    m.classList.add('shake');
+  }
+
   function saveSet() {
     var b = state.boutique;
-    if (!b.top || !b.bottom) { sfx('error'); toast('Pilih satu atasan dan satu bawahan dulu.'); return; }
+    if (!b.top || !b.bottom) { sfx('error'); notice('warn', 'Belum lengkap', 'Pilih satu atasan dan satu bawahan dulu.'); return; }
     var key = b.top + '-' + b.bottom;
     if (b.saved[key]) {
       sfx('error');
-      toast('Pasangan pakaian ini sudah kamu pilih!');
+      shakeScreen();
+      notice('dup', 'Pasangan pakaian ini sudah kamu pilih!', comboName(key) + ' ' + comboCode(key) + ' sudah ada di tabel. Coba pasangan lain.', key);
       var cell = $('#cell-' + key);
       if (cell) { cell.classList.remove('flash'); void cell.offsetWidth; cell.classList.add('flash'); }
       return;
@@ -304,13 +341,53 @@
     renderCross();
     updateStatuses();
     var n = savedCount();
-    toast(n === COMBOS.length ? 'Keenam pasangan lengkap! Aktivitas 2 sudah terbuka.' : 'Tersimpan: ' + comboCode(key) + '. ' + n + ' dari 6 pasangan.');
+    notice('ok', 'Set tersimpan!', comboName(key) + ' ' + comboCode(key) + (n === COMBOS.length ? '. Keenam set lengkap, Aktivitas 2 sudah terbuka.' : '. ' + n + ' dari 6 set tersimpan.'), key);
+  }
+
+  /* ---------- set kesukaan ---------- */
+
+  function buildFav() {
+    $('#fav-choices').innerHTML = COMBOS.map(function (c) {
+      return '<button type="button" class="fav-choice" role="radio" aria-checked="false" data-fav="' + c.key + '" data-sfx="select">' +
+        '<span class="fav-fig">' + O.character(c.top, c.bottom) + '</span>' +
+        '<span class="fav-code">' + comboCode(c.key) + '</span><span class="fav-name">' + comboName(c.key) + '</span></button>';
+    }).join('');
+    $all('[data-fav]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        state.answers.fav = btn.getAttribute('data-fav');
+        touched();
+        renderFav();
+        renderSim();
+        updateStatuses();
+      });
+    });
+  }
+
+  function renderFav() {
+    var k = fav();
+    $all('[data-fav]').forEach(function (el) { el.setAttribute('aria-checked', String(el.getAttribute('data-fav') === k)); });
+    $all('.fav-ref').forEach(function (el) {
+      if (!el.dataset.empty) el.dataset.empty = el.textContent;
+      el.textContent = k ? comboName(k) + ' ' + comboCode(k) : el.dataset.empty;
+    });
+    $('#fav-note').innerHTML = k
+      ? 'Set kesukaanmu: <b>' + esc(comboName(k) + ' ' + comboCode(k)) + '</b>. Set ini menjadi kejadian <i>A</i> pada aktivitas berikutnya.'
+      : 'Pilih satu set. Set kesukaanmu akan menjadi kejadian <i>A</i> pada aktivitas berikutnya.';
+    renderCmp();
+  }
+
+  function renderCmp() {
+    var ready = favReady();
+    $('#cmp-lock').hidden = ready;
+    $('#cmp-body').classList.toggle('is-locked', !ready);
+    $all('#cmp-body input').forEach(function (el) { el.disabled = !ready; });
+    $('#cmp-k').textContent = ready ? favK() : '…';
   }
 
   function savedCount() { return COMBOS.filter(function (c) { return state.boutique.saved[c.key]; }).length; }
 
   function renderCross() {
-    $('#cross-table tbody').innerHTML = ['AG', 'AP', 'BH'].map(function (t) {
+    $('#cross-table tbody').innerHTML = ['AG', 'AP', 'BK'].map(function (t) {
       return '<tr><th scope="row">' + O.TOPS[t].name + '</th>' + ['S', 'J'].map(function (bt) {
         var key = t + '-' + bt;
         if (state.boutique.saved[key]) {
@@ -421,7 +498,8 @@
   function renderSim() {
     var sim = state.sim;
     $('#stats-table tbody').innerHTML = COMBOS.map(function (c) {
-      return '<tr class="' + (sim.last === c.key ? 'hit' : '') + '"><td><span class="swatch" style="background:' + SECTOR[c.key].fill + '"></span>' + comboCode(c.key) + '</td><td class="num">' + sim.counts[c.key] + '</td></tr>';
+      var star = fav() === c.key ? ' <span class="star" title="Set kesukaanmu">★</span>' : '';
+      return '<tr class="' + (sim.last === c.key ? 'hit' : '') + '"><td><span class="swatch" style="background:' + SECTOR[c.key].fill + '"></span>' + comboCode(c.key) + star + '</td><td class="num">' + sim.counts[c.key] + '</td></tr>';
     }).join('');
     $('#stats-total').textContent = sim.total;
     var p = sim.last ? sim.last.split('-') : [null, null];
@@ -432,6 +510,7 @@
       : 'Percobaan ke-0 dari 20';
     updateSpinButtons();
     renderFrTable();
+    renderCmp();
   }
 
   function updateSpinButtons() {
@@ -498,7 +577,8 @@
     $('#fr-lock').hidden = ready;
     var body = $('#fr-table tbody');
     body.innerHTML = COMBOS.map(function (c) {
-      return '<tr><td>' + comboCode(c.key) + '</td><td class="num">' + (ready ? sim.counts[c.key] : '–') + '</td><td class="num">20</td>' +
+      var isFav = fav() === c.key;
+      return '<tr' + (isFav ? ' class="fav-row"' : '') + '><td>' + comboCode(c.key) + (isFav ? ' <span class="star" title="Set kesukaanmu">★</span>' : '') + '</td><td class="num">' + (ready ? sim.counts[c.key] : '–') + '</td><td class="num">20</td>' +
         '<td><input type="text" inputmode="decimal" data-key="a33_' + c.key + '" aria-label="Frekuensi relatif ' + comboCode(c.key) + '"' + (ready ? '' : ' disabled') + '></td></tr>';
     }).join('');
     bindInputs(body);
@@ -517,7 +597,8 @@
     var html = '<div class="card"><div class="recap-head"><h2>Identitas</h2><button type="button" class="btn-edit" data-edit="1" data-focus="id_kelompok">Ubah</button></div><ul class="recap-list">' +
       '<li><span>Nama kelompok</span><span>' + esc(a('id_kelompok') || '-') + '</span></li>' +
       '<li><span>Kelas/Semester</span><span>' + esc(a('id_kelas') || '-') + '</span></li>' +
-      (members.join('') || '<li><span>Anggota</span><span class="status-empty">Belum diisi</span></li>') + '</ul></div>';
+      (members.join('') || '<li><span>Anggota</span><span class="status-empty">Belum diisi</span></li>') +
+      '<li><span>Set kesukaan (kejadian A)</span><span>' + (fav() ? esc(comboName(fav()) + ' ' + comboCode(fav())) : '<span class="status-empty">Belum dipilih</span>') + '</span></li></ul></div>';
 
     html += '<div class="recap-grid">';
     GROUPS.forEach(function (g) {
@@ -654,12 +735,13 @@
         var nm = a('id_m' + i + '_nama');
         if (nm) members.push('<li>' + esc(nm) + ' (No. ' + esc(a('id_m' + i + '_no') || '-') + ')</li>');
       }
-      var html = '<header class="ps-head"><p>E-LKPD Matematika Kelas VIII · Stylist Studio Palembang Heritage Edition</p>' +
+      var html = '<header class="ps-head"><p>E-LKPD Matematika Kelas VIII · Stylist Studio Sriwijaya Heritage Edition</p>' +
         '<h1>Hasil Pengumpulan Pertama</h1><p>Dikumpulkan ' + fmtWhen(snap.at) + '</p></header>' +
         '<div class="ps-top"><dl class="ps-id">' +
         '<dt>Nama kelompok</dt><dd>' + esc(a('id_kelompok') || '-') + '</dd>' +
         '<dt>Kelas/Semester</dt><dd>' + esc(a('id_kelas') || '-') + '</dd>' +
-        '<dt>Anggota</dt><dd>' + (members.length ? '<ol>' + members.join('') + '</ol>' : '-') + '</dd></dl>' +
+        '<dt>Anggota</dt><dd>' + (members.length ? '<ol>' + members.join('') + '</ol>' : '-') + '</dd>' +
+        '<dt>Set kesukaan</dt><dd>' + (fav() ? esc(comboName(fav()) + ' ' + comboCode(fav())) : '-') + '</dd></dl>' +
         '<div class="ps-score">Skor<b>' + snap.score + '</b><span>' + snap.correct + ' dari ' + snap.total + ' benar</span></div></div>';
       GROUPS.forEach(function (g) {
         html += '<h2>' + g.title + '</h2><table class="ps-table"><tbody>';
@@ -695,6 +777,7 @@
       total: sub.total,
       pengumpulanKe: sub.count,
       kesimpulan: a('a34_text'),
+      setKesukaan: fav(),
       jawaban: state.answers,
       hasilButir: sub.results,
       tabelAktivitas1: Object.keys(state.boutique.saved),
@@ -713,10 +796,12 @@
     buildMembers();
     buildWardrobe();
     buildWheel();
+    buildFav();
     bindInputs(document);
     updateDressing();
     renderCross();
     renderSim();
+    renderFav();
     updateStatuses();
 
     $('#cover-a').innerHTML = coverSvgs[0];
@@ -725,13 +810,18 @@
     $all('.tab').forEach(function (t) { t.addEventListener('click', function () { showPage(Number(t.getAttribute('data-page'))); }); });
     $all('[data-go]').forEach(function (b) { b.addEventListener('click', function () { showPage(Number(b.getAttribute('data-go'))); }); });
     $('#save-set').addEventListener('click', saveSet);
+    $('#notice-close').addEventListener('click', hideNotice);
     $('#submit-btn').addEventListener('click', askSubmit);
     $('#print-btn').addEventListener('click', function () {
       if (!state.firstSubmission) { toast('Kumpulkan jawaban dulu, lalu cetak.'); return; }
       renderPrintSheet();
       window.print();
     });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('#modal').hidden) $('#modal-cancel').click(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      if (!$('#modal').hidden) $('#modal-cancel').click();
+      else if (!$('#notice').hidden) hideNotice();
+    });
     bindSpin();
 
     document.addEventListener('visibilitychange', function () {

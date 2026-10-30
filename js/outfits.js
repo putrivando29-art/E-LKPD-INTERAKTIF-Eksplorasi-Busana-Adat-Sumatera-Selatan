@@ -1,8 +1,8 @@
 /*
  * Ilustrasi SVG karakter chibi dan busana adat perempuan Palembang.
- * Setiap komponen busana mengacu pada sumber yang dicatat di referensi.html.
+ * Setiap komponen busana mengacu pada sumber yang dicatat di informasi-media.html.
  * Bagian yang bentuknya tidak dijelaskan rinci oleh sumber digambar sederhana
- * dan ditandai "disederhanakan" di referensi.html.
+ * dan ditandai "disederhanakan" di informasi-media.html.
  */
 (function (global) {
   'use strict';
@@ -29,8 +29,9 @@
     ivory: '#FFFBF2',
     brown: '#6B3E26',
     brownLt: '#8B5A3C',
-    velvet: '#1F1716',
-    velvetHi: '#3B2D29',
+    plum: '#4E2A5A',
+    plumDk: '#341A3E',
+    plumHi: '#68407A',
     melati: '#FFFFFF',
     permata: '#C0182B',
     shoe: '#5A3320',
@@ -41,7 +42,7 @@
   var TOPS = {
     AG: { code: 'AG', name: 'Aesan Gede' },
     AP: { code: 'AP', name: 'Aesan Paksangko' },
-    BH: { code: 'BH', name: 'Beludru Hitam' }
+    BK: { code: 'BK', name: 'Baju Kurung Palembang' }
   };
   var BOTTOMS = {
     S: { code: 'S', name: 'Songket Palembang', short: 'Songket' },
@@ -101,12 +102,7 @@
         star(3.5, 3.5, 2.2, C.gold) + star(10.5, 10.5, 2.2, C.gold) +
         '</pattern>';
     }
-    var velvet =
-      '<pattern id="' + id + '-velvet" width="16" height="16" patternUnits="userSpaceOnUse">' +
-      '<rect width="16" height="16" fill="' + C.velvet + '"/>' +
-      '<path d="M0,16 L16,0" stroke="' + C.velvetHi + '" stroke-width="1"/>' +
-      '</pattern>';
-    return '<defs>' + lepus + jump + stars('starAG', C.red) + stars('starAP', C.bata) + velvet +
+    return '<defs>' + lepus + jump + stars('starAG', C.red) + stars('starAP', C.bata) +
       '<clipPath id="' + id + '-kain"><path d="' + KAIN_D + '"/></clipPath></defs>';
   }
 
@@ -245,27 +241,51 @@
     return s;
   }
 
-  function tekatBand(d) {
-    return path(d, 'none', C.goldDk, 5.4) + path(d, 'none', C.gold, 3.6) + path(d, 'none', C.goldLt, 1, { 'stroke-dasharray': '1 3' });
+  // Baju kurung longgar polos warna plum (pilihan desain), lengan panjang yang
+  // mengecil di pergelangan, leher bulat berbelah kecil, tiga kancing emas.
+  var SLEEVE_BK_L = 'M82,178 C64,188 57,208 61,231 L72,235 C73,221 79,206 88,194 Z';
+  var SLEEVE_BK_R = 'M138,178 C156,188 163,208 159,231 L148,235 C147,221 141,206 132,194 Z';
+  var BODY_BK = 'M90,174 C100,170 120,170 130,174 L141,182 C145,202 146,226 148,250 Q110,258 72,250 C74,226 75,202 79,182 Z';
+
+  // Kalung emas besar berbentuk lempeng berukir yang menutupi dada atas
+  // (bentuk mengikuti foto referensi, pilihan desain).
+  function kalungLempeng() {
+    var s = path('M86,176 Q88,204 110,207 Q132,204 134,176 Q126,173 120,178 Q110,186 100,178 Q94,173 86,176 Z', C.gold, C.goldDk, 1.6);
+    s += path('M92,180 Q95,199 110,201 Q125,199 128,180', 'none', C.goldDk, 1);
+    s += path('M97,183 Q100,195 110,196 Q120,195 123,183', 'none', C.goldLt, 1.2);
+    for (var i = 0; i < 7; i++) {
+      var t = i / 6;
+      var x = 92 + t * 36;
+      var y = 181 + Math.sin(t * Math.PI) * 17;
+      s += circle(x.toFixed(1), y.toFixed(1), 1.1, C.goldDk);
+    }
+    s += flower(110, 192, 2.6, C.goldLt) + circle(110, 192, 1.3, C.permata);
+    for (var k = 0; k < 9; k++) {
+      var tk = k / 8;
+      var dx = 90 + tk * 40;
+      var dy = 179 + Math.sin(tk * Math.PI) * 27 + (tk > 0 && tk < 1 ? 1 : 0);
+      s += path('M' + dx.toFixed(1) + ',' + (dy - 2).toFixed(1) + ' L' + dx.toFixed(1) + ',' + (dy + 2).toFixed(1), 'none', C.goldDk, 0.9);
+      s += ellipse(dx.toFixed(1), (dy + 3.4).toFixed(1), 1.4, 2, C.gold, C.goldDk, 0.6);
+    }
+    return s;
   }
 
-  function topBH(id) {
-    var fill = 'url(#' + id + '-velvet)';
-    var s = path(SLEEVE_L, fill, C.line, 2.2) + path(SLEEVE_R, fill, C.line, 2.2);
-    // sulaman emas tekat pada ujung lengan
-    s += tekatBand('M60,229 L74,233') + tekatBand('M160,229 L146,233');
+  function topBK() {
+    var s = path(SLEEVE_BK_L, C.plum, C.line, 2.2) + path(SLEEVE_BK_R, C.plum, C.line, 2.2);
+    s += path('M70,200 Q66,214 66,228 M150,200 Q154,214 154,228', 'none', C.plumHi, 1.6);
+    // gelang emas di kedua pergelangan
+    s += path('M61,227 L72,231 M61,232 L72,236', 'none', C.gold, 3.4) + path('M159,227 L148,231 M159,232 L148,236', 'none', C.gold, 3.4);
+    s += path('M61,227 L72,231 M61,232 L72,236', 'none', C.goldDk, 0.7) + path('M159,227 L148,231 M159,232 L148,236', 'none', C.goldDk, 0.7);
     s += hands();
-    s += path(KURUNG_BODY, fill, C.line, 2.2);
-    s += path('M84,190 Q86,218 82,238', 'none', C.velvetHi, 2) + path('M136,190 Q134,218 138,238', 'none', C.velvetHi, 2);
+    s += path(BODY_BK, C.plum, C.line, 2.2);
+    s += path('M86,196 Q84,224 82,246 M134,196 Q136,224 138,246', 'none', C.plumDk, 1.6);
     s += neck();
-    // sulaman emas tekat pada kerah
-    s += tekatBand('M96,174 Q110,186 124,174');
-    s += path('M110,181 L110,194', 'none', C.gold, 2.4);
-    for (var i = 0; i < 3; i++) s += circle(110, 186 + i * 5, 1.5, C.goldLt, C.goldDk, 0.6);
-    // selendang songket di bahu kiri
-    s += path('M88,175 C96,176 100,180 100,190 L97,262 L83,262 C84,236 82,206 78,184 Z', 'url(#' + id + '-lepus)', C.line, 2);
-    s += path('M83,256 L97,256', 'none', C.goldLt, 2);
-    for (var x = 84; x <= 96; x += 3) s += path('M' + x + ',262 L' + x + ',268', 'none', C.gold, 1.4);
+    // leher bulat dengan belahan kecil di tengah depan, tanpa kerah
+    s += path('M97,174 Q110,184 123,174', 'none', C.line, 2);
+    s += path('M110,181 L110,191', 'none', C.plumDk, 1.6);
+    s += kalungLempeng();
+    // tiga kancing emas di depan
+    [212, 221, 230].forEach(function (y) { s += circle(110, y, 2.4, C.gold, C.goldDk, 0.9) + circle(109.3, y - 0.7, 0.7, C.goldLt); });
     return s;
   }
 
@@ -308,6 +328,31 @@
     return path(SLEEK_D, C.hair, C.line, 2.2) +
       path('M108,64 C96,66 84,72 74,84', 'none', C.hairHi, 2) + path('M112,64 C124,66 136,72 146,84', 'none', C.hairHi, 2);
   }
+  var UPSWEPT_D = 'M56,118 C52,76 80,58 110,58 C140,58 168,76 164,118 C158,102 142,90 110,90 C78,90 62,102 56,118 Z';
+  function upsweptHair() {
+    return path(UPSWEPT_D, C.hair, C.line, 2.2) +
+      path('M76,92 C84,76 96,66 106,62 M144,92 C136,76 124,66 114,62 M92,90 C98,76 104,68 110,64', 'none', C.hairHi, 1.8);
+  }
+
+  // Sanggul tinggi di puncak kepala, hiasan bunga emas di sisi kanan sanggul,
+  // anting emas menjuntai di kedua telinga.
+  function headBK() {
+    var s = path('M96,62 C96,52 124,52 124,62 Z', C.hair, C.line, 2);
+    s += ellipse(110, 42, 21, 17, C.hair, C.line, 2.2);
+    s += path('M94,40 Q110,28 126,40 M97,47 Q110,38 123,47', 'none', C.hairHi, 1.8);
+    s += path('M126,40 L134,30 M127,44 L140,38 M127,49 L142,48 M126,53 L139,58', 'none', C.goldDk, 1.3);
+    s += flower(134, 29, 3.2, C.gold) + flower(141, 37, 3.4, C.gold) + flower(143, 48, 3.4, C.gold) + flower(139, 58, 3, C.gold);
+    s += ellipse(131, 46, 4, 2.2, C.gold, C.goldDk, 0.8, { transform: 'rotate(-20 131 46)' });
+    [58, 162].forEach(function (x) {
+      s += circle(x, 132, 2.2, C.gold, C.goldDk, 0.8);
+      s += path('M' + x + ',134 L' + x + ',146', 'none', C.goldDk, 1);
+      s += circle(x, 147, 1.8, C.gold, C.goldDk, 0.7);
+      s += path('M' + x + ',149 C' + (x + 4) + ',154 ' + (x + 3) + ',160 ' + x + ',163 C' + (x - 3) + ',160 ' + (x - 4) + ',154 ' + x + ',149 Z', C.gold, C.goldDk, 0.9);
+      s += path('M' + (x - 2) + ',163 L' + (x - 2) + ',168 M' + x + ',163 L' + x + ',170 M' + (x + 2) + ',163 L' + (x + 2) + ',168', 'none', C.gold, 1);
+    });
+    return s;
+  }
+
   function backSleek() { return ellipse(110, 112, 59, 56, C.hair, C.line, 2.2); }
   function bun(cy, r) { return circle(110, cy, r, C.hair, C.line, 2.2) + path('M' + (110 - r * 0.6) + ',' + (cy - r * 0.2) + ' Q110,' + (cy - r * 0.8) + ' ' + (110 + r * 0.6) + ',' + (cy - r * 0.2), 'none', C.hairHi, 1.8); }
 
@@ -410,7 +455,6 @@
     // lapisan belakang
     if (bride) s += kelapoStandan();
     if (top === 'AP') s += bun(64, 17);
-    if (top === 'BH') s += bun(66, 16);
     if (top) s += backSleek();
     else s += path('M52,118 C46,62 174,62 168,118 L171,168 C161,175 151,171 147,163 L73,163 C69,171 59,175 49,168 Z', C.hair, C.line, 2.2);
 
@@ -421,16 +465,18 @@
     // atasan
     if (top === 'AG') s += topAG(id);
     else if (top === 'AP') s += topAP(id);
-    else if (top === 'BH') s += topBH(id);
+    else if (top === 'BK') s += topBK();
     else s += topBase();
 
     // kepala
     s += face();
-    if (top) s += sleekHair();
+    if (top === 'BK') s += upsweptHair();
+    else if (top) s += sleekHair();
     else s += path(BANGS_D, C.hair, C.line, 2.2) + path('M80,70 C90,64 100,62 108,62', 'none', C.hairHi, 2);
 
     if (top === 'AG') s += headAG();
     else if (top === 'AP') s += headAP();
+    else if (top === 'BK') s += headBK();
 
     return s + '</svg>';
   }
@@ -451,17 +497,17 @@
       var s = svgOpen('26 0 168 312', 'Manekin badan memakai ' + TOPS[top].name) + defs(id);
       if (top === 'AG' || top === 'AP') s += kelapoStandan();
       if (top === 'AP') s += bun(64, 17);
-      if (top === 'BH') s += bun(66, 16);
       s += backSleek();
       s += path('M110,236 L110,290', 'none', C.brown, 5);
       s += path('M110,288 L86,306 M110,288 L134,306 M110,288 L110,308', 'none', C.brown, 4);
       s += path('M82,212 C90,222 130,222 138,212 L137,240 Q110,250 83,240 Z', C.mannequin, C.line, 2);
       if (top === 'AG') s += topAG(id);
       else if (top === 'AP') s += topAP(id);
-      else s += topBH(id);
-      s += face(true) + sleekHair();
+      else s += topBK();
+      s += face(true) + (top === 'BK' ? upsweptHair() : sleekHair());
       if (top === 'AG') s += headAG();
       else if (top === 'AP') s += headAP();
+      else s += headBK();
       return s + '</svg>';
     });
   }
@@ -486,7 +532,7 @@
     mannequinBottom: mannequinBottom,
     combos: function () {
       var list = [];
-      ['AG', 'AP', 'BH'].forEach(function (t) {
+      ['AG', 'AP', 'BK'].forEach(function (t) {
         ['S', 'J'].forEach(function (b) { list.push({ top: t, bottom: b, key: t + '-' + b, code: '(' + t + ', ' + b + ')' }); });
       });
       return list;
