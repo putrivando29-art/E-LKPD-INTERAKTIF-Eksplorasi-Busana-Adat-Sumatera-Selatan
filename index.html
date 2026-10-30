@@ -352,46 +352,48 @@
 
       <div class="card">
         <h2>3.4 Membandingkan Frekuensi Harapan dan Frekuensi Relatif</h2>
-        <div class="table-scroll">
-          <table class="stats compare">
-            <thead><tr><th scope="col"></th><th scope="col">Frekuensi harapan <span class="tex" data-tex="F_h"></span></th><th scope="col">Frekuensi relatif <span class="tex" data-tex="F_r"></span></th></tr></thead>
-            <tbody>
-              <tr><th scope="row">Kapan dihitung</th><td>Sebelum percobaan</td><td>Sesudah percobaan</td></tr>
-              <tr><th scope="row">Diperoleh dari</th><td>Peluang teoretis</td><td>Data hasil percobaan</td></tr>
-              <tr><th scope="row">Rumus</th><td><span class="tex" data-tex="N\times P(A)"></span></td><td><span class="tex" data-tex="\dfrac{k}{N}"></span></td></tr>
-              <tr><th scope="row">Bentuk hasil</th><td>Banyak kali (perkiraan)</td><td>Pecahan dari seluruh percobaan</td></tr>
-              <tr><th scope="row">Dibandingkan dengan</th><td><span class="tex" data-tex="k"></span>, banyak kemunculan nyata</td><td><span class="tex" data-tex="P(A)"></span>, peluang teoretis</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="relation">Jika <span class="tex" data-tex="F_r"></span> dikalikan <span class="tex" data-tex="N"></span>, hasilnya kembali menjadi <span class="tex" data-tex="k"></span>. Jadi, membandingkan <span class="tex" data-tex="F_h"></span> dengan <span class="tex" data-tex="k"></span> sama artinya dengan membandingkan <span class="tex" data-tex="P(A)"></span> dengan <span class="tex" data-tex="F_r"></span>.</p>
+        <p class="lead">Kerjakan satu langkah demi satu langkah untuk set kesukaanmu, <b class="fav-ref">set yang kamu pilih</b>.</p>
+        <p class="locked-inline" id="cmp-lock">Pilih set kesukaan di halaman Butik dan selesaikan 20 putaran roda dulu.</p>
 
-        <p class="locked-inline" id="cmp-lock">Pilih set kesukaan dan selesaikan 20 percobaan untuk mengerjakan bagian ini.</p>
         <div id="cmp-body">
-          <p class="fav-data">Set kesukaanmu <b class="fav-ref">(set pilihanmu)</b> muncul <b id="cmp-k">0</b> kali dari 20 putaran.</p>
-          <ol class="step-list">
-            <li>
-              <p>Hitung banyak kemunculan dari frekuensi relatif set kesukaanmu.</p>
-              <div class="eq-row"><span class="tex" data-tex="N\times F_r=20\times F_r="></span><input type="text" inputmode="decimal" class="box" data-key="cmp_nfr" aria-label="20 kali frekuensi relatif"></div>
-            </li>
-            <li>
-              <fieldset class="mcq">
-                <legend>Bandingkan dengan frekuensi harapan di bagian 3.1. Set kesukaanmu muncul …</legend>
-                <label><input type="radio" name="cmp_dir" value="a" data-key="cmp_dir"> lebih sering dari yang diharapkan.</label>
-                <label><input type="radio" name="cmp_dir" value="b" data-key="cmp_dir"> sama persis dengan yang diharapkan.</label>
-                <label><input type="radio" name="cmp_dir" value="c" data-key="cmp_dir"> lebih jarang dari yang diharapkan.</label>
-              </fieldset>
-            </li>
-            <li>
-              <p>Perkirakan berapa kali set kesukaanmu muncul jika roda diputar 60 kali, memakai frekuensi relatif hasil percobaanmu.</p>
-              <div class="eq-row"><span class="tex" data-tex="60\times F_r="></span><input type="text" inputmode="decimal" class="box" data-key="cmp_60fr" aria-label="60 kali frekuensi relatif"></div>
-            </li>
-            <li>
-              <p>Perkirakan lagi memakai peluang teoretis.</p>
-              <div class="eq-row"><span class="tex" data-tex="60\times P(A)="></span><input type="text" inputmode="decimal" class="box" data-key="cmp_60p" aria-label="60 kali peluang teoretis"></div>
-            </li>
-          </ol>
-          <p class="hint">Kedua perkiraan boleh berbeda. Perkiraan dari peluang teoretis selalu sama, sedangkan perkiraan dari percobaan bergantung pada hasil putaranmu.</p>
+          <div class="cmp-step" id="cmp-step1">
+            <p class="cmp-num">Langkah 1</p>
+            <p>Lihat tabel roda spin. Berapa kali set kesukaanmu muncul dari 20 putaran?</p>
+            <div class="eq-row"><input type="text" inputmode="numeric" class="box" data-key="cmp_k" aria-label="Banyak kemunculan set kesukaan"><span>kali</span></div>
+          </div>
+
+          <div class="cmp-step" id="cmp-step2" hidden>
+            <p class="cmp-num">Langkah 2</p>
+            <div class="cmp-cards">
+              <div class="cmp-card">
+                <p class="cmp-when">Sebelum roda diputar</p>
+                <p class="cmp-name">Frekuensi harapan</p>
+                <p>Diharapkan muncul <b id="cmp-fh">…</b> kali</p>
+                <p class="cmp-src">dari jawabanmu di 3.1</p>
+              </div>
+              <div class="cmp-card">
+                <p class="cmp-when">Sesudah roda diputar</p>
+                <p class="cmp-name">Frekuensi relatif</p>
+                <p>Benar-benar muncul <b id="cmp-kshow">…</b> kali dari 20</p>
+                <p class="cmp-src">frekuensi relatifnya <span id="cmp-fr">…</span></p>
+              </div>
+            </div>
+            <fieldset class="mcq">
+              <legend>Set kesukaanmu muncul …</legend>
+              <label><input type="radio" name="cmp_dir" value="a" data-key="cmp_dir"> lebih sering dari yang diharapkan.</label>
+              <label><input type="radio" name="cmp_dir" value="b" data-key="cmp_dir"> lebih jarang dari yang diharapkan.</label>
+            </fieldset>
+          </div>
+
+          <div class="cmp-step" id="cmp-step3" hidden>
+            <p class="cmp-num">Langkah 3</p>
+            <p>Roda akan diputar 60 kali, yaitu 3 kali lipat dari 20. Menurut hasil percobaanmu, kira-kira berapa kali set kesukaanmu muncul?</p>
+            <div class="eq-row"><input type="text" inputmode="numeric" class="box" data-key="cmp_60fr" aria-label="Perkiraan kemunculan dalam 60 putaran"><span>kali</span></div>
+          </div>
+
+          <div class="cmp-take" id="cmp-take" hidden>
+            <b>Ingat:</b> frekuensi harapan adalah perkiraan sebelum percobaan, sedangkan frekuensi relatif berasal dari hasil nyata. Keduanya bisa berbeda karena hasil roda spin acak.
+          </div>
         </div>
         <p class="fill-status" data-status="akt34"></p>
       </div>

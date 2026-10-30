@@ -9,7 +9,7 @@ E-LKPD interaktif Matematika SMP kelas VIII: peluang teoretis, frekuensi relatif
 | 1. Sampul | Judul, topik, karakter chibi yang berganti 6 pasangan busana tiap 1 detik, identitas kelompok |
 | 2. Petunjuk | Petunjuk penggunaan, capaian dan tujuan pembelajaran, apersepsi (3 soal) |
 | 3. Butik Digital | Aktivitas 1 (butik bermanekin, tabel silang 3 × 2), pertanyaan pemantik set kesukaan, pengertian peluang teoretis, Aktivitas 2 |
-| 4. Roda Spin | Pengertian frekuensi harapan dan relatif, Aktivitas 3.1 sampai 3.5 (frekuensi harapan, roda spin, frekuensi relatif, perbandingan, kesimpulan) |
+| 4. Roda Spin | Pengertian frekuensi harapan dan relatif, Aktivitas 3.1 sampai 3.5 (frekuensi harapan, roda spin, frekuensi relatif, perbandingan bertahap 3 langkah, kesimpulan) |
 | 5. Kumpulkan | Daftar semua jawaban dengan tombol Ubah, tombol Kumpulkan Jawaban, skor, cetak atau simpan PDF |
 
 `informasi-media.html` (Informasi Media) berisi kesesuaian materi dengan kurikulum, sumber setiap detail busana, bagian ilustrasi yang disederhanakan, dan catatan musik latar. Dokumen produk lengkap ada di `product.md`.
@@ -25,7 +25,7 @@ E-LKPD interaktif Matematika SMP kelas VIII: peluang teoretis, frekuensi relatif
 - Jawaban tidak pernah dikunci. Setiap aktivitas hanya menampilkan status "Terisi x dari y"; benar atau salah baru ditampilkan setelah siswa menekan Kumpulkan Jawaban.
 - Jika siswa mengubah jawaban setelah mengumpulkan, halaman Kumpulkan meminta pengumpulan ulang. Nomor pengumpulan ikut tercatat.
 - Cetak / Simpan PDF selalu berisi **hasil pengumpulan pertama** (jawaban, skor, dan data percobaan saat itu), walaupun siswa sudah mengumpulkan ulang. Tombol cetak aktif setelah pengumpulan pertama.
-- Jawaban tersimpan di `sessionStorage` (kunci `stylist-studio-sriwijaya-v2`) selama tab browser terbuka, termasuk saat halaman dimuat ulang.
+- Jawaban tersimpan di `sessionStorage` (kunci `stylist-studio-sriwijaya-v3`) selama tab browser terbuka, termasuk saat halaman dimuat ulang.
 
 ## Suara
 

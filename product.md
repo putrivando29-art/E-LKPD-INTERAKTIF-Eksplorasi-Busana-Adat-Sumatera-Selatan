@@ -48,7 +48,7 @@ Rumusan CP dan TP perlu dicocokkan lagi dengan dokumen resmi SK sebelum instrume
 5. Pengertian frekuensi harapan dan frekuensi relatif dengan contoh set kesukaan.
 6. Frekuensi harapan set kesukaan F_h = 20 × 1/6 = 10/3 ≈ 3,33.
 7. Percobaan acak 20 kali, frekuensi relatif F_r = k / N, mulai dari set kesukaan lalu semua set.
-8. Perbandingan F_h dengan k dan F_r dengan P(A), lalu perkiraan 60 putaran dari F_r dan dari P(A).
+8. Perbandingan bertahap untuk set kesukaan: banyak muncul nyata, dibanding frekuensi harapan, lalu perkiraan 60 putaran dari hasil percobaan.
 9. Kesimpulan: F_r bisa berbeda dari P(A) dan cenderung mendekatinya jika percobaan diperbanyak.
 
 ---
@@ -162,15 +162,13 @@ Pertanyaan perluasan: "Temanmu memilih set kesukaan yang berbeda darimu. Berapa 
 
 **3.3 Menentukan Frekuensi Relatif:** siswa mulai dari set kesukaan (baris ★ berlatar kuning), lalu semua set. Rumus F_r = k / N dengan N = 20, keterangan simbol tersusun ke bawah. Tabel 6 baris berisi kode pasangan, k (diambil otomatis dari hasil spin), N = 20, dan kotak isian F_r. Kotak baru bisa diisi setelah percobaan genap 20 kali.
 
-**3.4 Membandingkan Frekuensi Harapan dan Frekuensi Relatif:**
-- Tabel perbandingan: kapan dihitung (sebelum/sesudah percobaan), diperoleh dari (peluang teoretis/data percobaan), rumus (N × P(A) / k ÷ N), bentuk hasil (banyak kali/pecahan), dibandingkan dengan (k/P(A)).
-- Hubungan: N × F_r = k, jadi membandingkan F_h dengan k sama artinya dengan membandingkan P(A) dengan F_r.
-- Data set kesukaan: "Set kesukaanmu muncul k kali dari 20 putaran" (otomatis).
-- Empat isian (terbuka setelah set kesukaan dipilih dan percobaan genap 20 kali):
-  1. 20 × F_r set kesukaan.
-  2. Dibanding frekuensi harapan, set kesukaan muncul lebih sering, sama persis, atau lebih jarang.
-  3. Perkiraan 60 putaran memakai F_r: 60 × F_r.
-  4. Perkiraan 60 putaran memakai peluang teoretis: 60 × P(A).
+**3.4 Membandingkan Frekuensi Harapan dan Frekuensi Relatif** (bertahap; langkah berikutnya muncul setelah langkah sebelumnya diisi, dan semua jawaban tetap bisa diubah). Terbuka setelah set kesukaan dipilih dan roda diputar genap 20 kali.
+1. **Langkah 1:** "Lihat tabel roda spin. Berapa kali set kesukaanmu muncul dari 20 putaran?" (isian kali).
+2. **Langkah 2:** dua kartu berdampingan. Kartu "Sebelum roda diputar, frekuensi harapan" berisi jawaban siswa di 3.1. Kartu "Sesudah roda diputar, frekuensi relatif" berisi banyak kemunculan dari langkah 1 dan frekuensi relatifnya (k/20). Lalu soal pilihan: set kesukaan muncul lebih sering atau lebih jarang dari yang diharapkan.
+3. **Langkah 3:** "Roda akan diputar 60 kali, yaitu 3 kali lipat dari 20. Menurut hasil percobaanmu, kira-kira berapa kali set kesukaanmu muncul?" Langkah ini memenuhi TP 2 (memperkirakan memakai frekuensi relatif).
+4. Setelah langkah 3 terisi, muncul kotak "Ingat" satu kalimat tentang perbedaan keduanya.
+
+Versi sebelumnya (tabel perbandingan 5 baris, paragraf hubungan bersimbol, dan 4 isian) dihapus karena terlalu padat untuk siswa.
 
 **3.5 Kesimpulan:** rumus P(A) = 1/6 dan F_r = k/20, tiga soal pilihan ganda, dan satu kotak kesimpulan bebas.
 
@@ -225,7 +223,7 @@ Rincian per detail beserta tautan sumbernya ada di halaman Informasi Media (`inf
 
 ## 5. Kunci jawaban dan penilaian
 
-Total **27 butir**. Skor = pembulatan (benar ÷ 27 × 100). Set kesukaan tidak dinilai.
+Total **26 butir**. Skor = pembulatan (benar ÷ 26 × 100). Set kesukaan tidak dinilai.
 
 | Kelompok | Butir | Kunci | Aturan |
 | --- | --- | --- | --- |
@@ -244,10 +242,9 @@ Total **27 butir**. Skor = pembulatan (benar ÷ 27 × 100). Set kesukaan tidak d
 | | Frekuensi harapan set kesukaan | 10/3 | Diterima: 10/3, 20/6, 3 1/3, 3,33, 3.33 (toleransi 0,006) |
 | Aktivitas 3.2–3.3 | Banyak percobaan | 20 | Otomatis dari roda spin |
 | | F_r untuk tiap 6 pasangan | k/20 sesuai data siswa sendiri | Pecahan atau desimal, koma atau titik |
-| Aktivitas 3.4 | 20 × F_r set kesukaan | k set kesukaan | Butuh set kesukaan dan 20 percobaan |
-| | Dibanding frekuensi harapan | "lebih sering" jika k > 10/3, "lebih jarang" jika k < 10/3 | "Sama persis" tidak pernah benar karena 10/3 bukan bilangan bulat |
-| | 60 × F_r | 3 × k set kesukaan | |
-| | 60 × P(A) | 10 | |
+| Aktivitas 3.4 | Banyak muncul set kesukaan | k set kesukaan dari data spin | Butuh set kesukaan dan 20 percobaan |
+| | Dibanding yang diharapkan | "lebih sering" jika k > 10/3, "lebih jarang" jika k < 10/3 | k tidak mungkin sama dengan 10/3, jadi hanya dua pilihan |
+| | Perkiraan 60 putaran | 3 × k set kesukaan | |
 | Aktivitas 3.5 | Soal 1 | Tidak, ada yang berbeda | Selalu benar secara matematis: 20/6 bukan bilangan bulat, jadi keenam k tidak mungkin sama |
 | | Soal 2 | Hasil setiap putaran acak dan percobaan hanya 20 kali | |
 | | Soal 3 | F_r bisa berbeda, tetapi cenderung mendekati 1/6 jika percobaan diperbanyak | |
@@ -288,7 +285,7 @@ Catatan: frekuensi harapan 10/3 bukan bilangan bulat. Hitungan ini benar, tetapi
 
 | Data | Tempat | Masa simpan |
 | --- | --- | --- |
-| Jawaban, set kesukaan, tabel, simulasi, halaman terakhir, pengumpulan | `sessionStorage` (kunci `stylist-studio-sriwijaya-v2`; kunci baru dipakai karena kode BH diganti BK) | Selama tab browser terbuka, termasuk saat halaman dimuat ulang |
+| Jawaban, set kesukaan, tabel, simulasi, halaman terakhir, pengumpulan | `sessionStorage` (kunci `stylist-studio-sriwijaya-v3`; kunci diganti setiap struktur soal berubah) | Selama tab browser terbuka, termasuk saat halaman dimuat ulang |
 | Salinan pengumpulan pertama | Di dalam data yang sama (`firstSubmission`) | Sama seperti di atas; tidak pernah ditimpa |
 | Pengaturan suara | `localStorage` (kunci `stylist-studio-audio`) | Permanen di perangkat itu |
 | Hasil pengumpulan | Google Sheet milik guru | Permanen, jika `submitUrl` diisi |
@@ -395,7 +392,7 @@ vendor/katex/              KaTeX 0.16.9 (lisensi MIT)
 - `Outfits.mannequinTop(top)` dan `Outfits.mannequinBottom(bottom)`: SVG manekin.
 - `Outfits.combos()`: daftar 6 pasangan.
 - `Sfx.play(nama)`: efek suara (`click`, `select`, `success`, `error`, `spin`, `tick`, `stop`, `submit`).
-- `app.js`: `state` tunggal disimpan ke `sessionStorage` setiap ada perubahan. `GROUPS` berisi definisi 27 butir (label, kunci isian, tampilan, aturan benar).
+- `app.js`: `state` tunggal disimpan ke `sessionStorage` setiap ada perubahan. `GROUPS` berisi definisi 26 butir (label, kunci isian, tampilan, aturan benar).
 
 ---
 
@@ -441,7 +438,8 @@ Uji otomatis di Chromium headless (Playwright):
 - Reset Data tidak menghapus jawaban maupun tabel Aktivitas 1.
 - Jawaban tetap ada setelah halaman dimuat ulang.
 - Penilaian: dua kesalahan yang disengaja menghasilkan 21/23 (skor 91), dan setelah satu diperbaiki menjadi 22/23 (skor 96). Diuji pada versi 23 butir.
-- Versi 6: set kesukaan (AP, J) tampil di semua bagian yang merujuk kejadian A; keempat isian bagian 3.4 dinilai benar memakai k set kesukaan dari data spin; total 27 butir.
+- Versi 6: set kesukaan (AP, J) tampil di semua bagian yang merujuk kejadian A.
+- Versi 7: langkah 3.4 muncul bertahap (langkah 2 setelah langkah 1 diisi, langkah 3 setelah langkah 2), ketiga isian dinilai benar memakai k set kesukaan, total 26 butir, di laptop dan HP 360 px.
 - Notifikasi set tepat di tengah layar; pasangan ganda memicu getaran pada konten halaman.
 - Halaman Informasi Media terbuka dengan judul baru, dan tidak ada sisa teks "Palembang Heritage" atau kode BH.
 - Tombol Ubah membuka halaman yang benar dan memfokuskan kotak jawaban.
@@ -478,6 +476,7 @@ Belum diuji: HP fisik, Safari iOS, dan pengiriman ke Google Sheet sungguhan.
 | 3 | Musik latar ditambahkan; hasil cetak dikunci pada pengumpulan pertama |
 | 4 | Musik dibuat ceria (G mayor, tempo 112); bas, genjrengan, dan kendang dihapus, melodi dipertahankan |
 | 5 | Kulit kuning langsat; tampilan HP dirapikan (tab, rumus, roda spin, butik, rekap) |
+| 7 | Bagian 3.4 disederhanakan: tabel perbandingan dan paragraf bersimbol dihapus, diganti 3 langkah bertahap dengan dua kartu sebelum/sesudah roda diputar (26 butir) |
 | 6 | BH diganti Baju Kurung Palembang (BK); tema menjadi Sriwijaya Heritage; catatan guru menjadi Informasi Media dengan analisis kesesuaian kurikulum; TP ditampilkan; pertanyaan pemantik set kesukaan sebagai kejadian A; bahasa Aktivitas 2 diperjelas; pengertian peluang teoretis, frekuensi harapan, dan frekuensi relatif sebelum aktivitas; bagian 3.4 perbandingan frekuensi harapan dan relatif (27 butir); keterangan rumus tersusun ke bawah; notifikasi di tengah dengan ornamen silang dan layar bergetar |
 
 ---

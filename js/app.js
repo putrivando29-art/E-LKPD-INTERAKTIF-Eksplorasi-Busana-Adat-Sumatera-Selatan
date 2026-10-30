@@ -5,7 +5,7 @@
   var CFG = window.ELKPD_CONFIG || {};
   var COMBOS = O.combos();
   var N_TRIALS = 20;
-  var STORE_KEY = 'stylist-studio-sriwijaya-v2';
+  var STORE_KEY = 'stylist-studio-sriwijaya-v3';
   var MEMBER_ROWS = 5;
 
   // Warna sektor roda dan swatch tabel statistik
@@ -154,10 +154,10 @@
       var key = el.getAttribute('data-key');
       if (el.type === 'radio') {
         el.checked = state.answers[key] === el.value;
-        el.addEventListener('change', function () { state.answers[key] = el.value; touched(); updateStatuses(); });
+        el.addEventListener('change', function () { state.answers[key] = el.value; touched(); updateStatuses(); renderCmp(); });
       } else {
         if (state.answers[key] != null) el.value = state.answers[key];
-        el.addEventListener('input', function () { state.answers[key] = el.value; touched(); updateStatuses(); });
+        el.addEventListener('input', function () { state.answers[key] = el.value; touched(); updateStatuses(); renderCmp(); });
       }
     });
   }
@@ -189,7 +189,7 @@
   function val(key) { return a(key) || '…'; }
 
   var MCQ = {
-    cmp_dir: { a: 'Lebih sering dari yang diharapkan.', b: 'Sama persis dengan yang diharapkan.', c: 'Lebih jarang dari yang diharapkan.' },
+    cmp_dir: { a: 'Lebih sering dari yang diharapkan.', b: 'Lebih jarang dari yang diharapkan.' },
     a34_1: { a: 'Ya, semuanya sama persis.', b: 'Tidak, ada yang berbeda.' },
     a34_2: { a: 'Roda spin tidak adil.', b: 'Hasil setiap putaran acak dan percobaan hanya 20 kali.', c: 'Peluang teoretisnya salah dihitung.' },
     a34_3: { a: 'Hasil percobaan selalu sama dengan peluang teoretis.', b: 'Frekuensi relatif bisa berbeda, tetapi cenderung mendekati 1/6 jika percobaan diperbanyak.', c: 'Pasangan yang paling sering muncul pasti memiliki peluang teoretis terbesar.' }
@@ -226,11 +226,10 @@
         ok: function () { return state.sim.total === N_TRIALS && near('a33_' + c.key, state.sim.counts[c.key] / N_TRIALS, 1e-6); } };
     })) },
     { id: 'akt34', title: 'Aktivitas 3.4', page: 4, items: [
-      { id: 'cmp_nfr', label: '20 × Fr set kesukaan', keys: ['cmp_nfr'], show: function () { return val('cmp_nfr'); }, ok: function () { return favReady() && near('cmp_nfr', favK(), 1e-6); } },
-      { id: 'cmp_dir', label: 'Dibanding frekuensi harapan', keys: ['cmp_dir'], show: function () { return MCQ.cmp_dir[a('cmp_dir')] || '…'; },
-        ok: function () { return favReady() && a('cmp_dir') === (favK() > N_TRIALS / 6 ? 'a' : 'c'); } },
-      { id: 'cmp_60fr', label: 'Perkiraan 60 putaran dari Fr', keys: ['cmp_60fr'], show: function () { return val('cmp_60fr'); }, ok: function () { return favReady() && near('cmp_60fr', favK() * 3, 1e-6); } },
-      { id: 'cmp_60p', label: 'Perkiraan 60 putaran dari P(A)', keys: ['cmp_60p'], show: function () { return val('cmp_60p'); }, ok: function () { return near('cmp_60p', 10, 1e-6); } }
+      { id: 'cmp_k', label: 'Banyak muncul set kesukaan', keys: ['cmp_k'], show: function () { return val('cmp_k') + ' kali'; }, ok: function () { return favReady() && near('cmp_k', favK(), 1e-6); } },
+      { id: 'cmp_dir', label: 'Dibanding yang diharapkan', keys: ['cmp_dir'], show: function () { return MCQ.cmp_dir[a('cmp_dir')] || '…'; },
+        ok: function () { return favReady() && a('cmp_dir') === (favK() > N_TRIALS / 6 ? 'a' : 'b'); } },
+      { id: 'cmp_60fr', label: 'Perkiraan 60 putaran', keys: ['cmp_60fr'], show: function () { return val('cmp_60fr') + ' kali'; }, ok: function () { return favReady() && near('cmp_60fr', favK() * 3, 1e-6); } }
     ] },
     { id: 'akt35', title: 'Aktivitas 3.5', page: 4, items: [
       { id: 'a34_1', label: 'Pertanyaan 1', keys: ['a34_1'], show: function () { return MCQ.a34_1[a('a34_1')] || '…'; }, ok: function () { return a('a34_1') === 'b'; } },
@@ -376,12 +375,21 @@
     renderCmp();
   }
 
+  // Langkah 3.4 terbuka bertahap: langkah berikutnya tampil setelah langkah
+  // sebelumnya diisi. Jawaban yang sudah diisi tetap bisa diubah.
   function renderCmp() {
     var ready = favReady();
     $('#cmp-lock').hidden = ready;
-    $('#cmp-body').classList.toggle('is-locked', !ready);
-    $all('#cmp-body input').forEach(function (el) { el.disabled = !ready; });
-    $('#cmp-k').textContent = ready ? favK() : '…';
+    $('#cmp-body').hidden = !ready;
+    var s1 = a('cmp_k') !== '';
+    var s2 = s1 && a('cmp_dir') !== '';
+    var s3 = s2 && a('cmp_60fr') !== '';
+    $('#cmp-step2').hidden = !s1;
+    $('#cmp-step3').hidden = !s2;
+    $('#cmp-take').hidden = !s3;
+    $('#cmp-fh').textContent = a('a31_res') || '(isi 3.1 dulu)';
+    $('#cmp-kshow').textContent = a('cmp_k') || '…';
+    $('#cmp-fr').textContent = (a('cmp_k') || '…') + '/20';
   }
 
   function savedCount() { return COMBOS.filter(function (c) { return state.boutique.saved[c.key]; }).length; }
