@@ -527,9 +527,9 @@
         var mark = '';
         if (results && it.id in results) mark = results[it.id] ? '<span class="mark mark-ok" title="Benar">✓</span>' : '<span class="mark mark-bad" title="Belum tepat">✗</span>';
         var focus = it.keys[0] || (it.id === 'tabel' ? '' : '');
-        html += '<li><span>' + esc(itemLabel(it)) + '</span><span class="ans">' +
-          (filled ? esc(it.show()) : '<span class="status-empty">Belum diisi</span>') + mark +
-          '<button type="button" class="btn-edit" data-edit="' + g.page + '"' + (focus ? ' data-focus="' + focus + '"' : '') + '>Ubah</button></span></li>';
+        html += '<li class="r-row"><span class="r-lbl">' + esc(itemLabel(it)) + '</span><span class="r-ans">' +
+          (filled ? esc(it.show()) : '<span class="status-empty">Belum diisi</span>') + mark + '</span>' +
+          '<button type="button" class="btn-edit" data-edit="' + g.page + '"' + (focus ? ' data-focus="' + focus + '"' : '') + '>Ubah</button></li>';
       });
       html += '</ul></div>';
     });

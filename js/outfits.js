@@ -9,9 +9,9 @@
 
   var C = {
     line: '#3B2416',
-    skin: '#C68A5E',
-    skinShade: '#AE7349',
-    blush: '#E2806C',
+    skin: '#F6D8B4',
+    skinShade: '#E3B68C',
+    blush: '#F3A592',
     mouth: '#9C4436',
     eye: '#2B1A12',
     iris: '#6E3B22',
@@ -34,8 +34,8 @@
     melati: '#FFFFFF',
     permata: '#C0182B',
     shoe: '#5A3320',
-    mannequin: '#EFE2CB',
-    mannequinDk: '#CDB898'
+    mannequin: '#E3DED5',
+    mannequinDk: '#C4BCAE'
   };
 
   var TOPS = {
