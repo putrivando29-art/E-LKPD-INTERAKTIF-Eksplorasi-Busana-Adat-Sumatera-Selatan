@@ -5,7 +5,7 @@
   var CFG = window.ELKPD_CONFIG || {};
   var COMBOS = O.combos();
   var N_TRIALS = 20;
-  var STORE_KEY = 'stylist-studio-sriwijaya-v4';
+  var STORE_KEY = 'stylist-studio-sriwijaya-v5';
   var MEMBER_ROWS = 5;
 
   // Warna sektor roda dan swatch tabel statistik
@@ -216,20 +216,19 @@
     { id: 'akt31', title: 'Aktivitas 3.1', page: 4, items: [
       { id: 'a31_N', label: 'N', keys: ['a31_N'], show: function () { return val('a31_N'); }, ok: function () { return isInt('a31_N', N_TRIALS); } },
       { id: 'a31_p', label: 'P(A)', keys: ['a31_pNum', 'a31_pDen'], show: function () { return frac('a31_pNum', 'a31_pDen'); }, ok: function () { return fracEq('a31_pNum', 'a31_pDen', 1, 6); } },
-      { id: 'a31_res', label: 'Frekuensi harapan set kesukaan', keys: ['a31_res'], show: function () { return val('a31_res'); }, ok: function () { return near('a31_res', N_TRIALS / 6, 0.006); } }
+      { id: 'a31_res', label: 'Frekuensi harapan set kesukaan', keys: ['a31_rNum', 'a31_rDen'], show: function () { return frac('a31_rNum', 'a31_rDen'); }, ok: function () { return fracEq('a31_rNum', 'a31_rDen', N_TRIALS, 6); } }
     ] },
     { id: 'akt33', title: 'Aktivitas 3.2 dan 3.3', page: 4, items: [
       { id: 'sim', label: 'Banyak percobaan', keys: [], filled: function () { return state.sim.total === N_TRIALS; }, show: function () { return state.sim.total + ' dari 20'; }, ok: function () { return state.sim.total === N_TRIALS; } }
     ].concat(COMBOS.map(function (c) {
-      return { id: 'a33_' + c.key, label: 'Fr ' + comboCode(c.key) + ', k = ' + state.sim.counts[c.key], dynamicLabel: true, keys: ['a33_' + c.key],
-        show: function () { return val('a33_' + c.key); },
-        ok: function () { return state.sim.total === N_TRIALS && near('a33_' + c.key, state.sim.counts[c.key] / N_TRIALS, 1e-6); } };
+      return { id: 'a33_' + c.key, label: 'Fr ' + comboCode(c.key) + ', k = ' + state.sim.counts[c.key], dynamicLabel: true, keys: ['a33n_' + c.key, 'a33d_' + c.key],
+        show: function () { return frac('a33n_' + c.key, 'a33d_' + c.key); },
+        ok: function () { return state.sim.total === N_TRIALS && fracEq('a33n_' + c.key, 'a33d_' + c.key, state.sim.counts[c.key], N_TRIALS); } };
     })) },
     { id: 'akt34', title: 'Aktivitas 3.4', page: 4, items: [
       { id: 'cmp_k', label: 'Banyak muncul set kesukaan', keys: ['cmp_k'], show: function () { return val('cmp_k') + ' kali'; }, ok: function () { return favReady() && near('cmp_k', favK(), 1e-6); } },
       { id: 'cmp_dir', label: 'Dibanding yang diharapkan', keys: ['cmp_dir'], show: function () { return MCQ.cmp_dir[a('cmp_dir')] || '…'; },
-        ok: function () { return favReady() && a('cmp_dir') === (favK() > N_TRIALS / 6 ? 'a' : 'b'); } },
-      { id: 'cmp_60p', label: 'Frekuensi harapan 60 putaran', keys: ['cmp_60p'], show: function () { return val('cmp_60p') + ' kali'; }, ok: function () { return near('cmp_60p', 60 / 6, 1e-6); } }
+        ok: function () { return favReady() && a('cmp_dir') === (favK() > N_TRIALS / 6 ? 'a' : 'b'); } }
     ] },
     { id: 'akt35', title: 'Aktivitas 3.5', page: 4, items: [
       { id: 'a34_1', label: 'Pertanyaan 1', keys: ['a34_1'], show: function () { return MCQ.a34_1[a('a34_1')] || '…'; }, ok: function () { return a('a34_1') === 'b'; } },
@@ -383,11 +382,9 @@
     $('#cmp-body').hidden = !ready;
     var s1 = a('cmp_k') !== '';
     var s2 = s1 && a('cmp_dir') !== '';
-    var s3 = s2 && a('cmp_60p') !== '';
     $('#cmp-step2').hidden = !s1;
-    $('#cmp-step3').hidden = !s2;
-    $('#cmp-take').hidden = !s3;
-    $('#cmp-fh').textContent = a('a31_res') || '(isi 3.1 dulu)';
+    $('#cmp-take').hidden = !s2;
+    $('#cmp-fh').textContent = a('a31_rNum') && a('a31_rDen') ? frac('a31_rNum', 'a31_rDen') : '(isi 3.1 dulu)';
     $('#cmp-kshow').textContent = a('cmp_k') || '…';
     $('#cmp-fr').textContent = (a('cmp_k') || '…') + '/20';
   }
@@ -587,7 +584,11 @@
     body.innerHTML = COMBOS.map(function (c) {
       var isFav = fav() === c.key;
       return '<tr' + (isFav ? ' class="fav-row"' : '') + '><td>' + comboCode(c.key) + (isFav ? ' <span class="star" title="Set kesukaanmu">★</span>' : '') + '</td><td class="num">' + (ready ? sim.counts[c.key] : '–') + '</td><td class="num">20</td>' +
-        '<td><input type="text" inputmode="decimal" data-key="a33_' + c.key + '" aria-label="Frekuensi relatif ' + comboCode(c.key) + '"' + (ready ? '' : ' disabled') + '></td></tr>';
+        '<td><span class="frac-input">' +
+        '<input type="text" inputmode="numeric" data-key="a33n_' + c.key + '" aria-label="Pembilang frekuensi relatif ' + comboCode(c.key) + '"' + (ready ? '' : ' disabled') + '>' +
+        '<span class="bar"></span>' +
+        '<input type="text" inputmode="numeric" data-key="a33d_' + c.key + '" aria-label="Penyebut frekuensi relatif ' + comboCode(c.key) + '"' + (ready ? '' : ' disabled') + '>' +
+        '</span></td></tr>';
     }).join('');
     bindInputs(body);
   }

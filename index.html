@@ -127,7 +127,7 @@
           <div class="quiz">
             <p class="q">2. Hitunglah.</p>
             <div class="eq-row"><span class="tex" data-tex="60\times\dfrac{1}{6}="></span>
-              <input type="text" inputmode="decimal" class="box" data-key="ap2" aria-label="Hasil perkalian">
+              <input type="text" inputmode="numeric" class="box" data-key="ap2" aria-label="Hasil perkalian">
             </div>
           </div>
           <div class="quiz">
@@ -294,9 +294,9 @@
           <span class="tex" data-tex="\times"></span>
           <span class="frac-input"><input type="text" inputmode="numeric" data-key="a31_pNum" aria-label="Pembilang P(A)"><span class="bar"></span><input type="text" inputmode="numeric" data-key="a31_pDen" aria-label="Penyebut P(A)"></span>
           <span class="tex" data-tex="="></span>
-          <input type="text" inputmode="decimal" class="box box-wide" data-key="a31_res" aria-label="Hasil frekuensi harapan">
+          <span class="frac-input"><input type="text" inputmode="numeric" data-key="a31_rNum" aria-label="Pembilang hasil frekuensi harapan"><span class="bar"></span><input type="text" inputmode="numeric" data-key="a31_rDen" aria-label="Penyebut hasil frekuensi harapan"></span>
         </div>
-        <p class="hint">Hasil boleh ditulis sebagai pecahan (contoh 7/2) atau desimal dua angka di belakang koma.</p>
+        <p class="hint">Tulis hasilnya sebagai pecahan: pembilang di kotak atas, penyebut di kotak bawah.</p>
         <p class="fill-status" data-status="akt31"></p>
       </div>
 
@@ -346,7 +346,7 @@
             <tbody></tbody>
           </table>
         </div>
-        <p class="hint">Tulis sebagai pecahan (contoh 3/20) atau desimal (contoh 0,15).</p>
+        <p class="hint">Isi pembilang di kotak atas dan penyebut di kotak bawah.</p>
         <p class="fill-status" data-status="akt33"></p>
       </div>
 
@@ -383,13 +383,6 @@
               <label><input type="radio" name="cmp_dir" value="a" data-key="cmp_dir"> lebih sering dari yang diharapkan.</label>
               <label><input type="radio" name="cmp_dir" value="b" data-key="cmp_dir"> lebih jarang dari yang diharapkan.</label>
             </fieldset>
-          </div>
-
-          <div class="cmp-step" id="cmp-step3" hidden>
-            <p class="cmp-num">Langkah 3</p>
-            <p>Bayangkan roda akan diputar 60 kali. Roda belum diputar, jadi kita memakai <b>frekuensi harapan</b>.</p>
-            <p class="cmp-hint">Frekuensi harapan = banyak putaran × peluang</p>
-            <div class="eq-row"><span class="tex" data-tex="60\times\dfrac{1}{6}="></span><input type="text" inputmode="numeric" class="box" data-key="cmp_60p" aria-label="Frekuensi harapan untuk 60 putaran"><span>kali</span></div>
           </div>
 
           <div class="cmp-take" id="cmp-take" hidden>
