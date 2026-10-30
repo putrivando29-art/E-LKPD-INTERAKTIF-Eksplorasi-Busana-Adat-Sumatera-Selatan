@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stylist Studio Palembang</title>
+  <meta name="description" content="E-LKPD interaktif Matematika kelas VIII: peluang teoretis, frekuensi relatif, dan frekuensi harapan dengan tema busana adat perempuan Palembang.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="vendor/katex/katex.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>Stylist Studio <small>Palembang Heritage Edition</small></span>
+    </div>
+    <nav class="tabs" aria-label="Halaman E-LKPD">
+      <button type="button" class="tab" data-page="1">1. Sampul</button>
+      <button type="button" class="tab" data-page="2">2. Petunjuk</button>
+      <button type="button" class="tab" data-page="3">3. Butik Digital</button>
+      <button type="button" class="tab" data-page="4">4. Roda Spin</button>
+      <button type="button" class="tab" data-page="5">5. Rekap</button>
+    </nav>
+  </header>
+
+  <main id="app">
+
+    <!-- HALAMAN 1: SAMPUL -->
+    <section class="page" data-page="1" aria-labelledby="judul-sampul">
+      <div class="cover">
+        <div class="cover-text">
+          <p class="eyebrow">Stylist Studio · Palembang Heritage Edition</p>
+          <h1 id="judul-sampul">Lembar Kerja Peserta Didik <span>(E-LKPD Interaktif)</span></h1>
+          <p class="cover-sub">Petualangan Matematika di Butik Digital Stylist Studio</p>
+          <p class="topic-label">Topik: Peluang Teoretis, Frekuensi Relatif, dan Frekuensi Harapan</p>
+          <ul class="topic-chips">
+            <li>Peluang Teoretis</li>
+            <li>Frekuensi Relatif</li>
+            <li>Frekuensi Harapan</li>
+          </ul>
+          <p class="cover-note">Matematika SMP Kelas VIII</p>
+        </div>
+        <figure class="cover-figure">
+          <div class="stage" id="cover-stage" aria-live="off">
+            <div class="stage-layer is-on" id="cover-a"></div>
+            <div class="stage-layer" id="cover-b"></div>
+          </div>
+          <figcaption id="cover-caption">Aesan Gede + Songket</figcaption>
+        </figure>
+      </div>
+
+      <div class="card identity">
+        <h2>Identitas Kelompok</h2>
+        <div class="form-grid">
+          <label>Nama kelompok
+            <input type="text" data-key="id_kelompok" autocomplete="off">
+          </label>
+          <label>Kelas/Semester
+            <input type="text" data-key="id_kelas" placeholder="Contoh: VIII A / Genap" autocomplete="off">
+          </label>
+        </div>
+        <table class="member-table">
+          <thead><tr><th>No.</th><th>Nama anggota kelompok</th><th>Nomor presensi</th></tr></thead>
+          <tbody id="member-rows"></tbody>
+        </table>
+      </div>
+      <div class="pager"><span></span><button type="button" class="btn btn-primary" data-go="2">Lanjut ke Petunjuk</button></div>
+    </section>
+
+    <!-- HALAMAN 2: PETUNJUK -->
+    <section class="page" data-page="2" aria-labelledby="judul-petunjuk" hidden>
+      <h1 id="judul-petunjuk" class="page-title">Petunjuk dan Informasi Pembelajaran</h1>
+
+      <div class="two-col">
+        <div class="card">
+          <h2>A. Petunjuk Penggunaan E-LKPD</h2>
+          <ol class="steps">
+            <li>Berdoalah sebelum memulai pembelajaran.</li>
+            <li>Isilah identitas kelompok terlebih dahulu.</li>
+            <li>Bacalah petunjuk setiap aktivitas dengan cermat.</li>
+            <li>Gunakan butik digital untuk mencoba berbagai pasangan pakaian.</li>
+            <li>Kerjakan setiap aktivitas secara berurutan.</li>
+            <li>Periksa kembali jawaban sebelum mengumpulkan E-LKPD.</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h2>B. Capaian Pembelajaran</h2>
+          <p>Di akhir fase D, peserta didik dapat menjelaskan dan menggunakan pengertian peluang dan frekuensi relatif untuk menentukan frekuensi harapan satu kejadian pada suatu percobaan sederhana (semua hasil percobaan dapat muncul secara merata).</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>C. Apersepsi</h2>
+        <p class="lead">Ingat lagi pecahan dan perkalian. Isi kotaknya, lalu tekan <b>Cek Jawaban</b>.</p>
+        <div class="quiz-grid">
+          <div class="quiz">
+            <p class="q">1. Sederhanakan pecahan berikut.</p>
+            <div class="eq-row"><span class="tex" data-tex="\dfrac{5}{20}="></span>
+              <span class="frac-input"><input type="text" inputmode="numeric" data-key="ap1_num" aria-label="Pembilang"><span class="bar"></span><input type="text" inputmode="numeric" data-key="ap1_den" aria-label="Penyebut"></span>
+            </div>
+          </div>
+          <div class="quiz">
+            <p class="q">2. Hitunglah.</p>
+            <div class="eq-row"><span class="tex" data-tex="20\times\dfrac{1}{4}="></span>
+              <input type="text" inputmode="decimal" class="box" data-key="ap2" aria-label="Hasil perkalian">
+            </div>
+          </div>
+          <div class="quiz">
+            <p class="q">3. Ada 3 baju dan 2 kain. Berapa banyak pasangan baju dan kain yang bisa dibuat?</p>
+            <div class="eq-row"><span class="tex" data-tex="3\times 2="></span>
+              <input type="text" inputmode="numeric" class="box" data-key="ap3" aria-label="Banyak pasangan">
+            </div>
+          </div>
+        </div>
+        <div class="check-row"><button type="button" class="btn btn-gold" data-check="apersepsi">Cek Jawaban</button><span class="feedback" data-feedback="apersepsi" role="status"></span></div>
+      </div>
+      <div class="pager"><button type="button" class="btn btn-ghost" data-go="1">Kembali</button><button type="button" class="btn btn-primary" data-go="3">Masuk Butik Digital</button></div>
+    </section>
+
+    <!-- HALAMAN 3: BUTIK DIGITAL -->
+    <section class="page" data-page="3" aria-labelledby="judul-akt1" hidden>
+      <h1 id="judul-akt1" class="page-title">Aktivitas 1: Menyusun Ruang Sampel</h1>
+      <p class="lead">Pilih satu atasan dan satu bawahan, lalu tekan <b>Simpan Set Pakaian</b>. Temukan semua pasangan yang berbeda.</p>
+
+      <div class="boutique">
+        <div class="card wardrobe">
+          <h2>Lemari Butik</h2>
+          <h3>Pilihan Atasan</h3>
+          <div class="choice-grid tops" id="top-choices"></div>
+          <h3>Pilihan Bawahan</h3>
+          <div class="choice-grid bottoms" id="bottom-choices"></div>
+        </div>
+
+        <div class="card dressing">
+          <button type="button" class="btn btn-primary btn-block" id="save-set">Simpan Set Pakaian</button>
+          <div class="stage stage-solo" id="dress-stage"></div>
+          <p class="dress-label" id="dress-label">Pilih atasan dan bawahan</p>
+        </div>
+
+        <div class="card sample-table">
+          <h2>Tabel Aktivitas 1</h2>
+          <div class="table-scroll">
+            <table class="cross" id="cross-table">
+              <thead><tr><th scope="col">Atasan / Bawahan</th><th scope="col">Songket</th><th scope="col">Tenun Jumputan</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <p class="legend">AG = Aesan Gede, AP = Aesan Paksangko, BH = Beludru Hitam, S = Songket, J = Jumputan</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Ayo Isi</h2>
+        <p>Misalkan kejadian <span class="tex" data-tex="A"></span> adalah terpilihnya pasangan Aesan Gede dan Songket <span class="tex" data-tex="(AG,S)"></span>.</p>
+        <div class="answer-list">
+          <div class="eq-row"><span>Banyak seluruh anggota ruang sampel:</span> <span class="tex" data-tex="n(S)="></span><input type="text" inputmode="numeric" class="box" data-key="a1_nS" aria-label="n(S)"></div>
+          <div class="eq-row"><span>Banyak anggota kejadian yang ditentukan:</span> <span class="tex" data-tex="n(A)="></span><input type="text" inputmode="numeric" class="box" data-key="a1_nA" aria-label="n(A)"></div>
+        </div>
+        <div class="check-row"><button type="button" class="btn btn-gold" data-check="akt1">Cek Jawaban</button><span class="feedback" data-feedback="akt1" role="status"></span></div>
+      </div>
+
+      <div class="card locked" id="akt2-lock">
+        <p>Aktivitas 2 terbuka setelah keenam sel tabel terisi. <b id="akt1-progress">0 dari 6</b> pasangan tersimpan.</p>
+      </div>
+
+      <div class="card" id="akt2" hidden>
+        <h2>Aktivitas 2: Menentukan Peluang Teoretis</h2>
+        <p class="lead">Karena setiap pasangan pakaian memiliki kesempatan yang sama untuk terpilih, tentukan peluang teoretis dari salah satu pasangan pakaian.</p>
+        <div class="formula"><span class="tex" data-tex="P(A)=\dfrac{n(A)}{n(S)}" data-display="1"></span></div>
+        <div class="answer-list">
+          <div class="eq-row"><span>Banyak anggota kejadian:</span> <span class="tex" data-tex="n(A)="></span><input type="text" inputmode="numeric" class="box" data-key="a2_nA" aria-label="n(A)"></div>
+          <div class="eq-row"><span>Banyak anggota ruang sampel:</span> <span class="tex" data-tex="n(S)="></span><input type="text" inputmode="numeric" class="box" data-key="a2_nS" aria-label="n(S)"></div>
+          <div class="eq-row"><span>Peluang teoretis:</span> <span class="tex" data-tex="P(A)="></span>
+            <span class="frac-input"><input type="text" inputmode="numeric" data-key="a2_pNum" aria-label="Pembilang P(A)"><span class="bar"></span><input type="text" inputmode="numeric" data-key="a2_pDen" aria-label="Penyebut P(A)"></span>
+          </div>
+        </div>
+        <div class="question">
+          <p class="q">Berapa peluang terpilihnya satu pasangan pakaian tertentu jika semua pasangan memiliki kesempatan yang sama?</p>
+          <div class="eq-row"><span class="tex" data-tex="P="></span><span class="frac-input"><input type="text" inputmode="numeric" data-key="a2_qNum" aria-label="Pembilang"><span class="bar"></span><input type="text" inputmode="numeric" data-key="a2_qDen" aria-label="Penyebut"></span></div>
+        </div>
+        <div class="check-row"><button type="button" class="btn btn-gold" data-check="akt2">Cek Jawaban</button><span class="feedback" data-feedback="akt2" role="status"></span></div>
+      </div>
+      <div class="pager"><button type="button" class="btn btn-ghost" data-go="2">Kembali</button><button type="button" class="btn btn-primary" data-go="4">Lanjut ke Aktivitas 3</button></div>
+    </section>
+
+    <!-- HALAMAN 4: AKTIVITAS 3 -->
+    <section class="page" data-page="4" aria-labelledby="judul-akt3" hidden>
+      <h1 id="judul-akt3" class="page-title">Aktivitas 3: Frekuensi Harapan dan Eksperimen Frekuensi Relatif</h1>
+
+      <div class="card">
+        <h2>3.1 Menghitung Frekuensi Harapan</h2>
+        <p class="lead">Jika percobaan dilakukan sebanyak 20 kali, tentukan frekuensi harapan munculnya salah satu pasangan pakaian.</p>
+        <div class="formula"><span class="tex" data-tex="F_h=N\times P(A)" data-display="1"></span></div>
+        <ul class="where">
+          <li><span class="tex" data-tex="F_h"></span> = frekuensi harapan</li>
+          <li><span class="tex" data-tex="N"></span> = banyak percobaan</li>
+          <li><span class="tex" data-tex="P(A)"></span> = peluang teoretis kejadian</li>
+        </ul>
+        <div class="eq-row wrap">
+          <span class="tex" data-tex="F_h="></span>
+          <input type="text" inputmode="numeric" class="box" data-key="a31_N" aria-label="N">
+          <span class="tex" data-tex="\times"></span>
+          <span class="frac-input"><input type="text" inputmode="numeric" data-key="a31_pNum" aria-label="Pembilang P(A)"><span class="bar"></span><input type="text" inputmode="numeric" data-key="a31_pDen" aria-label="Penyebut P(A)"></span>
+          <span class="tex" data-tex="="></span>
+          <input type="text" inputmode="decimal" class="box box-wide" data-key="a31_res" aria-label="Hasil frekuensi harapan">
+        </div>
+        <p class="hint">Hasil boleh ditulis sebagai pecahan (contoh 7/2) atau desimal dua angka di belakang koma.</p>
+        <div class="check-row"><button type="button" class="btn btn-gold" data-check="akt31">Cek Jawaban</button><span class="feedback" data-feedback="akt31" role="status"></span></div>
+      </div>
+
+      <div class="card">
+        <h2>3.2 Eksperimen Digital Roda Spin</h2>
+        <p class="lead">Putar roda. Setiap putaran memilih satu pasangan pakaian secara acak. Lakukan tepat 20 kali.</p>
+        <div class="spin-lab">
+          <div class="spin-char">
+            <div class="stage stage-solo" id="spin-stage"></div>
+            <p class="dress-label" id="spin-label">Belum ada hasil</p>
+          </div>
+          <div class="spin-wheel">
+            <div class="wheel-wrap">
+              <div class="pointer" aria-hidden="true"></div>
+              <div class="wheel" id="wheel"></div>
+            </div>
+            <p class="spin-result" id="spin-result" role="status" aria-live="polite">Percobaan ke-0 dari 20</p>
+            <div class="spin-buttons">
+              <button type="button" class="btn btn-primary" id="spin-once">Spin 1 Kali</button>
+              <button type="button" class="btn btn-gold" id="spin-20">Randomize 20 Kali</button>
+              <button type="button" class="btn btn-ghost" id="spin-reset">Reset Data</button>
+            </div>
+          </div>
+          <div class="spin-stats">
+            <table class="stats" id="stats-table">
+              <thead><tr><th scope="col">Pasangan Pakaian</th><th scope="col" class="num">Frekuensi (k)</th></tr></thead>
+              <tbody></tbody>
+              <tfoot><tr><th scope="row">Total</th><td class="num" id="stats-total">0</td></tr></tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>3.3 Menentukan Frekuensi Relatif</h2>
+        <p class="lead">Amati tabel hasil percobaan. Hitung frekuensi relatif dari pasangan pakaian yang muncul.</p>
+        <div class="formula"><span class="tex" data-tex="F_r=\dfrac{k}{N}" data-display="1"></span></div>
+        <ul class="where">
+          <li><span class="tex" data-tex="F_r"></span> = frekuensi relatif</li>
+          <li><span class="tex" data-tex="k"></span> = frekuensi kemunculan kejadian</li>
+          <li><span class="tex" data-tex="N"></span> = banyak percobaan, <span class="tex" data-tex="N=20"></span></li>
+        </ul>
+        <p class="locked-inline" id="fr-lock">Selesaikan 20 percobaan pada roda spin untuk mengisi tabel ini.</p>
+        <div class="table-scroll">
+          <table class="stats fr-table" id="fr-table">
+            <thead><tr><th scope="col">Pasangan</th><th scope="col" class="num">k</th><th scope="col" class="num">N</th><th scope="col">Frekuensi relatif</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="hint">Tulis sebagai pecahan (contoh 3/20) atau desimal (contoh 0,15).</p>
+        <div class="check-row"><button type="button" class="btn btn-gold" data-check="akt33">Cek Jawaban</button><span class="feedback" data-feedback="akt33" role="status"></span></div>
+      </div>
+
+      <div class="card">
+        <h2>3.4 Membandingkan Hasil Percobaan</h2>
+        <p class="lead">Bandingkan frekuensi relatif hasil simulasi dengan peluang teoretis.</p>
+        <div class="formula two"><span class="tex" data-tex="P(A)=\dfrac{1}{6}" data-display="1"></span><span class="tex" data-tex="F_r=\dfrac{k}{20}" data-display="1"></span></div>
+
+        <fieldset class="mcq">
+          <legend>1. Apakah frekuensi relatif setiap pasangan pakaian sama dengan peluang teoretisnya?</legend>
+          <label><input type="radio" name="a34_1" value="a" data-key="a34_1"> Ya, semuanya sama persis.</label>
+          <label><input type="radio" name="a34_1" value="b" data-key="a34_1"> Tidak, ada yang berbeda.</label>
+        </fieldset>
+        <fieldset class="mcq">
+          <legend>2. Mengapa hasil percobaan dapat berbeda dari peluang teoretis?</legend>
+          <label><input type="radio" name="a34_2" value="a" data-key="a34_2"> Karena roda spin tidak adil.</label>
+          <label><input type="radio" name="a34_2" value="b" data-key="a34_2"> Karena hasil setiap putaran acak dan percobaan hanya 20 kali.</label>
+          <label><input type="radio" name="a34_2" value="c" data-key="a34_2"> Karena peluang teoretisnya salah dihitung.</label>
+        </fieldset>
+        <fieldset class="mcq">
+          <legend>3. Apa yang dapat kamu simpulkan dari hasil simulasi?</legend>
+          <label><input type="radio" name="a34_3" value="a" data-key="a34_3"> Hasil percobaan selalu sama dengan peluang teoretis.</label>
+          <label><input type="radio" name="a34_3" value="b" data-key="a34_3"> Frekuensi relatif bisa berbeda dari peluang teoretis, tetapi jika percobaan diperbanyak nilainya cenderung mendekati <span class="tex" data-tex="\tfrac{1}{6}"></span>.</label>
+          <label><input type="radio" name="a34_3" value="c" data-key="a34_3"> Pasangan yang paling sering muncul pasti memiliki peluang teoretis terbesar.</label>
+          <span class="textarea-label">Tulis kesimpulanmu dengan kalimatmu sendiri:</span>
+          <textarea rows="3" data-key="a34_text" aria-label="Kesimpulan dengan kalimat sendiri"></textarea>
+        </fieldset>
+        <div class="check-row"><button type="button" class="btn btn-gold" data-check="akt34">Cek Jawaban</button><span class="feedback" data-feedback="akt34" role="status"></span></div>
+      </div>
+      <div class="pager"><button type="button" class="btn btn-ghost" data-go="3">Kembali</button><button type="button" class="btn btn-primary" data-go="5">Lihat Rekap</button></div>
+    </section>
+
+    <!-- HALAMAN 5: REKAP -->
+    <section class="page" data-page="5" aria-labelledby="judul-rekap" hidden>
+      <h1 id="judul-rekap" class="page-title">Rekap Jawaban Kelompok</h1>
+      <p class="lead">Periksa kembali jawabanmu. Tekan <b>Cetak / Simpan PDF</b> untuk mengumpulkan.</p>
+      <div id="recap"></div>
+      <div class="pager"><button type="button" class="btn btn-ghost" data-go="4">Kembali</button><button type="button" class="btn btn-primary" id="print-btn">Cetak / Simpan PDF</button></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a href="referensi.html">Catatan guru dan sumber referensi busana</a>
+  </footer>
+
+  <div class="toast" id="toast" role="alert" hidden></div>
+
+  <script defer src="vendor/katex/katex.min.js"></script>
+  <script defer src="js/outfits.js"></script>
+  <script defer src="js/app.js"></script>
+</body>
+</html>
