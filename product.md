@@ -20,7 +20,7 @@ Dokumen produk lengkap untuk E-LKPD (Lembar Kerja Peserta Didik Elektronik) inte
 
 Siswa berperan sebagai penata busana di butik digital. Mereka memasangkan 3 atasan adat dengan 2 kain bawahan untuk menyusun ruang sampel (6 pasangan), lalu memilih **set kesukaan** yang menjadi kejadian A. Dari set kesukaan itu siswa menghitung peluang teoretis dan frekuensi harapan, melakukan percobaan acak dengan roda spin sebanyak 20 kali, menghitung frekuensi relatif, lalu membandingkan frekuensi harapan dengan frekuensi relatif.
 
-Semua jawaban bisa diubah sampai siswa menekan **Kumpulkan Jawaban**. Setelah itu skor tampil, dan hasil cetak atau PDF selalu memakai pengumpulan pertama.
+Semua jawaban bisa diubah sampai siswa menekan **Kumpulkan Jawaban**. Setelah itu skor tampil, dan PDF yang diunduh selalu memakai pengumpulan pertama.
 
 ---
 
@@ -87,7 +87,7 @@ Navigasi berupa 5 tab di bagian atas. Di laptop labelnya panjang, di HP labelnya
 | 2. Petunjuk | Petunjuk | Petunjuk, capaian dan tujuan pembelajaran, apersepsi |
 | 3. Butik Digital | Butik | Aktivitas 1, pertanyaan pemantik, pengertian peluang teoretis, Aktivitas 2 |
 | 4. Roda Spin | Spin | Pengertian frekuensi harapan dan relatif, Aktivitas 3.1 sampai 3.5 |
-| 5. Kumpulkan | Kumpul | Periksa semua jawaban, kumpulkan, skor, cetak |
+| 5. Kumpulkan | Kumpul | Periksa semua jawaban, kumpulkan, skor, unduh PDF |
 
 ### 3.1 Halaman 1: Sampul
 
@@ -176,7 +176,7 @@ Versi sebelumnya (tabel perbandingan 5 baris, paragraf hubungan bersimbol, dan 4
 ### 3.5 Halaman 5: Periksa dan Kumpulkan
 
 - Kartu identitas (termasuk set kesukaan) dan kartu tiap aktivitas. Setiap butir menampilkan nama soal, jawaban siswa (atau "Belum diisi"), dan tombol **Ubah** yang membuka halaman soal sekaligus menempatkan kursor di kotak jawabannya.
-- Kotak pengumpulan berisi tombol **Kumpulkan Jawaban** (setelah pengumpulan pertama berubah menjadi **Kumpulkan Ulang**) dan **Cetak / Simpan PDF**.
+- Kotak pengumpulan berisi tombol **Kumpulkan Jawaban** (setelah pengumpulan pertama berubah menjadi **Kumpulkan Ulang**) dan **Unduh PDF**.
 - Rincian alurnya ada di bagian 7.
 
 ---
@@ -249,7 +249,7 @@ Total **25 butir**. Skor = pembulatan (benar ÷ 25 × 100). Set kesukaan tidak d
 | | Soal 2 | Hasil setiap putaran acak dan percobaan hanya 20 kali | |
 | | Soal 3 | F_r bisa berbeda, tetapi cenderung mendekati 1/6 jika percobaan diperbanyak | |
 
-Kotak kesimpulan bebas tidak dinilai, tetapi ikut tercetak dan terkirim.
+Kotak kesimpulan bebas tidak dinilai, tetapi ikut masuk PDF dan terkirim.
 
 Catatan: frekuensi harapan 10/3 bukan bilangan bulat. Hitungan ini benar, tetapi siswa mungkin mengira jawabannya harus bulat. Guru perlu siap menjelaskannya.
 
@@ -273,9 +273,9 @@ Catatan: frekuensi harapan 10/3 bukan bilangan bulat. Hitungan ini benar, tetapi
 | Setelah dikumpulkan | Skor /100, jumlah benar, waktu, dan nomor pengumpulan tampil. Setiap butir di halaman Kumpulkan diberi tanda ✓ atau ✗. |
 | Mengubah jawaban setelah dikumpulkan | Tetap bisa. Muncul pesan "Ada jawaban yang diubah setelah dikumpulkan", dan tombol berubah menjadi Kumpulkan Ulang. |
 | Kumpulkan ulang | Skor di layar diperbarui, nomor pengumpulan bertambah. |
-| Cetak / Simpan PDF | Nonaktif sebelum pengumpulan pertama. Setelah itu **selalu berisi hasil pengumpulan pertama**, walaupun siswa sudah mengumpulkan ulang. |
+| Unduh PDF | Nonaktif sebelum pengumpulan pertama. Setelah itu **selalu berisi hasil pengumpulan pertama**, walaupun siswa sudah mengumpulkan ulang. |
 
-**Isi lembar cetak:** judul "Hasil Pengumpulan Pertama", waktu kumpul, identitas, kotak skor, tabel jawaban per aktivitas dengan ✓/✗, data roda spin, kesimpulan kelompok, dan baris "Paraf Guru". Navigasi dan tombol tidak ikut tercetak.
+**Unduh PDF:** file PDF A4 dibuat langsung di browser dengan jsPDF dan jspdf-autotable (`vendor/jspdf`, lisensi MIT, dimuat saat tombol pertama kali ditekan), lalu langsung diunduh tanpa dialog cetak, termasuk di HP. Nama file `Hasil-ELKPD-<nama kelompok>.pdf`. Isinya: judul "Hasil Pengumpulan Pertama", waktu kumpul, identitas, set kesukaan, kotak skor, tabel jawaban per aktivitas dengan keterangan Benar/Salah, data roda spin, kesimpulan kelompok, dan baris "Paraf Guru".
 
 **Pengiriman ke Google Sheet (opsional):** jika `submitUrl` diisi, setiap pengumpulan dikirim sebagai satu baris berisi waktu, kelompok, kelas, anggota, skor, jumlah benar, total butir, nomor pengumpulan, kesimpulan, tabel Aktivitas 1, data simulasi, hasil per butir, dan semua jawaban. Baris dengan "Pengumpulan ke-" = 1 adalah percobaan pertama.
 
@@ -372,16 +372,17 @@ index.html                 Struktur 5 halaman, modal, panel suara
 informasi-media.html       Informasi Media: kesesuaian kurikulum, sumber busana, status detail, musik
 product.md                 Dokumen ini
 README.md                  Ringkasan teknis dan cara deploy
-css/style.css              Seluruh gaya, termasuk responsif dan cetak
+css/style.css              Seluruh gaya, termasuk responsif
 js/config.js               Pengaturan guru: submitUrl, musicSrc
 js/outfits.js              Gambar SVG karakter, busana, manekin, kain
 js/audio.js                Efek suara Web Audio dan pemutar musik
-js/app.js                  Navigasi, butik, tabel, roda, penilaian, kumpul, cetak
+js/app.js                  Navigasi, butik, tabel, roda, penilaian, kumpul, unduh PDF
 audio/musik-latar.mp3      Musik latar
 audio/README.md            Keterangan dan syarat musik pengganti
 tools/buat-musik-latar.py  Pembuat musik latar
 tools/google-apps-script.gs Penerima jawaban di Google Sheet
 vendor/katex/              KaTeX 0.16.9 (lisensi MIT)
+vendor/jspdf/              jsPDF 2.5.1 dan jspdf-autotable 3.8.2 (lisensi MIT)
 ```
 
 **Urutan pemuatan skrip:** KaTeX, `config.js`, `outfits.js`, `audio.js`, `app.js` (semuanya `defer`).
@@ -443,7 +444,7 @@ Uji otomatis di Chromium headless (Playwright):
 - Notifikasi set tepat di tengah layar; pasangan ganda memicu getaran pada konten halaman.
 - Halaman Informasi Media terbuka dengan judul baru, dan tidak ada sisa teks "Palembang Heritage" atau kode BH.
 - Tombol Ubah membuka halaman yang benar dan memfokuskan kotak jawaban.
-- Cetak: setelah kumpul ulang dengan jawaban yang sudah diperbaiki, PDF tetap berisi jawaban dan skor pengumpulan pertama.
+- Unduh PDF (emulasi Pixel 7 dan laptop): file langsung terunduh tanpa dialog cetak; setelah kumpul ulang dengan jawaban yang diperbaiki, PDF tetap berisi jawaban dan skor pengumpulan pertama (skor 8, bukan 12).
 - Musik: tidak berbunyi sebelum interaksi, berulang di volume 25% setelah klik, berhenti saat dimatikan. Tanpa file, tombol musik nonaktif.
 - Musik latar diperiksa lewat analisis frekuensi (nada sesuai tangga nada G mayor), tetapi **belum didengarkan oleh pengembang**.
 - Tidak ada error JavaScript di konsol.
@@ -476,6 +477,7 @@ Belum diuji: HP fisik, Safari iOS, dan pengiriman ke Google Sheet sungguhan.
 | 3 | Musik latar ditambahkan; hasil cetak dikunci pada pengumpulan pertama |
 | 4 | Musik dibuat ceria (G mayor, tempo 112); bas, genjrengan, dan kendang dihapus, melodi dipertahankan |
 | 5 | Kulit kuning langsat; tampilan HP dirapikan (tab, rumus, roda spin, butik, rekap) |
+| 10 | Cetak / Simpan PDF diganti Unduh PDF: file dibuat dengan jsPDF dan langsung diunduh, tanpa dialog cetak di HP |
 | 9 | Langkah 3 di 3.4 dihapus (3.4 jadi 2 langkah, 25 butir); isian hasil 3.1 dan frekuensi relatif diganti kotak pecahan karena keyboard angka HP tidak punya tanda / |
 | 8 | Langkah 3 di 3.4 diganti menjadi frekuensi harapan untuk 60 putaran (60 × 1/6), dengan rumus dalam kata-kata |
 | 7 | Bagian 3.4 disederhanakan: tabel perbandingan dan paragraf bersimbol dihapus, diganti 3 langkah bertahap dengan dua kartu sebelum/sesudah roda diputar (26 butir) |

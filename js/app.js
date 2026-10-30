@@ -645,14 +645,14 @@
     $('#print-btn').disabled = !first;
     if (!sub) {
       box.innerHTML = '<p>Jawaban belum dikumpulkan. Kamu masih bisa mengubah semua jawaban.</p>' +
-        '<p class="hint">Cetak / Simpan PDF tersedia setelah jawaban dikumpulkan, dan selalu berisi hasil pengumpulan pertama.</p>';
+        '<p class="hint">Unduh PDF tersedia setelah jawaban dikumpulkan, dan selalu berisi hasil pengumpulan pertama.</p>';
       $('#submit-btn').textContent = 'Kumpulkan Jawaban';
       return;
     }
     var html = '<p class="score">Skor: <b>' + sub.score + '</b> / 100</p>' +
       '<p>' + sub.correct + ' dari ' + sub.total + ' jawaban benar. Dikumpulkan ' + fmtWhen(sub.at) + ' (pengumpulan ke-' + sub.count + ').</p>';
     if (first) {
-      html += '<p class="first-note">Cetak / Simpan PDF berisi hasil pengumpulan pertama: skor <b>' + first.score + '</b>, dikumpulkan ' + fmtWhen(first.at) + '.</p>';
+      html += '<p class="first-note">PDF yang diunduh berisi hasil pengumpulan pertama: skor <b>' + first.score + '</b>, dikumpulkan ' + fmtWhen(first.at) + '.</p>';
     }
     if (sub.sent === 'ok') html += '<p class="status-ok">Jawaban sudah dikirim ke guru.</p>';
     else if (sub.sent === 'fail') html += '<p class="status-bad">Jawaban gagal dikirim. Simpan sebagai PDF sebagai cadangan.</p>';
@@ -736,37 +736,157 @@
     }
   }
 
-  function renderPrintSheet() {
+  // PDF dibuat langsung di browser (jsPDF) lalu diunduh, tanpa dialog cetak.
+  // Library dimuat saat tombol pertama kali ditekan agar halaman tetap ringan.
+  var pdfLibs = null;
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var el = document.createElement('script');
+      el.src = src;
+      el.onload = resolve;
+      el.onerror = reject;
+      document.head.appendChild(el);
+    });
+  }
+  function loadPdfLibs() {
+    if (!pdfLibs) {
+      pdfLibs = loadScript('vendor/jspdf/jspdf.umd.min.js')
+        .then(function () { return loadScript('vendor/jspdf/jspdf.plugin.autotable.min.js'); })
+        .catch(function (e) { pdfLibs = null; throw e; });
+    }
+    return pdfLibs;
+  }
+
+  var MAROON = [122, 31, 43];
+  var INK = [58, 35, 24];
+
+  // Isi PDF selalu dari salinan pengumpulan pertama.
+  function makePdf() {
     var snap = state.firstSubmission;
-    $('#print-sheet').innerHTML = withSnapshot(snap, function () {
+    return withSnapshot(snap, function () {
+      var doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+      var W = 210, M = 14;
+
+      doc.setFillColor(122, 31, 43);
+      doc.rect(0, 0, W, 27, 'F');
+      doc.setFillColor(217, 168, 46);
+      doc.rect(0, 27, W, 1.8, 'F');
+      doc.setTextColor(255, 244, 226);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(16);
+      doc.text('Hasil Pengumpulan Pertama', M, 11);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9.5);
+      doc.text('E-LKPD Matematika Kelas VIII - Stylist Studio Sriwijaya Heritage Edition', M, 17.5);
+      doc.text('Dikumpulkan ' + fmtWhen(snap.at), M, 23);
+
+      var bx = W - M - 38, by = 34;
+      doc.setDrawColor(122, 31, 43);
+      doc.setLineWidth(0.8);
+      doc.setFillColor(255, 251, 243);
+      doc.roundedRect(bx, by, 38, 30, 3, 3, 'FD');
+      doc.setTextColor(58, 35, 24);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.text('Skor', bx + 19, by + 7, { align: 'center' });
+      doc.setTextColor(122, 31, 43);
+      doc.setFontSize(24);
+      doc.text(String(snap.score), bx + 19, by + 19, { align: 'center' });
+      doc.setTextColor(58, 35, 24);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8.5);
+      doc.text(snap.correct + ' dari ' + snap.total + ' benar', bx + 19, by + 26, { align: 'center' });
+
       var members = [];
       for (var i = 1; i <= MEMBER_ROWS; i++) {
         var nm = a('id_m' + i + '_nama');
-        if (nm) members.push('<li>' + esc(nm) + ' (No. ' + esc(a('id_m' + i + '_no') || '-') + ')</li>');
+        if (nm) members.push(members.length + 1 + '. ' + nm + ' (No. ' + (a('id_m' + i + '_no') || '-') + ')');
       }
-      var html = '<header class="ps-head"><p>E-LKPD Matematika Kelas VIII · Stylist Studio Sriwijaya Heritage Edition</p>' +
-        '<h1>Hasil Pengumpulan Pertama</h1><p>Dikumpulkan ' + fmtWhen(snap.at) + '</p></header>' +
-        '<div class="ps-top"><dl class="ps-id">' +
-        '<dt>Nama kelompok</dt><dd>' + esc(a('id_kelompok') || '-') + '</dd>' +
-        '<dt>Kelas/Semester</dt><dd>' + esc(a('id_kelas') || '-') + '</dd>' +
-        '<dt>Anggota</dt><dd>' + (members.length ? '<ol>' + members.join('') + '</ol>' : '-') + '</dd>' +
-        '<dt>Set kesukaan</dt><dd>' + (fav() ? esc(comboName(fav()) + ' ' + comboCode(fav())) : '-') + '</dd></dl>' +
-        '<div class="ps-score">Skor<b>' + snap.score + '</b><span>' + snap.correct + ' dari ' + snap.total + ' benar</span></div></div>';
-      GROUPS.forEach(function (g) {
-        html += '<h2>' + g.title + '</h2><table class="ps-table"><tbody>';
-        g.items.forEach(function (it) {
-          var ok = snap.results[it.id];
-          html += '<tr><th>' + esc(itemLabel(it)) + '</th><td>' + (itemFilled(it) || !it.keys.length ? esc(it.show()) : '(kosong)') + '</td><td class="ps-mark">' + (ok ? '✓' : '✗') + '</td></tr>';
-        });
-        html += '</tbody></table>';
+      doc.autoTable({
+        startY: 33,
+        margin: { left: M, right: M + 44 },
+        theme: 'plain',
+        styles: { fontSize: 10, cellPadding: 1.4, textColor: INK },
+        columnStyles: { 0: { fontStyle: 'bold', cellWidth: 32 } },
+        body: [
+          ['Nama kelompok', a('id_kelompok') || '-'],
+          ['Kelas/Semester', a('id_kelas') || '-'],
+          ['Anggota', members.join('\n') || '-'],
+          ['Set kesukaan', fav() ? comboName(fav()) + ' ' + comboCode(fav()) : '-']
+        ]
       });
-      html += '<h2>Data Percobaan Roda Spin (N = ' + state.sim.total + ')</h2><table class="ps-table"><tbody>' +
-        COMBOS.map(function (c) { return '<tr><th>' + comboCode(c.key) + '</th><td>k = ' + state.sim.counts[c.key] + '</td><td></td></tr>'; }).join('') +
-        '</tbody></table>' +
-        '<h2>Kesimpulan Kelompok</h2><p>' + (a('a34_text') ? esc(a('a34_text')) : '(kosong)') + '</p>' +
-        '<div class="ps-sign"><span>Paraf Guru:</span><span class="ps-line"></span></div>';
-      return html;
+      var y = Math.max(doc.lastAutoTable.finalY, by + 30) + 6;
+
+      GROUPS.forEach(function (g) {
+        doc.autoTable({
+          startY: y,
+          margin: { left: M, right: M },
+          head: [[g.title, 'Jawaban', 'Hasil']],
+          body: g.items.map(function (it) {
+            var shown = itemFilled(it) || !it.keys.length ? it.show() : '(kosong)';
+            return [itemLabel(it), shown, snap.results[it.id] ? 'Benar' : 'Salah'];
+          }),
+          styles: { fontSize: 9.5, cellPadding: 1.8, textColor: INK },
+          headStyles: { fillColor: MAROON, textColor: [255, 244, 226] },
+          columnStyles: { 0: { cellWidth: 70 }, 2: { cellWidth: 20, halign: 'center', fontStyle: 'bold' } },
+          didParseCell: function (d) {
+            if (d.section === 'body' && d.column.index === 2) d.cell.styles.textColor = d.cell.raw === 'Benar' ? [47, 107, 58] : [163, 39, 27];
+          }
+        });
+        y = doc.lastAutoTable.finalY + 5;
+      });
+
+      doc.autoTable({
+        startY: y,
+        margin: { left: M, right: M },
+        head: [['Data roda spin (N = ' + state.sim.total + ')', 'Banyak muncul (k)']],
+        body: COMBOS.map(function (c) { return [comboName(c.key) + ' ' + comboCode(c.key), String(state.sim.counts[c.key])]; }),
+        styles: { fontSize: 9.5, cellPadding: 1.8, textColor: INK },
+        headStyles: { fillColor: MAROON, textColor: [255, 244, 226] },
+        columnStyles: { 1: { cellWidth: 40, halign: 'center' } }
+      });
+      y = doc.lastAutoTable.finalY + 8;
+
+      var lines = doc.splitTextToSize(a('a34_text') || '(kosong)', W - 2 * M);
+      if (y + 30 + lines.length * 5 > 285) { doc.addPage(); y = 20; }
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(122, 31, 43);
+      doc.text('Kesimpulan Kelompok', M, y);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(58, 35, 24);
+      doc.text(lines, M, y + 6);
+      y += 6 + lines.length * 5 + 12;
+      doc.text('Paraf Guru:', M, y);
+      doc.setDrawColor(58, 35, 24);
+      doc.setLineWidth(0.3);
+      doc.line(M + 22, y + 1, M + 80, y + 1);
+      return doc;
     });
+  }
+
+  function pdfName() {
+    var g = (a('id_kelompok') || 'kelompok').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'kelompok';
+    return 'Hasil-ELKPD-' + g + '.pdf';
+  }
+
+  function downloadPdf() {
+    if (!state.firstSubmission) { toast('Kumpulkan jawaban dulu, lalu unduh PDF.'); return; }
+    var btn = $('#print-btn');
+    btn.disabled = true;
+    btn.textContent = 'Membuat PDF…';
+    loadPdfLibs()
+      .then(function () {
+        var name = withSnapshot(state.firstSubmission, pdfName);
+        makePdf().save(name);
+        toast('PDF diunduh: ' + name);
+      })
+      .catch(function () { toast('PDF gagal dibuat. Periksa koneksi internet, lalu coba lagi.'); })
+      .then(function () {
+        btn.disabled = !state.firstSubmission;
+        btn.textContent = 'Unduh PDF';
+      });
   }
 
   // Google Apps Script menerima teks JSON; mode no-cors menghindari preflight.
@@ -821,11 +941,7 @@
     $('#save-set').addEventListener('click', saveSet);
     $('#notice-close').addEventListener('click', hideNotice);
     $('#submit-btn').addEventListener('click', askSubmit);
-    $('#print-btn').addEventListener('click', function () {
-      if (!state.firstSubmission) { toast('Kumpulkan jawaban dulu, lalu cetak.'); return; }
-      renderPrintSheet();
-      window.print();
-    });
+    $('#print-btn').addEventListener('click', downloadPdf);
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape') return;
       if (!$('#modal').hidden) $('#modal-cancel').click();
