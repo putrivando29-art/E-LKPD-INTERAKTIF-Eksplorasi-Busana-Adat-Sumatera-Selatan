@@ -25,7 +25,7 @@ E-LKPD interaktif Matematika SMP kelas VIII: peluang teoretis, frekuensi relatif
 - Jawaban tidak pernah dikunci. Setiap aktivitas hanya menampilkan status "Terisi x dari y"; benar atau salah baru ditampilkan setelah siswa menekan Kumpulkan Jawaban.
 - Jika siswa mengubah jawaban setelah mengumpulkan, halaman Kumpulkan meminta pengumpulan ulang. Nomor pengumpulan ikut tercatat.
 - Cetak / Simpan PDF selalu berisi **hasil pengumpulan pertama** (jawaban, skor, dan data percobaan saat itu), walaupun siswa sudah mengumpulkan ulang. Tombol cetak aktif setelah pengumpulan pertama.
-- Jawaban tersimpan di `sessionStorage` (kunci `stylist-studio-sriwijaya-v3`) selama tab browser terbuka, termasuk saat halaman dimuat ulang.
+- Jawaban tersimpan di `sessionStorage` (kunci `stylist-studio-sriwijaya-v4`) selama tab browser terbuka, termasuk saat halaman dimuat ulang.
 
 ## Suara
 

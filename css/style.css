@@ -655,3 +655,4 @@ main.shake, .notice-dup.pop { animation: shake .45s ease-in-out; }
 @media (max-width: 380px) {
   .cmp-cards { grid-template-columns: 1fr; }
 }
+.cmp-hint { display: inline-block; background: #FFF6E4; border: 2px dashed var(--gold); border-radius: 10px; padding: 4px 12px; font-weight: 800; color: var(--maroon); }

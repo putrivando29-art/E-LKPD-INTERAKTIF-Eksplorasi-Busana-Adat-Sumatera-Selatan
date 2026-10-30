@@ -35,7 +35,7 @@ Semua jawaban bisa diubah sampai siswa menekan **Kumpulkan Jawaban**. Setelah it
 1. menjelaskan pengertian peluang teoretis dan menggunakannya untuk menentukan frekuensi harapan suatu kejadian pada percobaan sederhana dengan tepat;
 2. menjelaskan pengertian frekuensi relatif dan menggunakannya untuk memperkirakan frekuensi harapan, serta membandingkannya dengan peluang teoretis pada percobaan sederhana.
 
-Kaitan TP dengan aktivitas: TP 1 dicapai lewat Aktivitas 1, 2, dan 3.1. TP 2 dicapai lewat Aktivitas 3.2 sampai 3.5, termasuk perkiraan 60 putaran memakai frekuensi relatif.
+Kaitan TP dengan aktivitas: TP 1 dicapai lewat Aktivitas 1, 2, 3.1, dan langkah 3 di 3.4. TP 2 dicapai lewat Aktivitas 3.2 sampai 3.5 (menghitung frekuensi relatif dan membandingkannya dengan frekuensi harapan dan peluang teoretis). Bagian TP 2 "memperkirakan frekuensi harapan memakai frekuensi relatif" tidak lagi dilatih secara eksplisit sejak langkah 3 versi 8.
 
 Rumusan CP dan TP perlu dicocokkan lagi dengan dokumen resmi SK sebelum instrumen divalidasi.
 
@@ -48,7 +48,7 @@ Rumusan CP dan TP perlu dicocokkan lagi dengan dokumen resmi SK sebelum instrume
 5. Pengertian frekuensi harapan dan frekuensi relatif dengan contoh set kesukaan.
 6. Frekuensi harapan set kesukaan F_h = 20 × 1/6 = 10/3 ≈ 3,33.
 7. Percobaan acak 20 kali, frekuensi relatif F_r = k / N, mulai dari set kesukaan lalu semua set.
-8. Perbandingan bertahap untuk set kesukaan: banyak muncul nyata, dibanding frekuensi harapan, lalu perkiraan 60 putaran dari hasil percobaan.
+8. Perbandingan bertahap untuk set kesukaan: banyak muncul nyata, dibanding frekuensi harapan, lalu frekuensi harapan untuk 60 putaran.
 9. Kesimpulan: F_r bisa berbeda dari P(A) dan cenderung mendekatinya jika percobaan diperbanyak.
 
 ---
@@ -165,7 +165,7 @@ Pertanyaan perluasan: "Temanmu memilih set kesukaan yang berbeda darimu. Berapa 
 **3.4 Membandingkan Frekuensi Harapan dan Frekuensi Relatif** (bertahap; langkah berikutnya muncul setelah langkah sebelumnya diisi, dan semua jawaban tetap bisa diubah). Terbuka setelah set kesukaan dipilih dan roda diputar genap 20 kali.
 1. **Langkah 1:** "Lihat tabel roda spin. Berapa kali set kesukaanmu muncul dari 20 putaran?" (isian kali).
 2. **Langkah 2:** dua kartu berdampingan. Kartu "Sebelum roda diputar, frekuensi harapan" berisi jawaban siswa di 3.1. Kartu "Sesudah roda diputar, frekuensi relatif" berisi banyak kemunculan dari langkah 1 dan frekuensi relatifnya (k/20). Lalu soal pilihan: set kesukaan muncul lebih sering atau lebih jarang dari yang diharapkan.
-3. **Langkah 3:** "Roda akan diputar 60 kali, yaitu 3 kali lipat dari 20. Menurut hasil percobaanmu, kira-kira berapa kali set kesukaanmu muncul?" Langkah ini memenuhi TP 2 (memperkirakan memakai frekuensi relatif).
+3. **Langkah 3:** "Bayangkan roda akan diputar 60 kali. Roda belum diputar, jadi kita memakai frekuensi harapan." Petunjuk: "Frekuensi harapan = banyak putaran × peluang", lalu isian 60 × 1/6 = … kali. Versi sebelumnya memakai perkiraan dari frekuensi relatif (60 × F_r) dan dihapus karena cara itu tidak dijelaskan di E-LKPD sehingga membingungkan.
 4. Setelah langkah 3 terisi, muncul kotak "Ingat" satu kalimat tentang perbedaan keduanya.
 
 Versi sebelumnya (tabel perbandingan 5 baris, paragraf hubungan bersimbol, dan 4 isian) dihapus karena terlalu padat untuk siswa.
@@ -244,7 +244,7 @@ Total **26 butir**. Skor = pembulatan (benar ÷ 26 × 100). Set kesukaan tidak d
 | | F_r untuk tiap 6 pasangan | k/20 sesuai data siswa sendiri | Pecahan atau desimal, koma atau titik |
 | Aktivitas 3.4 | Banyak muncul set kesukaan | k set kesukaan dari data spin | Butuh set kesukaan dan 20 percobaan |
 | | Dibanding yang diharapkan | "lebih sering" jika k > 10/3, "lebih jarang" jika k < 10/3 | k tidak mungkin sama dengan 10/3, jadi hanya dua pilihan |
-| | Perkiraan 60 putaran | 3 × k set kesukaan | |
+| | Frekuensi harapan 60 putaran | 10 | 60 × 1/6 |
 | Aktivitas 3.5 | Soal 1 | Tidak, ada yang berbeda | Selalu benar secara matematis: 20/6 bukan bilangan bulat, jadi keenam k tidak mungkin sama |
 | | Soal 2 | Hasil setiap putaran acak dan percobaan hanya 20 kali | |
 | | Soal 3 | F_r bisa berbeda, tetapi cenderung mendekati 1/6 jika percobaan diperbanyak | |
@@ -285,7 +285,7 @@ Catatan: frekuensi harapan 10/3 bukan bilangan bulat. Hitungan ini benar, tetapi
 
 | Data | Tempat | Masa simpan |
 | --- | --- | --- |
-| Jawaban, set kesukaan, tabel, simulasi, halaman terakhir, pengumpulan | `sessionStorage` (kunci `stylist-studio-sriwijaya-v3`; kunci diganti setiap struktur soal berubah) | Selama tab browser terbuka, termasuk saat halaman dimuat ulang |
+| Jawaban, set kesukaan, tabel, simulasi, halaman terakhir, pengumpulan | `sessionStorage` (kunci `stylist-studio-sriwijaya-v4`; kunci diganti setiap struktur soal berubah) | Selama tab browser terbuka, termasuk saat halaman dimuat ulang |
 | Salinan pengumpulan pertama | Di dalam data yang sama (`firstSubmission`) | Sama seperti di atas; tidak pernah ditimpa |
 | Pengaturan suara | `localStorage` (kunci `stylist-studio-audio`) | Permanen di perangkat itu |
 | Hasil pengumpulan | Google Sheet milik guru | Permanen, jika `submitUrl` diisi |
@@ -476,6 +476,7 @@ Belum diuji: HP fisik, Safari iOS, dan pengiriman ke Google Sheet sungguhan.
 | 3 | Musik latar ditambahkan; hasil cetak dikunci pada pengumpulan pertama |
 | 4 | Musik dibuat ceria (G mayor, tempo 112); bas, genjrengan, dan kendang dihapus, melodi dipertahankan |
 | 5 | Kulit kuning langsat; tampilan HP dirapikan (tab, rumus, roda spin, butik, rekap) |
+| 8 | Langkah 3 di 3.4 diganti menjadi frekuensi harapan untuk 60 putaran (60 × 1/6), dengan rumus dalam kata-kata |
 | 7 | Bagian 3.4 disederhanakan: tabel perbandingan dan paragraf bersimbol dihapus, diganti 3 langkah bertahap dengan dua kartu sebelum/sesudah roda diputar (26 butir) |
 | 6 | BH diganti Baju Kurung Palembang (BK); tema menjadi Sriwijaya Heritage; catatan guru menjadi Informasi Media dengan analisis kesesuaian kurikulum; TP ditampilkan; pertanyaan pemantik set kesukaan sebagai kejadian A; bahasa Aktivitas 2 diperjelas; pengertian peluang teoretis, frekuensi harapan, dan frekuensi relatif sebelum aktivitas; bagian 3.4 perbandingan frekuensi harapan dan relatif (27 butir); keterangan rumus tersusun ke bawah; notifikasi di tengah dengan ornamen silang dan layar bergetar |
 

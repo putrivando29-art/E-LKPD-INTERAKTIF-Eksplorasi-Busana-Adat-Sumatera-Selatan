@@ -5,7 +5,7 @@
   var CFG = window.ELKPD_CONFIG || {};
   var COMBOS = O.combos();
   var N_TRIALS = 20;
-  var STORE_KEY = 'stylist-studio-sriwijaya-v3';
+  var STORE_KEY = 'stylist-studio-sriwijaya-v4';
   var MEMBER_ROWS = 5;
 
   // Warna sektor roda dan swatch tabel statistik
@@ -229,7 +229,7 @@
       { id: 'cmp_k', label: 'Banyak muncul set kesukaan', keys: ['cmp_k'], show: function () { return val('cmp_k') + ' kali'; }, ok: function () { return favReady() && near('cmp_k', favK(), 1e-6); } },
       { id: 'cmp_dir', label: 'Dibanding yang diharapkan', keys: ['cmp_dir'], show: function () { return MCQ.cmp_dir[a('cmp_dir')] || '…'; },
         ok: function () { return favReady() && a('cmp_dir') === (favK() > N_TRIALS / 6 ? 'a' : 'b'); } },
-      { id: 'cmp_60fr', label: 'Perkiraan 60 putaran', keys: ['cmp_60fr'], show: function () { return val('cmp_60fr') + ' kali'; }, ok: function () { return favReady() && near('cmp_60fr', favK() * 3, 1e-6); } }
+      { id: 'cmp_60p', label: 'Frekuensi harapan 60 putaran', keys: ['cmp_60p'], show: function () { return val('cmp_60p') + ' kali'; }, ok: function () { return near('cmp_60p', 60 / 6, 1e-6); } }
     ] },
     { id: 'akt35', title: 'Aktivitas 3.5', page: 4, items: [
       { id: 'a34_1', label: 'Pertanyaan 1', keys: ['a34_1'], show: function () { return MCQ.a34_1[a('a34_1')] || '…'; }, ok: function () { return a('a34_1') === 'b'; } },
@@ -383,7 +383,7 @@
     $('#cmp-body').hidden = !ready;
     var s1 = a('cmp_k') !== '';
     var s2 = s1 && a('cmp_dir') !== '';
-    var s3 = s2 && a('cmp_60fr') !== '';
+    var s3 = s2 && a('cmp_60p') !== '';
     $('#cmp-step2').hidden = !s1;
     $('#cmp-step3').hidden = !s2;
     $('#cmp-take').hidden = !s3;
