@@ -68,19 +68,18 @@
       </div>
 
       <div class="card identity">
-        <h2>Identitas Kelompok</h2>
+        <h2>Identitas Peserta Didik</h2>
         <div class="form-grid">
-          <label>Nama kelompok
-            <input type="text" data-key="id_kelompok" autocomplete="off">
+          <label>Nama lengkap
+            <input type="text" data-key="id_nama" autocomplete="off">
           </label>
           <label>Kelas/Semester
             <input type="text" data-key="id_kelas" placeholder="Contoh: VIII A / Genap" autocomplete="off">
           </label>
+          <label>Nomor presensi
+            <input type="text" inputmode="numeric" data-key="id_no" autocomplete="off">
+          </label>
         </div>
-        <table class="member-table">
-          <thead><tr><th>No.</th><th>Nama anggota kelompok</th><th>Nomor presensi</th></tr></thead>
-          <tbody id="member-rows"></tbody>
-        </table>
       </div>
       <div class="pager"><span></span><button type="button" class="btn btn-primary" data-go="2">Lanjut ke Petunjuk</button></div>
     </section>
@@ -94,7 +93,7 @@
           <h2>A. Petunjuk Penggunaan E-LKPD</h2>
           <ol class="steps">
             <li>Berdoalah sebelum memulai pembelajaran.</li>
-            <li>Isilah identitas kelompok terlebih dahulu.</li>
+            <li>Isilah identitas dirimu terlebih dahulu.</li>
             <li>Bacalah petunjuk setiap aktivitas dengan cermat.</li>
             <li>Gunakan butik digital untuk mencoba berbagai pasangan pakaian.</li>
             <li>Kerjakan setiap aktivitas secara berurutan.</li>
@@ -211,19 +210,15 @@
 
       <div id="akt2" hidden>
         <div class="card concept">
-          <h2>Mengenal Peluang Teoretis</h2>
-          <p><b>Peluang teoretis</b> adalah ukuran seberapa mungkin suatu kejadian terjadi, dihitung tanpa melakukan percobaan. Caranya, banyak hasil yang kita harapkan dibagi banyak semua hasil yang mungkin. Syaratnya, setiap hasil punya kesempatan yang sama.</p>
+          <h2>Pengertian Peluang Teoretis</h2>
+          <p class="definition"><b>Peluang teoretis</b> suatu kejadian adalah perbandingan antara banyak hasil yang termasuk kejadian itu dan banyak semua hasil yang mungkin. Peluang ini dihitung tanpa melakukan percobaan, dengan syarat setiap hasil punya kesempatan yang sama untuk muncul.</p>
           <div class="formula"><span class="tex" data-tex="P(A)=\dfrac{n(A)}{n(S)}" data-display="1"></span></div>
           <ul class="where">
             <li><span class="tex" data-tex="P(A)"></span> = peluang teoretis kejadian <span class="tex" data-tex="A"></span></li>
             <li><span class="tex" data-tex="n(A)"></span> = banyak hasil yang termasuk kejadian <span class="tex" data-tex="A"></span></li>
             <li><span class="tex" data-tex="n(S)"></span> = banyak semua hasil yang mungkin (ruang sampel)</li>
           </ul>
-          <div class="example">
-            <p class="example-title">Contoh: butik mini</p>
-            <p>Sebuah butik mini hanya punya 2 atasan (AG dan AP) dan 2 bawahan (S dan J), jadi ada 4 pasangan pakaian. Kejadian <span class="tex" data-tex="B"></span> adalah terpilihnya pasangan pakaian (AG, J). Hanya ada 1 pasangan (AG, J), maka <span class="tex" data-tex="n(B)=1"></span> dan <span class="tex" data-tex="n(S)=4"></span>, sehingga <span class="tex" data-tex="P(B)=\tfrac{1}{4}"></span>.</p>
-          </div>
-          <p class="hint">Nilai peluang selalu dari 0 sampai 1.</p>
+          <p class="example-line"><b>Contoh:</b> butik mini punya 2 atasan dan 2 bawahan, jadi ada 4 pasangan pakaian. Peluang terpilihnya pasangan (AG, J) adalah <span class="tex" data-tex="\tfrac{1}{4}"></span>.</p>
         </div>
 
         <div class="card">
@@ -251,14 +246,10 @@
       <h1 id="judul-akt3a" class="page-title">Aktivitas 3: Eksperimen Roda Putar dan Frekuensi Relatif</h1>
 
       <div class="card concept">
-        <h2>Mengenal Frekuensi Relatif</h2>
-        <div class="example">
-          <p>Misalnya roda diputar 10 kali, dan pasangan pakaian kesukaanmu <b class="fav-ref">(pasangan pilihanmu)</b> muncul 3 kali. Bagian kemunculannya adalah</p>
-          <div class="formula small"><span class="tex" data-tex="\dfrac{3}{10}" data-display="1"></span></div>
-          <p>Pecahan ini disebut <b>frekuensi relatif</b> (disebut juga peluang empiris). Nilainya dihitung <b>sesudah</b> percobaan, dari data nyata.</p>
-          <p>Untuk kejadian apa pun berlaku <span class="tex" data-tex="F_r=\dfrac{k}{N}"></span>, dengan <span class="tex" data-tex="k"></span> banyak kemunculan dan <span class="tex" data-tex="N"></span> banyak percobaan.</p>
-        </div>
-        <p class="hint">Contoh di atas hanya ilustrasi. Pada aktivitas ini roda diputar 30 kali.</p>
+        <h2>Pengertian Frekuensi Relatif</h2>
+        <p class="definition"><b>Frekuensi relatif</b> suatu kejadian adalah perbandingan antara banyak kali kejadian itu muncul dan banyak percobaan yang dilakukan. Frekuensi relatif dihitung <b>sesudah</b> percobaan, dari data hasil percobaan. Nama lainnya peluang empiris.</p>
+        <div class="formula"><span class="tex" data-tex="F_r=\dfrac{k}{N}" data-display="1"></span></div>
+        <p class="example-line"><b>Contoh:</b> roda diputar 10 kali dan pasangan (AG, J) muncul 3 kali, maka <span class="tex" data-tex="F_r=\tfrac{3}{10}"></span>.</p>
       </div>
 
       <div class="card">
@@ -318,14 +309,10 @@
       <h1 id="judul-akt3b" class="page-title">Aktivitas 3: Frekuensi Harapan</h1>
 
       <div class="card concept">
-        <h2>Mengenal Frekuensi Harapan</h2>
-        <div class="example">
-          <p>Bayangkan roda diputar 12 kali. Pada setiap putaran, peluang pasangan pakaian kesukaanmu <b class="fav-ref">(pasangan pilihanmu)</b> terpilih adalah <span class="tex" data-tex="\tfrac{1}{6}"></span>. Kira-kira berapa kali pasangan pakaian kesukaanmu muncul?</p>
-          <div class="formula small"><span class="tex" data-tex="12\times\dfrac{1}{6}=2\text{ kali}" data-display="1"></span></div>
-          <p>Bilangan 2 ini disebut <b>frekuensi harapan</b>: banyak kemunculan yang kita harapkan. Nilainya dihitung <b>sebelum</b> percobaan, dari peluang teoretis.</p>
-          <p>Untuk kejadian apa pun dan <span class="tex" data-tex="N"></span> kali percobaan berlaku <span class="tex" data-tex="F_h=N\times P(A)"></span>.</p>
-        </div>
-        <p class="hint">Contoh di atas hanya ilustrasi. Pada aktivitas ini roda diputar 30 kali.</p>
+        <h2>Pengertian Frekuensi Harapan</h2>
+        <p class="definition"><b>Frekuensi harapan</b> suatu kejadian adalah banyak kali kejadian itu diharapkan muncul dalam sejumlah percobaan. Frekuensi harapan dihitung <b>sebelum</b> percobaan, yaitu hasil kali banyak percobaan dengan peluang teoretis kejadian itu.</p>
+        <div class="formula"><span class="tex" data-tex="F_h=N\times P(A)" data-display="1"></span></div>
+        <p class="example-line"><b>Contoh:</b> roda diputar 12 kali dan peluang pasangan (AG, J) adalah <span class="tex" data-tex="\tfrac{1}{6}"></span>, maka <span class="tex" data-tex="F_h=12\times\tfrac{1}{6}=2"></span> kali.</p>
       </div>
 
       <div class="card">

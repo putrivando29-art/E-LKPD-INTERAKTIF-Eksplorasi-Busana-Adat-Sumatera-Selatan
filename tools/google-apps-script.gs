@@ -9,7 +9,7 @@
  * 4. Salin URL aplikasi web (berakhiran /exec) ke submitUrl di js/config.js.
  */
 var HEADERS = [
-  'Diterima', 'Waktu kumpul', 'Kelompok', 'Kelas/Semester', 'Anggota',
+  'Diterima', 'Waktu kumpul', 'Nama', 'Kelas/Semester', 'Nomor presensi',
   'Skor', 'Benar', 'Total butir', 'Pengumpulan ke-', 'Kesimpulan',
   'Tabel Aktivitas 1', 'Simulasi (k)', 'Hasil per butir', 'Semua jawaban'
 ];
@@ -23,7 +23,7 @@ function doPost(e) {
     if (sheet.getLastRow() === 0) sheet.appendRow(HEADERS);
     var d = JSON.parse(e.postData.contents);
     sheet.appendRow([
-      new Date(), d.waktu, d.kelompok, d.kelas, d.anggota,
+      new Date(), d.waktu, d.nama, d.kelas, d.presensi,
       d.skor, d.benar, d.total, d.pengumpulanKe, d.kesimpulan,
       (d.tabelAktivitas1 || []).join(', '),
       JSON.stringify(d.simulasi || {}),

@@ -5,8 +5,7 @@
   var CFG = window.ELKPD_CONFIG || {};
   var COMBOS = O.combos();
   var N_TRIALS = 30;
-  var STORE_KEY = 'stylist-studio-sriwijaya-v6';
-  var MEMBER_ROWS = 5;
+  var STORE_KEY = 'stylist-studio-sriwijaya-v7';
 
   // Warna sektor roda dan swatch tabel statistik
   var SECTOR = {
@@ -134,18 +133,6 @@
   }
   function stopCover() { clearInterval(coverTimer); coverTimer = null; }
 
-  /* ---------- identitas ---------- */
-
-  function buildMembers() {
-    var html = '';
-    for (var i = 1; i <= MEMBER_ROWS; i++) {
-      html += '<tr><td>' + i + '</td>' +
-        '<td><input type="text" data-key="id_m' + i + '_nama" aria-label="Nama anggota ' + i + '" autocomplete="off"></td>' +
-        '<td><input type="text" inputmode="numeric" data-key="id_m' + i + '_no" aria-label="Nomor presensi anggota ' + i + '" autocomplete="off"></td></tr>';
-    }
-    $('#member-rows').innerHTML = html;
-  }
-
   /* ---------- isian jawaban ---------- */
 
   function bindInputs(root) {
@@ -182,7 +169,7 @@
     return Number(num) * tDen === Number(den) * tNum;
   }
   function near(key, target, tol) { var v = parseNum(a(key)); return !isNaN(v) && Math.abs(v - target) <= tol; }
-  // Set kesukaan siswa menjadi kejadian A pada Aktivitas 1 sampai 3.
+  // Pasangan pakaian kesukaan siswa menjadi kejadian A pada Aktivitas 1 sampai 3.
   function fav() { var k = a('fav'); return COMBOS.some(function (c) { return c.key === k; }) ? k : ''; }
   function favReady() { return !!fav() && state.sim.total === N_TRIALS; }
   function favK() { return fav() ? state.sim.counts[fav()] : 0; }
@@ -599,7 +586,7 @@
     var body = $('#fr-table tbody');
     body.innerHTML = COMBOS.map(function (c) {
       var isFav = fav() === c.key;
-      return '<tr' + (isFav ? ' class="fav-row"' : '') + '><td>' + comboCode(c.key) + (isFav ? ' <span class="star" title="Pasangan pakaian kesukaanmu">★</span>' : '') + '</td><td class="num">' + (ready ? sim.counts[c.key] : '–') + '</td><td class="num">20</td>' +
+      return '<tr' + (isFav ? ' class="fav-row"' : '') + '><td>' + comboCode(c.key) + (isFav ? ' <span class="star" title="Pasangan pakaian kesukaanmu">★</span>' : '') + '</td><td class="num">' + (ready ? sim.counts[c.key] : '–') + '</td><td class="num">' + N_TRIALS + '</td>' +
         '<td><span class="frac-input">' +
         '<input type="text" inputmode="numeric" data-key="a33n_' + c.key + '" aria-label="Pembilang frekuensi relatif ' + comboCode(c.key) + '"' + (ready ? '' : ' disabled') + '>' +
         '<span class="bar"></span>' +
@@ -614,15 +601,10 @@
   function renderRecap() {
     var sub = state.submission;
     var results = sub ? sub.results : null;
-    var members = [];
-    for (var i = 1; i <= MEMBER_ROWS; i++) {
-      var nm = a('id_m' + i + '_nama');
-      if (nm) members.push('<li><span>' + esc(nm) + '</span><span>No. ' + esc(a('id_m' + i + '_no') || '-') + '</span></li>');
-    }
-    var html = '<div class="card"><div class="recap-head"><h2>Identitas</h2><button type="button" class="btn-edit" data-edit="1" data-focus="id_kelompok">Ubah</button></div><ul class="recap-list">' +
-      '<li><span>Nama kelompok</span><span>' + esc(a('id_kelompok') || '-') + '</span></li>' +
+    var html = '<div class="card"><div class="recap-head"><h2>Identitas</h2><button type="button" class="btn-edit" data-edit="1" data-focus="id_nama">Ubah</button></div><ul class="recap-list">' +
+      '<li><span>Nama lengkap</span><span>' + esc(a('id_nama') || '-') + '</span></li>' +
       '<li><span>Kelas/Semester</span><span>' + esc(a('id_kelas') || '-') + '</span></li>' +
-      (members.join('') || '<li><span>Anggota</span><span class="status-empty">Belum diisi</span></li>') +
+      '<li><span>Nomor presensi</span><span>' + esc(a('id_no') || '-') + '</span></li>' +
       '<li><span>Pasangan pakaian kesukaan (kejadian A)</span><span>' + (fav() ? esc(comboName(fav()) + ' ' + comboCode(fav())) : '<span class="status-empty">Belum dipilih</span>') + '</span></li></ul></div>';
 
     html += '<div class="recap-grid">';
@@ -639,7 +621,7 @@
       });
       html += '</ul></div>';
     });
-    html += '<div class="card"><div class="recap-head"><h2>Kesimpulan Kelompok</h2><button type="button" class="btn-edit" data-edit="5" data-focus="a34_text">Ubah</button></div><p>' +
+    html += '<div class="card"><div class="recap-head"><h2>Kesimpulanmu</h2><button type="button" class="btn-edit" data-edit="5" data-focus="a34_text">Ubah</button></div><p>' +
       (a('a34_text') ? esc(a('a34_text')) : '<span class="status-empty">Belum ditulis</span>') + '</p></div>';
     html += '</div>';
     $('#recap').innerHTML = html;
@@ -813,11 +795,6 @@
       doc.setFontSize(8.5);
       doc.text(snap.correct + ' dari ' + snap.total + ' benar', bx + 19, by + 26, { align: 'center' });
 
-      var members = [];
-      for (var i = 1; i <= MEMBER_ROWS; i++) {
-        var nm = a('id_m' + i + '_nama');
-        if (nm) members.push(members.length + 1 + '. ' + nm + ' (No. ' + (a('id_m' + i + '_no') || '-') + ')');
-      }
       doc.autoTable({
         startY: 33,
         margin: { left: M, right: M + 44 },
@@ -825,9 +802,9 @@
         styles: { fontSize: 10, cellPadding: 1.4, textColor: INK },
         columnStyles: { 0: { fontStyle: 'bold', cellWidth: 32 } },
         body: [
-          ['Nama kelompok', a('id_kelompok') || '-'],
+          ['Nama lengkap', a('id_nama') || '-'],
           ['Kelas/Semester', a('id_kelas') || '-'],
-          ['Anggota', members.join('\n') || '-'],
+          ['Nomor presensi', a('id_no') || '-'],
           ['Pasangan kesukaan', fav() ? comboName(fav()) + ' ' + comboCode(fav()) : '-']
         ]
       });
@@ -868,7 +845,7 @@
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(11);
       doc.setTextColor(122, 31, 43);
-      doc.text('Kesimpulan Kelompok', M, y);
+      doc.text('Kesimpulan', M, y);
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(10);
       doc.setTextColor(58, 35, 24);
@@ -883,7 +860,7 @@
   }
 
   function pdfName() {
-    var g = (a('id_kelompok') || 'kelompok').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'kelompok';
+    var g = (a('id_nama') || 'siswa').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'siswa';
     return 'Hasil-ELKPD-' + g + '.pdf';
   }
 
@@ -907,22 +884,19 @@
 
   // Google Apps Script menerima teks JSON; mode no-cors menghindari preflight.
   function send() {
-    var members = [];
-    for (var i = 1; i <= MEMBER_ROWS; i++) {
-      if (a('id_m' + i + '_nama')) members.push(a('id_m' + i + '_nama') + ' (' + (a('id_m' + i + '_no') || '-') + ')');
-    }
     var sub = state.submission;
     var payload = {
       waktu: new Date(sub.at).toISOString(),
-      kelompok: a('id_kelompok'),
+      nama: a('id_nama'),
       kelas: a('id_kelas'),
-      anggota: members.join('; '),
+      presensi: a('id_no'),
       skor: sub.score,
       benar: sub.correct,
       total: sub.total,
       pengumpulanKe: sub.count,
       kesimpulan: a('a34_text'),
-      setKesukaan: fav(),
+      pasanganKesukaan: fav(),
+      pasanganTeman: friend(),
       jawaban: state.answers,
       hasilButir: sub.results,
       tabelAktivitas1: Object.keys(state.boutique.saved),
@@ -938,7 +912,6 @@
 
   function init() {
     renderTex();
-    buildMembers();
     buildWardrobe();
     buildWheel();
     buildFav();

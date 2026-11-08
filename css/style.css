@@ -140,12 +140,6 @@ input[type="text"], textarea {
   border: 2px solid var(--line); background: #FFFFFF; min-height: 44px;
 }
 input[type="text"]:focus, textarea:focus { outline: none; border-color: var(--gold-dk); box-shadow: 0 0 0 3px var(--gold-lt); }
-.member-table { width: 100%; border-collapse: collapse; }
-.member-table th { text-align: left; color: var(--maroon); font-size: .95rem; padding: 6px; }
-.member-table td { padding: 4px 6px; }
-.member-table td:first-child { width: 44px; font-weight: 800; text-align: center; }
-.member-table td:last-child { width: 32%; }
-.member-table input { margin: 0; }
 
 /* ---------- Tombol ---------- */
 .btn {
@@ -470,17 +464,11 @@ input.bad { border-color: var(--bad); background: var(--bad-bg); }
 
 /* ---------- Kotak konsep ---------- */
 .concept { border-color: var(--bata); }
-.concept-grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-bottom: 8px; }
-.example { background: #FFF6E4; border: 2px dashed var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; }
-.example p:last-child { margin-bottom: 0; }
-.example-title { font-family: var(--font-head); font-weight: 600; color: var(--bata); margin-bottom: .4em; }
-.formula.small { padding: 2px 12px; margin: 6px 0 10px; }
-.formula.small .katex { font-size: 1.2em; }
 .step-list { margin: 0 0 12px; padding-left: 1.4em; }
 .step-list > li { margin-bottom: 12px; }
 .step-list > li > p { margin-bottom: 6px; }
 .step-list .mcq { margin: 0; }
-.example .tex, .where .tex { white-space: nowrap; }
+.where .tex { white-space: nowrap; }
 
 /* ---------- Notifikasi set di tengah layar ---------- */
 .notice { position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; padding: 16px; pointer-events: none; }
@@ -647,3 +635,8 @@ main.shake, .notice-dup.pop { animation: shake .45s ease-in-out; }
   .tab .t-short { display: inline; }
   .tab { padding: 6px 9px; font-size: .85rem; }
 }
+
+/* kotak pengertian: definisi, rumus, satu baris contoh */
+.definition { background: #FFF6E4; border-left: 5px solid var(--bata); border-radius: 0 10px 10px 0; padding: 10px 14px; }
+.example-line { margin: 0; color: var(--ink-soft); }
+.example-line .tex { white-space: nowrap; }
