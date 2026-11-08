@@ -21,8 +21,9 @@
       <button type="button" class="tab" data-page="1"><b>1.</b> <span class="t-long">Sampul</span><span class="t-short">Sampul</span></button>
       <button type="button" class="tab" data-page="2"><b>2.</b> <span class="t-long">Petunjuk</span><span class="t-short">Petunjuk</span></button>
       <button type="button" class="tab" data-page="3"><b>3.</b> <span class="t-long">Butik Digital</span><span class="t-short">Butik</span></button>
-      <button type="button" class="tab" data-page="4"><b>4.</b> <span class="t-long">Roda Spin</span><span class="t-short">Spin</span></button>
-      <button type="button" class="tab" data-page="5"><b>5.</b> <span class="t-long">Kumpulkan</span><span class="t-short">Kumpul</span></button>
+      <button type="button" class="tab" data-page="4"><b>4.</b> <span class="t-long">Roda Putar</span><span class="t-short">Putar</span></button>
+      <button type="button" class="tab" data-page="5"><b>5.</b> <span class="t-long">Frekuensi Harapan</span><span class="t-short">Harapan</span></button>
+      <button type="button" class="tab" data-page="6"><b>6.</b> <span class="t-long">Kumpulkan</span><span class="t-short">Kumpul</span></button>
     </nav>
     <div class="sound">
       <button type="button" class="sound-toggle" id="sound-toggle" aria-expanded="false" aria-controls="sound-panel" aria-label="Pengaturan suara" data-sfx="none"><span class="sound-label">Suara</span></button>
@@ -145,7 +146,7 @@
     <!-- HALAMAN 3: BUTIK DIGITAL -->
     <section class="page" data-page="3" aria-labelledby="judul-akt1" hidden>
       <h1 id="judul-akt1" class="page-title">Aktivitas 1: Menyusun Ruang Sampel</h1>
-      <p class="lead">Klik manekin badan untuk memilih atasan dan manekin kaki untuk memilih bawahan, lalu tekan <b>Simpan Set Pakaian</b>. Temukan semua pasangan yang berbeda.</p>
+      <p class="lead">Klik manekin badan untuk memilih atasan dan manekin kaki untuk memilih bawahan, lalu tekan <b>Simpan Pasangan Pakaian</b>. Temukan semua pasangan yang berbeda.</p>
 
       <div class="shop" aria-label="Butik digital">
         <div class="shop-awning" aria-hidden="true"></div>
@@ -163,7 +164,7 @@
             </div>
             <div class="rug" aria-hidden="true"></div>
             <p class="dress-label" id="dress-label" aria-live="polite">Pilih atasan dan bawahan</p>
-            <button type="button" class="btn btn-primary btn-block" id="save-set" data-sfx="none">Simpan Set Pakaian</button>
+            <button type="button" class="btn btn-primary btn-block" id="save-set" data-sfx="none">Simpan Pasangan Pakaian</button>
           </div>
 
           <div class="rack rack-bottoms">
@@ -189,17 +190,17 @@
 
       <div class="card pemantik">
         <h2>Pertanyaan Pemantik</h2>
-        <p class="q">Set pakaian mana yang paling kamu suka?</p>
-        <div class="fav-grid" id="fav-choices" role="radiogroup" aria-label="Pilih set pakaian kesukaan"></div>
-        <p class="fav-note" id="fav-note">Pilih satu set. Set kesukaanmu akan menjadi kejadian <span class="tex" data-tex="A"></span> pada aktivitas berikutnya.</p>
+        <p class="q">Pasangan pakaian mana yang paling kamu suka?</p>
+        <div class="fav-grid" id="fav-choices" role="radiogroup" aria-label="Pilih pasangan pakaian kesukaan"></div>
+        <p class="fav-note" id="fav-note">Pilih satu pasangan pakaian. Pasangan pakaian kesukaanmu akan menjadi kejadian <span class="tex" data-tex="A"></span> pada aktivitas berikutnya.</p>
       </div>
 
       <div class="card">
         <h2>Ayo Isi</h2>
-        <p>Kejadian <span class="tex" data-tex="A"></span> adalah terpilihnya set kesukaanmu, yaitu <b class="fav-ref">set yang kamu pilih di atas</b>.</p>
+        <p>Kejadian <span class="tex" data-tex="A"></span> adalah terpilihnya pasangan pakaian kesukaanmu, yaitu <b class="fav-ref">pasangan pakaian yang kamu pilih di atas</b>.</p>
         <div class="answer-list">
-          <div class="eq-row"><span>Banyak semua set pakaian yang bisa dibuat (semua sel di tabel):</span> <span class="tex" data-tex="n(S)="></span><input type="text" inputmode="numeric" class="box" data-key="a1_nS" aria-label="n(S)"></div>
-          <div class="eq-row"><span>Banyak set di tabel yang sama persis dengan set kesukaanmu:</span> <span class="tex" data-tex="n(A)="></span><input type="text" inputmode="numeric" class="box" data-key="a1_nA" aria-label="n(A)"></div>
+          <div class="eq-row"><span>Banyak semua pasangan pakaian pada tabel Aktivitas 1:</span> <span class="tex" data-tex="n(S)="></span><input type="text" inputmode="numeric" class="box" data-key="a1_nS" aria-label="n(S)"></div>
+          <div class="eq-row"><span>Banyak pasangan pakaian kesukaan pada tabel Aktivitas 1:</span> <span class="tex" data-tex="n(A)="></span><input type="text" inputmode="numeric" class="box" data-key="a1_nA" aria-label="n(A)"></div>
         </div>
         <p class="fill-status" data-status="akt1"></p>
       </div>
@@ -220,89 +221,49 @@
           </ul>
           <div class="example">
             <p class="example-title">Contoh: butik mini</p>
-            <p>Sebuah butik mini hanya punya 2 atasan (AG dan AP) dan 2 bawahan (S dan J), jadi ada 4 set. Kejadian <span class="tex" data-tex="B"></span> adalah terpilihnya set (AG, J). Hanya ada 1 set (AG, J), maka <span class="tex" data-tex="n(B)=1"></span> dan <span class="tex" data-tex="n(S)=4"></span>, sehingga <span class="tex" data-tex="P(B)=\tfrac{1}{4}"></span>.</p>
+            <p>Sebuah butik mini hanya punya 2 atasan (AG dan AP) dan 2 bawahan (S dan J), jadi ada 4 pasangan pakaian. Kejadian <span class="tex" data-tex="B"></span> adalah terpilihnya pasangan pakaian (AG, J). Hanya ada 1 pasangan (AG, J), maka <span class="tex" data-tex="n(B)=1"></span> dan <span class="tex" data-tex="n(S)=4"></span>, sehingga <span class="tex" data-tex="P(B)=\tfrac{1}{4}"></span>.</p>
           </div>
           <p class="hint">Nilai peluang selalu dari 0 sampai 1.</p>
         </div>
 
         <div class="card">
           <h2>Aktivitas 2: Menentukan Peluang Teoretis</h2>
-          <p class="lead">Sekarang hitung peluang teoretis set kesukaanmu, <b class="fav-ref">set yang kamu pilih</b>, di butik Stylist Studio. Ikuti tiga langkah berikut.</p>
           <ol class="step-list">
             <li>
-              <p>Lihat tabel Aktivitas 1. Ada berapa set yang sama persis dengan set kesukaanmu? Tulis di <span class="tex" data-tex="n(A)"></span>.</p>
-              <div class="eq-row"><span class="tex" data-tex="n(A)="></span><input type="text" inputmode="numeric" class="box" data-key="a2_nA" aria-label="n(A)"></div>
-            </li>
-            <li>
-              <p>Ada berapa set pakaian seluruhnya di tabel? Tulis di <span class="tex" data-tex="n(S)"></span>.</p>
-              <div class="eq-row"><span class="tex" data-tex="n(S)="></span><input type="text" inputmode="numeric" class="box" data-key="a2_nS" aria-label="n(S)"></div>
-            </li>
-            <li>
-              <p>Bagi <span class="tex" data-tex="n(A)"></span> dengan <span class="tex" data-tex="n(S)"></span>.</p>
-              <div class="eq-row"><span class="tex" data-tex="P(A)=\dfrac{n(A)}{n(S)}="></span>
+              <p>Peluang teoretis pasangan pakaian kesukaanmu, <b class="fav-ref">pasangan pakaian yang kamu pilih</b>:</p>
+              <div class="eq-row"><span class="tex" data-tex="P(A)="></span>
                 <span class="frac-input"><input type="text" inputmode="numeric" data-key="a2_pNum" aria-label="Pembilang P(A)"><span class="bar"></span><input type="text" inputmode="numeric" data-key="a2_pDen" aria-label="Penyebut P(A)"></span>
               </div>
             </li>
+            <li>
+              <p>Temanmu memilih pasangan pakaian kesukaan yang berbeda, yaitu <b id="friend-ref">(pilih pasangan pakaian kesukaanmu dulu)</b>. Berapa peluang teoretis pasangan pakaian kesukaan temanmu?</p>
+              <div class="eq-row"><span class="tex" data-tex="P="></span><span class="frac-input"><input type="text" inputmode="numeric" data-key="a2_qNum" aria-label="Pembilang"><span class="bar"></span><input type="text" inputmode="numeric" data-key="a2_qDen" aria-label="Penyebut"></span></div>
+            </li>
           </ol>
-          <div class="question">
-            <p class="q">Temanmu memilih set kesukaan yang berbeda darimu. Berapa peluang teoretis set kesukaan temanmu?</p>
-            <div class="eq-row"><span class="tex" data-tex="P="></span><span class="frac-input"><input type="text" inputmode="numeric" data-key="a2_qNum" aria-label="Pembilang"><span class="bar"></span><input type="text" inputmode="numeric" data-key="a2_qDen" aria-label="Penyebut"></span></div>
-          </div>
           <p class="fill-status" data-status="akt2"></p>
         </div>
       </div>
       <div class="pager"><button type="button" class="btn btn-ghost" data-go="2">Kembali</button><button type="button" class="btn btn-primary" data-go="4">Lanjut ke Aktivitas 3</button></div>
     </section>
 
-    <!-- HALAMAN 4: AKTIVITAS 3 -->
-    <section class="page" data-page="4" aria-labelledby="judul-akt3" hidden>
-      <h1 id="judul-akt3" class="page-title">Aktivitas 3: Frekuensi Harapan dan Eksperimen Frekuensi Relatif</h1>
+    <!-- HALAMAN 4: RODA PUTAR DAN FREKUENSI RELATIF -->
+    <section class="page" data-page="4" aria-labelledby="judul-akt3a" hidden>
+      <h1 id="judul-akt3a" class="page-title">Aktivitas 3: Eksperimen Roda Putar dan Frekuensi Relatif</h1>
 
       <div class="card concept">
-        <h2>Mengenal Frekuensi Harapan dan Frekuensi Relatif</h2>
-        <div class="concept-grid">
-          <div class="example">
-            <p class="example-title">Frekuensi harapan</p>
-            <p>Bayangkan roda spin diputar 12 kali. Pada setiap putaran, peluang set kesukaanmu <b class="fav-ref">(set pilihanmu)</b> terpilih adalah <span class="tex" data-tex="\tfrac{1}{6}"></span>. Kira-kira berapa kali set kesukaanmu muncul?</p>
-            <div class="formula small"><span class="tex" data-tex="12\times\dfrac{1}{6}=2\text{ kali}" data-display="1"></span></div>
-            <p>Bilangan 2 ini disebut <b>frekuensi harapan</b>: banyak kemunculan yang kita harapkan. Nilainya dihitung <b>sebelum</b> percobaan, dari peluang teoretis.</p>
-            <p>Untuk kejadian apa pun dan <span class="tex" data-tex="N"></span> kali percobaan berlaku <span class="tex" data-tex="F_h=N\times P(A)"></span>.</p>
-          </div>
-          <div class="example">
-            <p class="example-title">Frekuensi relatif</p>
-            <p>Sekarang roda benar-benar diputar. Misalnya dari 10 putaran, set kesukaanmu muncul 3 kali. Bagian kemunculannya adalah</p>
-            <div class="formula small"><span class="tex" data-tex="\dfrac{3}{10}" data-display="1"></span></div>
-            <p>Pecahan ini disebut <b>frekuensi relatif</b> (disebut juga peluang empiris). Nilainya dihitung <b>sesudah</b> percobaan, dari data nyata.</p>
-            <p>Untuk kejadian apa pun berlaku <span class="tex" data-tex="F_r=\dfrac{k}{N}"></span>, dengan <span class="tex" data-tex="k"></span> banyak kemunculan.</p>
-          </div>
+        <h2>Mengenal Frekuensi Relatif</h2>
+        <div class="example">
+          <p>Misalnya roda diputar 10 kali, dan pasangan pakaian kesukaanmu <b class="fav-ref">(pasangan pilihanmu)</b> muncul 3 kali. Bagian kemunculannya adalah</p>
+          <div class="formula small"><span class="tex" data-tex="\dfrac{3}{10}" data-display="1"></span></div>
+          <p>Pecahan ini disebut <b>frekuensi relatif</b> (disebut juga peluang empiris). Nilainya dihitung <b>sesudah</b> percobaan, dari data nyata.</p>
+          <p>Untuk kejadian apa pun berlaku <span class="tex" data-tex="F_r=\dfrac{k}{N}"></span>, dengan <span class="tex" data-tex="k"></span> banyak kemunculan dan <span class="tex" data-tex="N"></span> banyak percobaan.</p>
         </div>
-        <p class="hint">Contoh di atas hanya ilustrasi. Pada aktivitas ini kamu memakai roda yang diputar 20 kali.</p>
+        <p class="hint">Contoh di atas hanya ilustrasi. Pada aktivitas ini roda diputar 30 kali.</p>
       </div>
 
       <div class="card">
-        <h2>3.1 Menghitung Frekuensi Harapan</h2>
-        <p class="lead">Roda akan diputar 20 kali. Tentukan frekuensi harapan munculnya set kesukaanmu, <b class="fav-ref">set yang kamu pilih</b>.</p>
-        <div class="formula"><span class="tex" data-tex="F_h=N\times P(A)" data-display="1"></span></div>
-        <ul class="where">
-          <li><span class="tex" data-tex="F_h"></span> = frekuensi harapan</li>
-          <li><span class="tex" data-tex="N"></span> = banyak percobaan</li>
-          <li><span class="tex" data-tex="P(A)"></span> = peluang teoretis kejadian</li>
-        </ul>
-        <div class="eq-row wrap">
-          <span class="tex" data-tex="F_h="></span>
-          <input type="text" inputmode="numeric" class="box" data-key="a31_N" aria-label="N">
-          <span class="tex" data-tex="\times"></span>
-          <span class="frac-input"><input type="text" inputmode="numeric" data-key="a31_pNum" aria-label="Pembilang P(A)"><span class="bar"></span><input type="text" inputmode="numeric" data-key="a31_pDen" aria-label="Penyebut P(A)"></span>
-          <span class="tex" data-tex="="></span>
-          <span class="frac-input"><input type="text" inputmode="numeric" data-key="a31_rNum" aria-label="Pembilang hasil frekuensi harapan"><span class="bar"></span><input type="text" inputmode="numeric" data-key="a31_rDen" aria-label="Penyebut hasil frekuensi harapan"></span>
-        </div>
-        <p class="hint">Tulis hasilnya sebagai pecahan: pembilang di kotak atas, penyebut di kotak bawah.</p>
-        <p class="fill-status" data-status="akt31"></p>
-      </div>
-
-      <div class="card">
-        <h2>3.2 Eksperimen Digital Roda Spin</h2>
-        <p class="lead">Putar roda. Setiap putaran memilih satu pasangan pakaian secara acak. Lakukan tepat 20 kali.</p>
+        <h2>3.1 Eksperimen Digital Roda Putar</h2>
+        <p class="lead">Putar roda. Setiap putaran memilih satu pasangan pakaian secara acak. Lakukan tepat 30 kali.</p>
         <div class="spin-lab">
           <div class="spin-char">
             <div class="stage stage-solo" id="spin-stage"></div>
@@ -313,11 +274,11 @@
               <div class="pointer" aria-hidden="true"></div>
               <div class="wheel" id="wheel"></div>
             </div>
-            <p class="spin-result" id="spin-result" role="status" aria-live="polite">Percobaan ke-0 dari 20</p>
+            <p class="spin-result" id="spin-result" role="status" aria-live="polite">Percobaan ke-0 dari 30</p>
             <div class="spin-buttons">
-              <button type="button" class="btn btn-primary" id="spin-once" data-sfx="none">Spin 1 Kali</button>
-              <button type="button" class="btn btn-gold" id="spin-20" data-sfx="none">Randomize 20 Kali</button>
-              <button type="button" class="btn btn-ghost" id="spin-reset">Reset Data</button>
+              <button type="button" class="btn btn-primary" id="spin-once" data-sfx="none">Putar 1 Kali</button>
+              <button type="button" class="btn btn-gold" id="spin-auto" data-sfx="none">Putar Acak 30 Kali</button>
+              <button type="button" class="btn btn-ghost" id="spin-reset">Atur Ulang Data</button>
             </div>
           </div>
           <div class="spin-stats">
@@ -331,15 +292,15 @@
       </div>
 
       <div class="card">
-        <h2>3.3 Menentukan Frekuensi Relatif</h2>
-        <p class="lead">Amati tabel hasil percobaan. Mulailah dari set kesukaanmu (baris bertanda ★), lalu hitung frekuensi relatif semua set.</p>
+        <h2>3.2 Menentukan Frekuensi Relatif</h2>
+        <p class="lead">Amati tabel hasil percobaan. Mulailah dari pasangan pakaian kesukaanmu (baris bertanda ★), lalu hitung frekuensi relatif semua pasangan pakaian.</p>
         <div class="formula"><span class="tex" data-tex="F_r=\dfrac{k}{N}" data-display="1"></span></div>
         <ul class="where">
           <li><span class="tex" data-tex="F_r"></span> = frekuensi relatif</li>
           <li><span class="tex" data-tex="k"></span> = frekuensi kemunculan kejadian</li>
-          <li><span class="tex" data-tex="N"></span> = banyak percobaan, <span class="tex" data-tex="N=20"></span></li>
+          <li><span class="tex" data-tex="N"></span> = banyak percobaan, <span class="tex" data-tex="N=30"></span></li>
         </ul>
-        <p class="locked-inline" id="fr-lock">Selesaikan 20 percobaan pada roda spin untuk mengisi tabel ini.</p>
+        <p class="locked-inline" id="fr-lock">Selesaikan 30 percobaan pada roda putar untuk mengisi tabel ini.</p>
         <div class="table-scroll">
           <table class="stats fr-table" id="fr-table">
             <thead><tr><th scope="col">Pasangan</th><th scope="col" class="num">k</th><th scope="col" class="num">N</th><th scope="col">Frekuensi relatif</th></tr></thead>
@@ -349,17 +310,54 @@
         <p class="hint">Isi pembilang di kotak atas dan penyebut di kotak bawah.</p>
         <p class="fill-status" data-status="akt33"></p>
       </div>
+      <div class="pager"><button type="button" class="btn btn-ghost" data-go="3">Kembali</button><button type="button" class="btn btn-primary" data-go="5">Lanjut ke Frekuensi Harapan</button></div>
+    </section>
+
+    <!-- HALAMAN 5: FREKUENSI HARAPAN -->
+    <section class="page" data-page="5" aria-labelledby="judul-akt3b" hidden>
+      <h1 id="judul-akt3b" class="page-title">Aktivitas 3: Frekuensi Harapan</h1>
+
+      <div class="card concept">
+        <h2>Mengenal Frekuensi Harapan</h2>
+        <div class="example">
+          <p>Bayangkan roda diputar 12 kali. Pada setiap putaran, peluang pasangan pakaian kesukaanmu <b class="fav-ref">(pasangan pilihanmu)</b> terpilih adalah <span class="tex" data-tex="\tfrac{1}{6}"></span>. Kira-kira berapa kali pasangan pakaian kesukaanmu muncul?</p>
+          <div class="formula small"><span class="tex" data-tex="12\times\dfrac{1}{6}=2\text{ kali}" data-display="1"></span></div>
+          <p>Bilangan 2 ini disebut <b>frekuensi harapan</b>: banyak kemunculan yang kita harapkan. Nilainya dihitung <b>sebelum</b> percobaan, dari peluang teoretis.</p>
+          <p>Untuk kejadian apa pun dan <span class="tex" data-tex="N"></span> kali percobaan berlaku <span class="tex" data-tex="F_h=N\times P(A)"></span>.</p>
+        </div>
+        <p class="hint">Contoh di atas hanya ilustrasi. Pada aktivitas ini roda diputar 30 kali.</p>
+      </div>
+
+      <div class="card">
+        <h2>3.3 Menghitung Frekuensi Harapan</h2>
+        <p class="lead">Roda diputar 30 kali. Tentukan frekuensi harapan munculnya pasangan pakaian kesukaanmu, <b class="fav-ref">pasangan pakaian yang kamu pilih</b>.</p>
+        <div class="formula"><span class="tex" data-tex="F_h=N\times P(A)" data-display="1"></span></div>
+        <ul class="where">
+          <li><span class="tex" data-tex="F_h"></span> = frekuensi harapan</li>
+          <li><span class="tex" data-tex="N"></span> = banyak percobaan</li>
+          <li><span class="tex" data-tex="P(A)"></span> = peluang teoretis kejadian</li>
+        </ul>
+        <div class="eq-row wrap">
+          <span class="tex" data-tex="F_h="></span>
+          <input type="text" inputmode="numeric" class="box" data-key="a31_N" aria-label="N">
+          <span class="tex" data-tex="\times"></span>
+          <span class="frac-input"><input type="text" inputmode="numeric" data-key="a31_pNum" aria-label="Pembilang P(A)"><span class="bar"></span><input type="text" inputmode="numeric" data-key="a31_pDen" aria-label="Penyebut P(A)"></span>
+          <span class="tex" data-tex="="></span>
+          <input type="text" inputmode="numeric" class="box" data-key="a31_res" aria-label="Hasil frekuensi harapan">
+        </div>
+        <p class="fill-status" data-status="akt31"></p>
+      </div>
 
       <div class="card">
         <h2>3.4 Membandingkan Frekuensi Harapan dan Frekuensi Relatif</h2>
-        <p class="lead">Kerjakan satu langkah demi satu langkah untuk set kesukaanmu, <b class="fav-ref">set yang kamu pilih</b>.</p>
-        <p class="locked-inline" id="cmp-lock">Pilih set kesukaan di halaman Butik dan selesaikan 20 putaran roda dulu.</p>
+        <p class="lead">Kerjakan satu langkah demi satu langkah untuk pasangan pakaian kesukaanmu, <b class="fav-ref">pasangan pakaian yang kamu pilih</b>.</p>
+        <p class="locked-inline" id="cmp-lock">Pilih pasangan pakaian kesukaan di halaman Butik dan selesaikan 30 putaran roda di halaman Roda Putar dulu.</p>
 
         <div id="cmp-body">
           <div class="cmp-step" id="cmp-step1">
             <p class="cmp-num">Langkah 1</p>
-            <p>Lihat tabel roda spin. Berapa kali set kesukaanmu muncul dari 20 putaran?</p>
-            <div class="eq-row"><input type="text" inputmode="numeric" class="box" data-key="cmp_k" aria-label="Banyak kemunculan set kesukaan"><span>kali</span></div>
+            <p>Lihat tabel roda putar di halaman 4. Berapa kali pasangan pakaian kesukaanmu muncul dari 30 putaran?</p>
+            <div class="eq-row"><input type="text" inputmode="numeric" class="box" data-key="cmp_k" aria-label="Banyak kemunculan pasangan pakaian kesukaan"><span>kali</span></div>
           </div>
 
           <div class="cmp-step" id="cmp-step2" hidden>
@@ -369,24 +367,25 @@
                 <p class="cmp-when">Sebelum roda diputar</p>
                 <p class="cmp-name">Frekuensi harapan</p>
                 <p>Diharapkan muncul <b id="cmp-fh">…</b> kali</p>
-                <p class="cmp-src">dari jawabanmu di 3.1</p>
+                <p class="cmp-src">dari jawabanmu di 3.3</p>
               </div>
               <div class="cmp-card">
                 <p class="cmp-when">Sesudah roda diputar</p>
                 <p class="cmp-name">Frekuensi relatif</p>
-                <p>Benar-benar muncul <b id="cmp-kshow">…</b> kali dari 20</p>
+                <p>Benar-benar muncul <b id="cmp-kshow">…</b> kali dari 30</p>
                 <p class="cmp-src">frekuensi relatifnya <span id="cmp-fr">…</span></p>
               </div>
             </div>
             <fieldset class="mcq">
-              <legend>Set kesukaanmu muncul …</legend>
+              <legend>Pasangan pakaian kesukaanmu muncul …</legend>
               <label><input type="radio" name="cmp_dir" value="a" data-key="cmp_dir"> lebih sering dari yang diharapkan.</label>
-              <label><input type="radio" name="cmp_dir" value="b" data-key="cmp_dir"> lebih jarang dari yang diharapkan.</label>
+              <label><input type="radio" name="cmp_dir" value="b" data-key="cmp_dir"> sama dengan yang diharapkan.</label>
+              <label><input type="radio" name="cmp_dir" value="c" data-key="cmp_dir"> lebih jarang dari yang diharapkan.</label>
             </fieldset>
           </div>
 
           <div class="cmp-take" id="cmp-take" hidden>
-            <b>Ingat:</b> frekuensi harapan dihitung dari peluang <b>sebelum</b> roda diputar. Frekuensi relatif dihitung dari hasil <b>sesudah</b> roda diputar. Keduanya bisa berbeda karena hasil roda spin acak.
+            <b>Ingat:</b> frekuensi harapan dihitung dari peluang <b>sebelum</b> roda diputar. Frekuensi relatif dihitung dari hasil <b>sesudah</b> roda diputar. Keduanya bisa berbeda karena hasil roda putar acak.
           </div>
         </div>
         <p class="fill-status" data-status="akt34"></p>
@@ -394,8 +393,8 @@
 
       <div class="card">
         <h2>3.5 Kesimpulan</h2>
-        <p class="lead">Bandingkan frekuensi relatif semua set dengan peluang teoretisnya.</p>
-        <div class="formula two"><span class="tex" data-tex="P(A)=\dfrac{1}{6}" data-display="1"></span><span class="tex" data-tex="F_r=\dfrac{k}{20}" data-display="1"></span></div>
+        <p class="lead">Bandingkan frekuensi relatif semua pasangan pakaian dengan peluang teoretisnya.</p>
+        <div class="formula two"><span class="tex" data-tex="P(A)=\dfrac{1}{6}" data-display="1"></span><span class="tex" data-tex="F_r=\dfrac{k}{30}" data-display="1"></span></div>
 
         <fieldset class="mcq">
           <legend>1. Apakah frekuensi relatif setiap pasangan pakaian sama dengan peluang teoretisnya?</legend>
@@ -404,8 +403,8 @@
         </fieldset>
         <fieldset class="mcq">
           <legend>2. Mengapa hasil percobaan dapat berbeda dari peluang teoretis?</legend>
-          <label><input type="radio" name="a34_2" value="a" data-key="a34_2"> Karena roda spin tidak adil.</label>
-          <label><input type="radio" name="a34_2" value="b" data-key="a34_2"> Karena hasil setiap putaran acak dan percobaan hanya 20 kali.</label>
+          <label><input type="radio" name="a34_2" value="a" data-key="a34_2"> Karena roda putar tidak adil.</label>
+          <label><input type="radio" name="a34_2" value="b" data-key="a34_2"> Karena hasil setiap putaran acak dan percobaan hanya 30 kali.</label>
           <label><input type="radio" name="a34_2" value="c" data-key="a34_2"> Karena peluang teoretisnya salah dihitung.</label>
         </fieldset>
         <fieldset class="mcq">
@@ -418,11 +417,11 @@
         </fieldset>
         <p class="fill-status" data-status="akt35"></p>
       </div>
-      <div class="pager"><button type="button" class="btn btn-ghost" data-go="3">Kembali</button><button type="button" class="btn btn-primary" data-go="5">Periksa &amp; Kumpulkan</button></div>
+      <div class="pager"><button type="button" class="btn btn-ghost" data-go="4">Kembali</button><button type="button" class="btn btn-primary" data-go="6">Periksa &amp; Kumpulkan</button></div>
     </section>
 
-    <!-- HALAMAN 5: PERIKSA & KUMPULKAN -->
-    <section class="page" data-page="5" aria-labelledby="judul-rekap" hidden>
+    <!-- HALAMAN 6: PERIKSA & KUMPULKAN -->
+    <section class="page" data-page="6" aria-labelledby="judul-rekap" hidden>
       <h1 id="judul-rekap" class="page-title">Periksa dan Kumpulkan</h1>
       <p class="lead">Periksa semua jawabanmu. Tekan <b>Ubah</b> untuk memperbaiki. Jika sudah yakin, tekan <b>Kumpulkan Jawaban</b>, lalu <b>Unduh PDF</b>.</p>
       <div id="recap"></div>
@@ -433,7 +432,7 @@
           <button type="button" class="btn btn-ghost" id="print-btn">Unduh PDF</button>
         </div>
       </div>
-      <div class="pager"><button type="button" class="btn btn-ghost" data-go="4">Kembali</button><span></span></div>
+      <div class="pager"><button type="button" class="btn btn-ghost" data-go="5">Kembali</button><span></span></div>
     </section>
   </main>
 

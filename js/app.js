@@ -4,8 +4,8 @@
   var O = window.Outfits;
   var CFG = window.ELKPD_CONFIG || {};
   var COMBOS = O.combos();
-  var N_TRIALS = 20;
-  var STORE_KEY = 'stylist-studio-sriwijaya-v5';
+  var N_TRIALS = 30;
+  var STORE_KEY = 'stylist-studio-sriwijaya-v6';
   var MEMBER_ROWS = 5;
 
   // Warna sektor roda dan swatch tabel statistik
@@ -100,7 +100,8 @@
     });
     if (n === 1) startCover(); else stopCover();
     if (n === 4) renderFrTable();
-    if (n === 5) { renderRecap(); renderSubmission(); }
+    if (n === 5) renderCmp();
+    if (n === 6) { renderRecap(); renderSubmission(); }
     var target = focusKey && $('[data-key="' + focusKey + '"]');
     if (target) {
       target.scrollIntoView({ block: 'center' });
@@ -185,13 +186,15 @@
   function fav() { var k = a('fav'); return COMBOS.some(function (c) { return c.key === k; }) ? k : ''; }
   function favReady() { return !!fav() && state.sim.total === N_TRIALS; }
   function favK() { return fav() ? state.sim.counts[fav()] : 0; }
+  function friend() { var k = a('friend'); return k && k !== fav() && COMBOS.some(function (c) { return c.key === k; }) ? k : ''; }
+  function allCountsEqual() { return COMBOS.every(function (c) { return state.sim.counts[c.key] === N_TRIALS / 6; }); }
   function frac(numKey, denKey) { return (a(numKey) || '…') + '/' + (a(denKey) || '…'); }
   function val(key) { return a(key) || '…'; }
 
   var MCQ = {
-    cmp_dir: { a: 'Lebih sering dari yang diharapkan.', b: 'Lebih jarang dari yang diharapkan.' },
+    cmp_dir: { a: 'Lebih sering dari yang diharapkan.', b: 'Sama dengan yang diharapkan.', c: 'Lebih jarang dari yang diharapkan.' },
     a34_1: { a: 'Ya, semuanya sama persis.', b: 'Tidak, ada yang berbeda.' },
-    a34_2: { a: 'Roda spin tidak adil.', b: 'Hasil setiap putaran acak dan percobaan hanya 20 kali.', c: 'Peluang teoretisnya salah dihitung.' },
+    a34_2: { a: 'Roda putar tidak adil.', b: 'Hasil setiap putaran acak dan percobaan hanya 30 kali.', c: 'Peluang teoretisnya salah dihitung.' },
     a34_3: { a: 'Hasil percobaan selalu sama dengan peluang teoretis.', b: 'Frekuensi relatif bisa berbeda, tetapi cenderung mendekati 1/6 jika percobaan diperbanyak.', c: 'Pasangan yang paling sering muncul pasti memiliki peluang teoretis terbesar.' }
   };
 
@@ -205,33 +208,35 @@
     { id: 'akt1', title: 'Aktivitas 1', page: 3, items: [
       { id: 'tabel', label: 'Tabel ruang sampel', keys: [], filled: function () { return savedCount() === COMBOS.length; }, show: function () { return savedCount() + ' dari 6 pasangan'; }, ok: function () { return savedCount() === COMBOS.length; } },
       { id: 'a1_nS', label: 'n(S)', keys: ['a1_nS'], show: function () { return val('a1_nS'); }, ok: function () { return isInt('a1_nS', 6); } },
-      { id: 'a1_nA', label: 'n(A), set kesukaan', keys: ['a1_nA'], show: function () { return val('a1_nA'); }, ok: function () { return isInt('a1_nA', 1); } }
+      { id: 'a1_nA', label: 'n(A), pasangan pakaian kesukaan', keys: ['a1_nA'], show: function () { return val('a1_nA'); }, ok: function () { return isInt('a1_nA', 1); } }
     ] },
     { id: 'akt2', title: 'Aktivitas 2', page: 3, items: [
-      { id: 'a2_nA', label: 'n(A)', keys: ['a2_nA'], show: function () { return val('a2_nA'); }, ok: function () { return isInt('a2_nA', 1); } },
-      { id: 'a2_nS', label: 'n(S)', keys: ['a2_nS'], show: function () { return val('a2_nS'); }, ok: function () { return isInt('a2_nS', 6); } },
-      { id: 'a2_p', label: 'P(A)', keys: ['a2_pNum', 'a2_pDen'], show: function () { return frac('a2_pNum', 'a2_pDen'); }, ok: function () { return fracEq('a2_pNum', 'a2_pDen', 1, 6); } },
-      { id: 'a2_q', label: 'Peluang set kesukaan teman', keys: ['a2_qNum', 'a2_qDen'], show: function () { return frac('a2_qNum', 'a2_qDen'); }, ok: function () { return fracEq('a2_qNum', 'a2_qDen', 1, 6); } }
+      { id: 'a2_p', label: 'P(A), pasangan pakaian kesukaan', keys: ['a2_pNum', 'a2_pDen'], show: function () { return frac('a2_pNum', 'a2_pDen'); }, ok: function () { return fracEq('a2_pNum', 'a2_pDen', 1, 6); } },
+      { id: 'a2_q', label: 'Peluang pasangan pakaian kesukaan teman', keys: ['a2_qNum', 'a2_qDen'], show: function () { return frac('a2_qNum', 'a2_qDen'); }, ok: function () { return fracEq('a2_qNum', 'a2_qDen', 1, 6); } }
     ] },
-    { id: 'akt31', title: 'Aktivitas 3.1', page: 4, items: [
-      { id: 'a31_N', label: 'N', keys: ['a31_N'], show: function () { return val('a31_N'); }, ok: function () { return isInt('a31_N', N_TRIALS); } },
-      { id: 'a31_p', label: 'P(A)', keys: ['a31_pNum', 'a31_pDen'], show: function () { return frac('a31_pNum', 'a31_pDen'); }, ok: function () { return fracEq('a31_pNum', 'a31_pDen', 1, 6); } },
-      { id: 'a31_res', label: 'Frekuensi harapan set kesukaan', keys: ['a31_rNum', 'a31_rDen'], show: function () { return frac('a31_rNum', 'a31_rDen'); }, ok: function () { return fracEq('a31_rNum', 'a31_rDen', N_TRIALS, 6); } }
-    ] },
-    { id: 'akt33', title: 'Aktivitas 3.2 dan 3.3', page: 4, items: [
-      { id: 'sim', label: 'Banyak percobaan', keys: [], filled: function () { return state.sim.total === N_TRIALS; }, show: function () { return state.sim.total + ' dari 20'; }, ok: function () { return state.sim.total === N_TRIALS; } }
+    { id: 'akt33', title: 'Aktivitas 3.1 dan 3.2', page: 4, items: [
+      { id: 'sim', label: 'Banyak percobaan', keys: [], filled: function () { return state.sim.total === N_TRIALS; }, show: function () { return state.sim.total + ' dari ' + N_TRIALS; }, ok: function () { return state.sim.total === N_TRIALS; } }
     ].concat(COMBOS.map(function (c) {
       return { id: 'a33_' + c.key, label: 'Fr ' + comboCode(c.key) + ', k = ' + state.sim.counts[c.key], dynamicLabel: true, keys: ['a33n_' + c.key, 'a33d_' + c.key],
         show: function () { return frac('a33n_' + c.key, 'a33d_' + c.key); },
         ok: function () { return state.sim.total === N_TRIALS && fracEq('a33n_' + c.key, 'a33d_' + c.key, state.sim.counts[c.key], N_TRIALS); } };
     })) },
-    { id: 'akt34', title: 'Aktivitas 3.4', page: 4, items: [
-      { id: 'cmp_k', label: 'Banyak muncul set kesukaan', keys: ['cmp_k'], show: function () { return val('cmp_k') + ' kali'; }, ok: function () { return favReady() && near('cmp_k', favK(), 1e-6); } },
-      { id: 'cmp_dir', label: 'Dibanding yang diharapkan', keys: ['cmp_dir'], show: function () { return MCQ.cmp_dir[a('cmp_dir')] || '…'; },
-        ok: function () { return favReady() && a('cmp_dir') === (favK() > N_TRIALS / 6 ? 'a' : 'b'); } }
+    { id: 'akt31', title: 'Aktivitas 3.3', page: 5, items: [
+      { id: 'a31_N', label: 'N', keys: ['a31_N'], show: function () { return val('a31_N'); }, ok: function () { return isInt('a31_N', N_TRIALS); } },
+      { id: 'a31_p', label: 'P(A)', keys: ['a31_pNum', 'a31_pDen'], show: function () { return frac('a31_pNum', 'a31_pDen'); }, ok: function () { return fracEq('a31_pNum', 'a31_pDen', 1, 6); } },
+      { id: 'a31_res', label: 'Frekuensi harapan pasangan kesukaan', keys: ['a31_res'], show: function () { return val('a31_res'); }, ok: function () { return isInt('a31_res', N_TRIALS / 6); } }
     ] },
-    { id: 'akt35', title: 'Aktivitas 3.5', page: 4, items: [
-      { id: 'a34_1', label: 'Pertanyaan 1', keys: ['a34_1'], show: function () { return MCQ.a34_1[a('a34_1')] || '…'; }, ok: function () { return a('a34_1') === 'b'; } },
+    { id: 'akt34', title: 'Aktivitas 3.4', page: 5, items: [
+      { id: 'cmp_k', label: 'Banyak muncul pasangan kesukaan', keys: ['cmp_k'], show: function () { return val('cmp_k') + ' kali'; }, ok: function () { return favReady() && near('cmp_k', favK(), 1e-6); } },
+      { id: 'cmp_dir', label: 'Dibanding yang diharapkan', keys: ['cmp_dir'], show: function () { return MCQ.cmp_dir[a('cmp_dir')] || '…'; },
+        ok: function () {
+          var fh = N_TRIALS / 6;
+          return favReady() && a('cmp_dir') === (favK() > fh ? 'a' : favK() === fh ? 'b' : 'c');
+        } }
+    ] },
+    { id: 'akt35', title: 'Aktivitas 3.5', page: 5, items: [
+      { id: 'a34_1', label: 'Pertanyaan 1', keys: ['a34_1'], show: function () { return MCQ.a34_1[a('a34_1')] || '…'; },
+        ok: function () { return state.sim.total === N_TRIALS && a('a34_1') === (allCountsEqual() ? 'a' : 'b'); } },
       { id: 'a34_2', label: 'Pertanyaan 2', keys: ['a34_2'], show: function () { return MCQ.a34_2[a('a34_2')] || '…'; }, ok: function () { return a('a34_2') === 'b'; } },
       { id: 'a34_3', label: 'Pertanyaan 3', keys: ['a34_3'], show: function () { return MCQ.a34_3[a('a34_3')] || '…'; }, ok: function () { return a('a34_3') === 'b'; } }
     ] }
@@ -339,10 +344,10 @@
     renderCross();
     updateStatuses();
     var n = savedCount();
-    notice('ok', 'Set tersimpan!', comboName(key) + ' ' + comboCode(key) + (n === COMBOS.length ? '. Keenam set lengkap, Aktivitas 2 sudah terbuka.' : '. ' + n + ' dari 6 set tersimpan.'), key);
+    notice('ok', 'Pasangan pakaian tersimpan!', comboName(key) + ' ' + comboCode(key) + (n === COMBOS.length ? '. Keenam pasangan pakaian lengkap, Aktivitas 2 sudah terbuka.' : '. ' + n + ' dari 6 pasangan pakaian tersimpan.'), key);
   }
 
-  /* ---------- set kesukaan ---------- */
+  /* ---------- pasangan pakaian kesukaan ---------- */
 
   function buildFav() {
     $('#fav-choices').innerHTML = COMBOS.map(function (c) {
@@ -353,12 +358,21 @@
     $all('[data-fav]').forEach(function (btn) {
       btn.addEventListener('click', function () {
         state.answers.fav = btn.getAttribute('data-fav');
+        pickFriend();
         touched();
         renderFav();
         renderSim();
         updateStatuses();
       });
     });
+  }
+
+  // Pasangan teman dipilih acak sekali dari 5 pasangan lain, lalu tetap.
+  // Diacak ulang hanya jika siswa mengganti kesukaannya menjadi pasangan teman.
+  function pickFriend() {
+    if (friend()) return;
+    var others = COMBOS.filter(function (c) { return c.key !== fav(); });
+    state.answers.friend = others[fairIndex(others.length)].key;
   }
 
   function renderFav() {
@@ -369,8 +383,10 @@
       el.textContent = k ? comboName(k) + ' ' + comboCode(k) : el.dataset.empty;
     });
     $('#fav-note').innerHTML = k
-      ? 'Set kesukaanmu: <b>' + esc(comboName(k) + ' ' + comboCode(k)) + '</b>. Set ini menjadi kejadian <i>A</i> pada aktivitas berikutnya.'
-      : 'Pilih satu set. Set kesukaanmu akan menjadi kejadian <i>A</i> pada aktivitas berikutnya.';
+      ? 'Pasangan pakaian kesukaanmu: <b>' + esc(comboName(k) + ' ' + comboCode(k)) + '</b>. Pasangan ini menjadi kejadian <i>A</i> pada aktivitas berikutnya.'
+      : 'Pilih satu pasangan pakaian. Pasangan pakaian kesukaanmu akan menjadi kejadian <i>A</i> pada aktivitas berikutnya.';
+    var f = friend();
+    $('#friend-ref').textContent = f ? comboName(f) + ' ' + comboCode(f) : '(pilih pasangan pakaian kesukaanmu dulu)';
     renderCmp();
   }
 
@@ -384,9 +400,9 @@
     var s2 = s1 && a('cmp_dir') !== '';
     $('#cmp-step2').hidden = !s1;
     $('#cmp-take').hidden = !s2;
-    $('#cmp-fh').textContent = a('a31_rNum') && a('a31_rDen') ? frac('a31_rNum', 'a31_rDen') : '(isi 3.1 dulu)';
+    $('#cmp-fh').textContent = a('a31_res') || '(isi 3.3 dulu)';
     $('#cmp-kshow').textContent = a('cmp_k') || '…';
-    $('#cmp-fr').textContent = (a('cmp_k') || '…') + '/20';
+    $('#cmp-fr').textContent = (a('cmp_k') || '…') + '/' + N_TRIALS;
   }
 
   function savedCount() { return COMBOS.filter(function (c) { return state.boutique.saved[c.key]; }).length; }
@@ -408,7 +424,7 @@
     $('#akt2').hidden = !done;
   }
 
-  /* ---------- roda spin ---------- */
+  /* ---------- roda putar ---------- */
 
   function buildWheel() {
     var r = 100;
@@ -424,7 +440,7 @@
     });
     var ring = '<circle r="104" fill="none" stroke="#D9A82E" stroke-width="8"/><circle r="108" fill="none" stroke="#3A2318" stroke-width="2"/>';
     var hub = '<circle r="16" fill="#D9A82E" stroke="#3A2318" stroke-width="2"/><circle r="6" fill="#7A1F2B"/>';
-    $('#wheel').innerHTML = '<svg viewBox="-112 -112 224 224" role="img" aria-label="Roda spin enam pasangan pakaian dengan sektor sama besar">' + parts.join('') + ring + hub + '</svg>';
+    $('#wheel').innerHTML = '<svg viewBox="-112 -112 224 224" role="img" aria-label="Roda putar enam pasangan pakaian dengan sektor sama besar">' + parts.join('') + ring + hub + '</svg>';
     setWheel(state.sim.rotation || 0, 0);
   }
 
@@ -503,7 +519,7 @@
   function renderSim() {
     var sim = state.sim;
     $('#stats-table tbody').innerHTML = COMBOS.map(function (c) {
-      var star = fav() === c.key ? ' <span class="star" title="Set kesukaanmu">★</span>' : '';
+      var star = fav() === c.key ? ' <span class="star" title="Pasangan pakaian kesukaanmu">★</span>' : '';
       return '<tr class="' + (sim.last === c.key ? 'hit' : '') + '"><td><span class="swatch" style="background:' + SECTOR[c.key].fill + '"></span>' + comboCode(c.key) + star + '</td><td class="num">' + sim.counts[c.key] + '</td></tr>';
     }).join('');
     $('#stats-total').textContent = sim.total;
@@ -511,8 +527,8 @@
     $('#spin-stage').innerHTML = O.character(p[0], p[1]);
     $('#spin-label').textContent = sim.last ? comboName(sim.last) : 'Belum ada hasil';
     $('#spin-result').textContent = sim.last
-      ? 'Percobaan ke-' + sim.total + ' dari 20: ' + comboCode(sim.last)
-      : 'Percobaan ke-0 dari 20';
+      ? 'Percobaan ke-' + sim.total + ' dari ' + N_TRIALS + ': ' + comboCode(sim.last)
+      : 'Percobaan ke-0 dari ' + N_TRIALS;
     updateSpinButtons();
     renderFrTable();
     renderCmp();
@@ -520,7 +536,7 @@
 
   function updateSpinButtons() {
     $('#spin-once').disabled = spinning || state.sim.total >= N_TRIALS;
-    $('#spin-20').disabled = spinning;
+    $('#spin-auto').disabled = spinning;
     $('#spin-reset').disabled = spinning;
   }
 
@@ -542,13 +558,13 @@
         spinning = false;
         updateSpinButtons();
         updateStatuses();
-        if (state.sim.total === N_TRIALS) toast('20 percobaan selesai! Lanjutkan ke bagian 3.3.');
+        if (state.sim.total === N_TRIALS) toast(N_TRIALS + ' percobaan selesai! Lanjutkan ke bagian 3.2.');
       });
     });
 
-    $('#spin-20').addEventListener('click', function () {
+    $('#spin-auto').addEventListener('click', function () {
       if (spinning) return;
-      if (state.sim.total > 0 && !window.confirm('Data percobaan akan diulang dari nol, lalu roda diputar 20 kali. Lanjutkan?')) return;
+      if (state.sim.total > 0 && !window.confirm('Data percobaan akan diulang dari nol, lalu roda diputar ' + N_TRIALS + ' kali. Lanjutkan?')) return;
       resetSim();
       spinning = true;
       updateSpinButtons();
@@ -558,7 +574,7 @@
           spinning = false;
           updateSpinButtons();
           updateStatuses();
-          toast('20 percobaan selesai! Lanjutkan ke bagian 3.3.');
+          toast(N_TRIALS + ' percobaan selesai! Lanjutkan ke bagian 3.2.');
           return;
         }
         spinOnce(step).then(loop);
@@ -568,7 +584,7 @@
     $('#spin-reset').addEventListener('click', function () {
       if (spinning) return;
       resetSim();
-      toast('Data simulasi direset ke nol.');
+      toast('Data percobaan diatur ulang ke nol.');
     });
   }
 
@@ -583,7 +599,7 @@
     var body = $('#fr-table tbody');
     body.innerHTML = COMBOS.map(function (c) {
       var isFav = fav() === c.key;
-      return '<tr' + (isFav ? ' class="fav-row"' : '') + '><td>' + comboCode(c.key) + (isFav ? ' <span class="star" title="Set kesukaanmu">★</span>' : '') + '</td><td class="num">' + (ready ? sim.counts[c.key] : '–') + '</td><td class="num">20</td>' +
+      return '<tr' + (isFav ? ' class="fav-row"' : '') + '><td>' + comboCode(c.key) + (isFav ? ' <span class="star" title="Pasangan pakaian kesukaanmu">★</span>' : '') + '</td><td class="num">' + (ready ? sim.counts[c.key] : '–') + '</td><td class="num">20</td>' +
         '<td><span class="frac-input">' +
         '<input type="text" inputmode="numeric" data-key="a33n_' + c.key + '" aria-label="Pembilang frekuensi relatif ' + comboCode(c.key) + '"' + (ready ? '' : ' disabled') + '>' +
         '<span class="bar"></span>' +
@@ -607,7 +623,7 @@
       '<li><span>Nama kelompok</span><span>' + esc(a('id_kelompok') || '-') + '</span></li>' +
       '<li><span>Kelas/Semester</span><span>' + esc(a('id_kelas') || '-') + '</span></li>' +
       (members.join('') || '<li><span>Anggota</span><span class="status-empty">Belum diisi</span></li>') +
-      '<li><span>Set kesukaan (kejadian A)</span><span>' + (fav() ? esc(comboName(fav()) + ' ' + comboCode(fav())) : '<span class="status-empty">Belum dipilih</span>') + '</span></li></ul></div>';
+      '<li><span>Pasangan pakaian kesukaan (kejadian A)</span><span>' + (fav() ? esc(comboName(fav()) + ' ' + comboCode(fav())) : '<span class="status-empty">Belum dipilih</span>') + '</span></li></ul></div>';
 
     html += '<div class="recap-grid">';
     GROUPS.forEach(function (g) {
@@ -623,7 +639,7 @@
       });
       html += '</ul></div>';
     });
-    html += '<div class="card"><div class="recap-head"><h2>Kesimpulan Kelompok</h2><button type="button" class="btn-edit" data-edit="4" data-focus="a34_text">Ubah</button></div><p>' +
+    html += '<div class="card"><div class="recap-head"><h2>Kesimpulan Kelompok</h2><button type="button" class="btn-edit" data-edit="5" data-focus="a34_text">Ubah</button></div><p>' +
       (a('a34_text') ? esc(a('a34_text')) : '<span class="status-empty">Belum ditulis</span>') + '</p></div>';
     html += '</div>';
     $('#recap').innerHTML = html;
@@ -812,7 +828,7 @@
           ['Nama kelompok', a('id_kelompok') || '-'],
           ['Kelas/Semester', a('id_kelas') || '-'],
           ['Anggota', members.join('\n') || '-'],
-          ['Set kesukaan', fav() ? comboName(fav()) + ' ' + comboCode(fav()) : '-']
+          ['Pasangan kesukaan', fav() ? comboName(fav()) + ' ' + comboCode(fav()) : '-']
         ]
       });
       var y = Math.max(doc.lastAutoTable.finalY, by + 30) + 6;
@@ -839,7 +855,7 @@
       doc.autoTable({
         startY: y,
         margin: { left: M, right: M },
-        head: [['Data roda spin (N = ' + state.sim.total + ')', 'Banyak muncul (k)']],
+        head: [['Data roda putar (N = ' + state.sim.total + ')', 'Banyak muncul (k)']],
         body: COMBOS.map(function (c) { return [comboName(c.key) + ' ' + comboCode(c.key), String(state.sim.counts[c.key])]; }),
         styles: { fontSize: 9.5, cellPadding: 1.8, textColor: INK },
         headStyles: { fillColor: MAROON, textColor: [255, 244, 226] },
@@ -930,6 +946,7 @@
     updateDressing();
     renderCross();
     renderSim();
+    if (fav()) pickFriend();
     renderFav();
     updateStatuses();
 

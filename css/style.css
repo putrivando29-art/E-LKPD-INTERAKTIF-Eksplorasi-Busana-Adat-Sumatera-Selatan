@@ -396,7 +396,7 @@ input.bad { border-color: var(--bad); background: var(--bad-bg); }
   .brand { font-size: 1rem; }
 
   /* tab: lima kolom tetap, angka di atas, label pendek di bawah */
-  .tabs { order: 2; width: 100%; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; overflow: visible; }
+  .tabs { order: 2; width: 100%; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 3px; overflow: visible; }
   .tab { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0;
          padding: 4px 2px; border-radius: 10px; font-size: .74rem; line-height: 1.15; min-height: 46px; }
   .tab b { font-size: .95rem; }
@@ -631,3 +631,19 @@ main.shake, .notice-dup.pop { animation: shake .45s ease-in-out; }
   .cmp-cards { grid-template-columns: 1fr; }
 }
 .cmp-hint { display: inline-block; background: #FFF6E4; border: 2px dashed var(--gold); border-radius: 10px; padding: 4px 12px; font-weight: 800; color: var(--maroon); }
+
+@media (max-width: 380px) {
+  .tab { font-size: .64rem; padding: 4px 1px; }
+}
+
+/* laptop kecil: enam tab + tombol suara muat satu baris */
+@media (min-width: 761px) and (max-width: 1280px) {
+  .sound-label { display: none; }
+  .sound-toggle { padding: 6px 10px; }
+  .tab { padding: 6px 11px; }
+}
+@media (min-width: 761px) and (max-width: 1050px) {
+  .tab .t-long { display: none; }
+  .tab .t-short { display: inline; }
+  .tab { padding: 6px 9px; font-size: .85rem; }
+}
