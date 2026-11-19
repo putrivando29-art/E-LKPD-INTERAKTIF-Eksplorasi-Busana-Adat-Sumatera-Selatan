@@ -125,7 +125,26 @@
     if (!musicReady || !prefs.music || document.hidden) return;
     applyMusicVolume();
     var p = music.play();
-    if (p && p.catch) p.catch(function () { /* menunggu interaksi pengguna */ });
+    // HP sering menolak memutar ulang sesudah web ditinggal. Coba lagi pada sentuhan berikutnya.
+    if (p && p.catch) p.catch(function () { waitGesture(); });
+  }
+
+  var gestureArmed = false;
+  function onGesture() {
+    gestureArmed = false;
+    userInteracted = true;
+    document.removeEventListener('pointerdown', onGesture, true);
+    document.removeEventListener('touchend', onGesture, true);
+    document.removeEventListener('keydown', onGesture, true);
+    audioCtx();
+    startMusic();
+  }
+  function waitGesture() {
+    if (gestureArmed) return;
+    gestureArmed = true;
+    document.addEventListener('pointerdown', onGesture, true);
+    document.addEventListener('touchend', onGesture, true);
+    document.addEventListener('keydown', onGesture, true);
   }
   function stopMusic() { if (music) music.pause(); }
 
@@ -199,15 +218,7 @@
     setupMusic();
 
     // Browser baru mengizinkan suara setelah ada interaksi pertama.
-    var firstGesture = function () {
-      userInteracted = true;
-      audioCtx();
-      startMusic();
-      document.removeEventListener('pointerdown', firstGesture, true);
-      document.removeEventListener('keydown', firstGesture, true);
-    };
-    document.addEventListener('pointerdown', firstGesture, true);
-    document.addEventListener('keydown', firstGesture, true);
+    waitGesture();
 
     // Bunyi klik untuk semua elemen interaktif, kecuali yang punya bunyi sendiri.
     document.addEventListener('click', function (e) {
@@ -218,9 +229,17 @@
       play(name || 'click');
     });
 
+    // Musik berhenti saat web ditinggal, lalu berbunyi lagi saat siswa kembali.
+    function resume() {
+      if (ctx && ctx.state !== 'running') { try { ctx.resume(); } catch (e) { /* abaikan */ } }
+      if (userInteracted) startMusic(); else waitGesture();
+    }
     document.addEventListener('visibilitychange', function () {
-      if (document.hidden) stopMusic(); else if (userInteracted) startMusic();
+      if (document.hidden) stopMusic(); else resume();
     });
+    window.addEventListener('pagehide', stopMusic);
+    window.addEventListener('pageshow', function (e) { if (e.persisted) resume(); });
+    window.addEventListener('focus', function () { if (!document.hidden && music && music.paused) resume(); });
   }
 
   window.Sfx = { play: play };

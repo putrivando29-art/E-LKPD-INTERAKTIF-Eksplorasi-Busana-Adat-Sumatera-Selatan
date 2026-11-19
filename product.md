@@ -85,6 +85,11 @@ Rincian dan tautannya ada di halaman Informasi Media (`informasi-media.html`).
 
 Laptop dan tablet memakai 6 tab di bagian atas (label pendek di lebar 761–1050 px). Di HP (≤ 760 px) tab diganti satu baris navigasi: tombol ‹, daftar pilihan "3 dari 6 · Butik", dan tombol ›.
 
+**Perilaku di HP:**
+- Tombol **kembali** HP menutup dulu papan ketik rumus atau kotak dialog yang terbuka, lalu pindah ke halaman E-LKPD yang sebelumnya dibuka. Web baru ditinggalkan jika siswa menekan kembali dari halaman pertama yang dibuka.
+- Kotak rumus baru aktif jika benar-benar **diketuk**. Geseran layar yang dimulai di atas kotak tetap menggulung halaman dan tidak memunculkan papan ketik.
+- Musik berhenti saat web ditinggal dan berbunyi lagi saat siswa kembali. Jika browser HP menolak memutar otomatis, musik berbunyi pada sentuhan pertama sesudah kembali.
+
 | Halaman | Isi |
 | --- | --- |
 | 1. Sampul | Judul, topik, karakter berganti busana, identitas peserta didik, pemberitahuan jika identitas itu sudah mengumpulkan, tautan "Mulai sebagai siswa baru" |
@@ -458,6 +463,7 @@ Belum diuji: HP fisik, Safari iOS, dan pengiriman ke Google Sheet sungguhan.
 | 13 | Bagian Jawab tidak lagi terisi otomatis; Jawab menjadi tiga langkah (pilih rumus, masukkan angka, hasil); 2.4 memakai Diketahui/Ditanya/Jawab; kalimat "Tulis alasanmu" diganti pertanyaan langsung; Apps Script punya doGet untuk cek aktif; 54 butir |
 | 14 | Pilihan rumus dan pilihan Ditanya dihapus; soal 2.1, 2.3, 2.4, 3.1, 3.2, 4.2 menjadi jawaban uraian yang ditulis siswa baris demi baris di kotak rumus MathLive dengan papan ketik pecahan; kalimat Jadi dinilai otomatis, langkah dinilai guru; contoh penulisan jawaban; 24 butir otomatis |
 | 15 | Soal Mudah (2.1 dan 4.2) kembali cukup diisi hasilnya; format uraian hanya untuk soal Sedang dan Sulit (2.3, 2.4, 3.1, 3.2) |
+| 16 | HP: tombol kembali menutup papan ketik/dialog lalu pindah halaman; kotak rumus hanya aktif saat diketuk, bukan saat layar digeser; musik berbunyi lagi saat kembali ke web |
 ---
 
 ## 16. Sumber

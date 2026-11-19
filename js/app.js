@@ -244,14 +244,99 @@
         document.body.style.paddingBottom = h ? h + 'px' : '';
         var f = document.activeElement;
         if (h && f && f.tagName === 'MATH-FIELD') f.scrollIntoView({ block: 'center' });
+        syncOverlay();
       });
     }
   }
 
-  /* ---------- navigasi halaman  /* ---------- navigasi halaman ---------- */
+  /* ---------- navigasi halaman  /* ---------- tombol kembali HP ---------- */
 
-  function showPage(n, focusKey) {
+  // Tombol kembali menutup dulu yang sedang terbuka (papan ketik, kotak dialog),
+  // lalu pindah ke halaman E-LKPD sebelumnya. Setiap jendela yang terbuka
+  // diberi satu langkah riwayat; jika ditutup lewat tombolnya, langkah itu dibuang.
+  var overlayPushed = false;
+  var ignorePop = false;
+  var overlayTimer = null;
+
+  function keyboardOpen() { return !!(window.mathVirtualKeyboard && window.mathVirtualKeyboard.visible); }
+  function anyOverlay() { return !$('#modal').hidden || keyboardOpen(); }
+
+  function syncOverlay() {
+    clearTimeout(overlayTimer);
+    overlayTimer = setTimeout(function () {
+      if (!window.history || !history.pushState) return;
+      var open = anyOverlay();
+      if (open && !overlayPushed) {
+        history.pushState({ elkpd: 'overlay', p: state.page }, '');
+        overlayPushed = true;
+      } else if (!open && overlayPushed) {
+        overlayPushed = false;
+        ignorePop = true;
+        history.back();
+      }
+    }, 250);
+  }
+
+  function closeOverlays() {
+    if (!$('#modal').hidden) $('#modal-cancel').click();
+    if (keyboardOpen()) {
+      // Fokus kotak rumus ada di dalam shadow DOM; blur() pada kotaknya saja tidak cukup.
+      var f = document.activeElement;
+      if (f && f.tagName === 'MATH-FIELD') {
+        var inner = f.shadowRoot && f.shadowRoot.activeElement;
+        if (inner) inner.blur();
+        f.blur();
+      }
+      window.mathVirtualKeyboard.hide();
+    }
+  }
+
+  function setupBackButton() {
+    if (!window.history || !history.replaceState) return;
+    history.replaceState({ elkpd: 'page', p: state.page || 1 }, '');
+    window.addEventListener('popstate', function (e) {
+      if (ignorePop) { ignorePop = false; return; }
+      overlayPushed = false;
+      if (anyOverlay()) { closeOverlays(); return; }
+      var target = e.state && e.state.p;
+      if (target && target !== state.page) showPage(target, null, true);
+    });
+  }
+
+  // Di layar sentuh, kotak rumus baru aktif jika benar-benar diketuk.
+  // Sentuhan yang berubah menjadi geseran layar diabaikan.
+  function setupTapToFocus() {
+    var start = null;
+    document.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'mouse') return;
+      var mf = e.target.closest && e.target.closest('math-field');
+      if (!mf || mf === document.activeElement) { start = null; return; }
+      e.preventDefault();
+      start = { mf: mf, x: e.clientX, y: e.clientY, t: Date.now(), id: e.pointerId };
+    }, true);
+    document.addEventListener('pointermove', function (e) {
+      if (start && e.pointerId === start.id && Math.abs(e.clientY - start.y) + Math.abs(e.clientX - start.x) > 10) start = null;
+    }, true);
+    document.addEventListener('pointercancel', function () { start = null; }, true);
+    document.addEventListener('pointerup', function (e) {
+      if (!start || e.pointerId !== start.id) return;
+      var mf = start.mf;
+      var quick = Date.now() - start.t < 700;
+      start = null;
+      if (!quick) return;
+      mf.focus();
+      if (window.mathVirtualKeyboard) window.mathVirtualKeyboard.show();
+    }, true);
+  }
+
+  /* ---------- navigasi halaman ---------- */
+
+  function showPage(n, focusKey, fromHistory) {
     n = Math.max(1, Math.min(PAGES, n));
+    if (!fromHistory && window.history && history.pushState) {
+      if (overlayPushed) { overlayPushed = false; history.replaceState({ elkpd: 'page', p: n }, ''); }
+      else if (n !== state.page || !history.state) history.pushState({ elkpd: 'page', p: n }, '');
+    }
     state.page = n;
     save();
     $all('.page').forEach(function (p) { p.hidden = Number(p.getAttribute('data-page')) !== n; });
@@ -968,7 +1053,8 @@
     cancelBtn.textContent = cancelLabel;
     m.hidden = false;
     okBtn.focus();
-    function close() { m.hidden = true; okBtn.removeEventListener('click', ok); cancelBtn.removeEventListener('click', close); }
+    syncOverlay();
+    function close() { m.hidden = true; okBtn.removeEventListener('click', ok); cancelBtn.removeEventListener('click', close); syncOverlay(); }
     function ok() { close(); onOk(); }
     okBtn.addEventListener('click', ok);
     cancelBtn.addEventListener('click', close);
@@ -1314,6 +1400,8 @@
       else if (!$('#notice').hidden) hideNotice();
     });
     bindSpin();
+    setupBackButton();
+    setupTapToFocus();
 
     document.addEventListener('visibilitychange', function () {
       if (document.hidden) stopCover(); else if (state.page === 1) startCover();

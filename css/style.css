@@ -824,3 +824,6 @@ math-field.mf::part(placeholder) { color: #9A8573; }
   .essay { padding-left: 10px; }
   .recap-list li.r-essay .r-ans { align-items: flex-start; }
 }
+
+/* Kotak rumus: geseran yang dimulai di atas kotak tetap menggulung halaman */
+math-field.mf, math-field.mf::part(container), math-field.mf::part(content) { touch-action: pan-x pan-y; }
