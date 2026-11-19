@@ -99,12 +99,10 @@
   // Siswa menulis sendiri setiap baris di kotak rumus (MathLive). Isinya LaTeX.
   // Hanya kalimat "Jadi" yang dinilai otomatis; langkah lainnya dinilai guru.
   var ESSAY = {
-    a21: { no: '2.1', jadi: 'Jadi, peluang terpilihnya pasangan kesukaanmu adalah', akhir: '.', target: function () { return 1 / 6; } },
     a23: { no: '2.3', jadi: 'Jadi, peluang terpilihnya pasangan bersongket adalah', akhir: '.', target: function () { return 3 / 6; } },
     a24: { no: '2.4', jadi: 'Jadi, peluang terpilihnya pasangan yang memakai Aesan Gede adalah', akhir: '.', target: function () { return 2 / 6; } },
     a31: { no: '3.1', jadi: 'Jadi, pasangan kesukaanmu diharapkan muncul', akhir: 'kali.', target: function () { return N_TRIALS / 6; } },
-    a32: { no: '3.2', jadi: 'Jadi, pasangan bersongket diharapkan muncul', akhir: 'kali.', target: function () { return 30; } },
-    a42: { no: '4.2', jadi: 'Jadi, frekuensi relatif pasangan kesukaanmu adalah', akhir: '.', target: function () { return favK() / N_TRIALS; } }
+    a32: { no: '3.2', jadi: 'Jadi, pasangan bersongket diharapkan muncul', akhir: 'kali.', target: function () { return 30; } }
   };
   var PARTS = [
     { suffix: '_dk', title: 'Diketahui', lines: 2 },
@@ -380,8 +378,7 @@
       show: function () { return latexText(a(id + '_final')); },
       ok: function () { return finalOk(id); },
       how: id.charAt(1) === '2' ? 'Tulis rumus peluang teoretis, masukkan banyak anggota kejadian dan n(S) dari tabel, lalu hitung.'
-        : id.charAt(1) === '3' ? 'Tulis rumus frekuensi harapan, masukkan N dan peluangnya, lalu kalikan.'
-        : 'Tulis rumus frekuensi relatif, masukkan k dari tabel hasil roda dan N, lalu hitung.' });
+        : 'Tulis rumus frekuensi harapan, masukkan N dan peluangnya, lalu kalikan.' });
     return list;
   }
 
@@ -405,7 +402,7 @@
       num('a1_nA', 'n(A), pasangan kesukaanmu', 'a1_nA', 1, 'Cari sel yang sama dengan pasangan kesukaanmu. Hitung ada berapa.')
     ] },
     { id: 'akt2', title: 'Aktivitas 2: Peluang Teoretis', page: 3, items: [].concat(
-      essay('a21'),
+      fr('a21_p', '2.1 Peluang pasangan kesukaanmu', 'a21_pNum', 'a21_pDen', 1, 6, 'Peluang teoretis = n(A) dibagi n(S). Lihat tabel Aktivitas 1.'),
       fr('a22', '2.2 Peluang pasangan teman', 'a22_num', 'a22_den', 1, 6, 'Setiap pasangan punya kesempatan sama. Hitung seperti peluang pasanganmu.'),
       essay('a23'),
       essay('a24')
@@ -413,8 +410,9 @@
     { id: 'akt3', title: 'Aktivitas 3: Frekuensi Harapan', page: 4, items: [].concat(essay('a31'), essay('a32')) },
     { id: 'akt4', title: 'Aktivitas 4: Frekuensi Relatif', page: 5, items: [
       { id: 'sim', label: '4.1 Banyak putaran', keys: [], filled: simDone, show: function () { return state.sim.total + ' dari ' + N_TRIALS; },
-        ok: simDone, how: 'Putar roda sampai 30 kali.' }
-    ].concat(essay('a42')) },
+        ok: simDone, how: 'Putar roda sampai 30 kali.' },
+      fr('a42_fr', '4.2 Frekuensi relatif pasangan kesukaanmu', 'a42_num', 'a42_den', favK, N_TRIALS, 'Frekuensi relatif = k dibagi N. Ambil k dari tabel hasil roda.')
+    ] },
     { id: 'akt43', title: 'Aktivitas 4.3: Frekuensi Relatif Semua Pasangan', page: 5, items: function () {
       return COMBOS.filter(function (c) { return c.key !== fav(); }).map(function (c) {
         return { id: 'a43_' + c.key, label: 'Fr ' + comboCode(c.key) + ', k = ' + state.sim.counts[c.key], keys: ['a43n_' + c.key, 'a43d_' + c.key],
@@ -812,10 +810,11 @@
     $('#akt4-body').hidden = !ready;
     texOr($('#cmp-fh'), a('a31_final'));
     $('#cmp-k').textContent = simDone() ? favK() : '…';
-    texOr($('#cmp-fr'), a('a42_final'));
+    texOr($('#cmp-fr'), favFrTex());
     var favCell = $('#fr-table .fr-fav');
-    if (favCell) texOr(favCell, a('a42_final'), 'isi di 4.2');
+    if (favCell) texOr(favCell, favFrTex(), 'isi di 4.2');
   }
+  function favFrTex() { return a('a42_num') && a('a42_den') ? '\\frac{' + a('a42_num').replace(/\D/g, '') + '}{' + a('a42_den').replace(/\D/g, '') + '}' : ''; }
   function texOr(el, latex, empty) {
     if (latex) tex(el, latex); else el.textContent = empty || '…';
   }

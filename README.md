@@ -17,7 +17,7 @@ E-LKPD interaktif Matematika SMP kelas VIII: peluang teoretis, frekuensi relatif
 
 ## Perilaku penting
 
-- Soal hitungan berupa **jawaban uraian**: siswa menulis sendiri Diketahui, Ditanya, dan Jawab baris demi baris, lalu kalimat "Jadi". Setiap baris memakai kotak rumus MathLive (`vendor/mathlive`), jadi pecahan tampil bertumpuk; di HP muncul papan ketik berisi tombol pecahan. Kalimat Jadi dinilai otomatis, langkahnya dinilai guru dari PDF. Setiap soal diberi label Mudah, Sedang, atau Sulit.
+- Soal Mudah cukup diisi hasilnya. Soal Sedang dan Sulit berupa **jawaban uraian**: siswa menulis sendiri Diketahui, Ditanya, dan Jawab baris demi baris, lalu kalimat "Jadi". Setiap baris memakai kotak rumus MathLive (`vendor/mathlive`), jadi pecahan tampil bertumpuk; di HP muncul papan ketik berisi tombol pecahan. Kalimat Jadi dinilai otomatis, langkahnya dinilai guru dari PDF. Setiap soal diberi label Mudah, Sedang, atau Sulit.
 - Pertanyaan alasan tertulis dan kesimpulan dengan kalimat sendiri dinilai guru dari PDF.
 - Kode Songket ditulis **Sg** agar tidak tertukar dengan lambang ruang sampel S.
 - Setiap pasangan pakaian hanya bisa disimpan satu kali. Pasangan yang sama memunculkan "Pasangan pakaian ini sudah kamu pilih!" disertai layar bergetar.
