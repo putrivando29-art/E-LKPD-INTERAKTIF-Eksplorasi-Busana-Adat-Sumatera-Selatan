@@ -45,7 +45,8 @@
     BK: { code: 'BK', name: 'Baju Kurung Palembang' }
   };
   var BOTTOMS = {
-    S: { code: 'S', name: 'Songket Palembang', short: 'Songket' },
+    // Kode tampilan Songket 'Sg' agar tidak tertukar dengan S pada n(S).
+    S: { code: 'Sg', name: 'Songket Palembang', short: 'Songket' },
     J: { code: 'J', name: 'Tenun Jumputan Palembang', short: 'Jumputan' }
   };
 
@@ -533,7 +534,7 @@
     combos: function () {
       var list = [];
       ['AG', 'AP', 'BK'].forEach(function (t) {
-        ['S', 'J'].forEach(function (b) { list.push({ top: t, bottom: b, key: t + '-' + b, code: '(' + t + ', ' + b + ')' }); });
+        ['S', 'J'].forEach(function (b) { list.push({ top: t, bottom: b, key: t + '-' + b, code: '(' + t + ', ' + BOTTOMS[b].code + ')' }); });
       });
       return list;
     }

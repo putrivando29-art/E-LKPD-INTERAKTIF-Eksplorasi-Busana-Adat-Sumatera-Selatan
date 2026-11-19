@@ -5,7 +5,15 @@
   var CFG = window.ELKPD_CONFIG || {};
   var COMBOS = O.combos();
   var N_TRIALS = 30;
-  var STORE_KEY = 'stylist-studio-sriwijaya-v7';
+  var N_FAST = 300;
+  var PAGES = 6;
+
+  // Jawaban disimpan di localStorage agar tetap ada walau web ditutup.
+  // Pengumpulan pertama tiap siswa (nama + kelas + presensi) disimpan terpisah
+  // dan tidak pernah ditimpa: itulah nilai akhir.
+  var STORE = 'butik-warisan-sriwijaya-v1';
+  var DRAFT_KEY = STORE + ':draft';
+  var LOCK_KEY = STORE + ':locks';
 
   // Warna sektor roda dan swatch tabel statistik
   var SECTOR = {
@@ -17,48 +25,62 @@
     'BK-J': { fill: '#2B1E1A', text: '#F3D57E' }
   };
 
+  // Pilihan untuk bagian "Ditanya"
+  var ASK = [
+    ['', 'Pilih yang ditanya'],
+    ['P', 'Peluang teoretis'],
+    ['Fh', 'Frekuensi harapan'],
+    ['Fr', 'Frekuensi relatif'],
+    ['nS', 'Banyak anggota ruang sampel']
+  ];
+
   function sfx(name) { if (window.Sfx) window.Sfx.play(name); }
 
-  /* ---------- state & penyimpanan sesi ---------- */
+  /* ---------- penyimpanan ---------- */
 
   function freshSim() {
     var counts = {};
     COMBOS.forEach(function (c) { counts[c.key] = 0; });
     return { counts: counts, total: 0, last: null, rotation: 0 };
   }
-
-  var state = load() || { page: 1, answers: {}, boutique: { top: null, bottom: null, saved: {} }, sim: freshSim() };
-  state.submission = state.submission || null;
-  state.firstSubmission = state.firstSubmission || null;
-
-  function load() {
-    try {
-      var raw = window.sessionStorage.getItem(STORE_KEY);
-      return raw ? JSON.parse(raw) : null;
-    } catch (e) { return null; }
-  }
-  function save() {
-    try { window.sessionStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* penyimpanan tidak tersedia */ }
+  function freshState() {
+    return { page: 1, answers: {}, boutique: { top: null, bottom: null, saved: {} }, sim: freshSim(), sim300: null, practice: null };
   }
 
-  // Setiap perubahan jawaban setelah dikumpulkan ditandai agar siswa tahu perlu mengumpulkan ulang.
-  function touched() {
-    if (state.submission && !state.submission.changed) state.submission.changed = true;
-    save();
+  function readJSON(key) {
+    try { var raw = window.localStorage.getItem(key); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
   }
+  function writeJSON(key, value) {
+    try { window.localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* penyimpanan tidak tersedia */ }
+  }
+
+  var state = readJSON(DRAFT_KEY) || freshState();
+  var locks = readJSON(LOCK_KEY) || {};
+
+  function save() { writeJSON(DRAFT_KEY, state); }
+  function saveLocks() { writeJSON(LOCK_KEY, locks); }
+
+  function norm(s) { return String(s || '').trim().replace(/\s+/g, ' ').toLowerCase(); }
+  function idKey() {
+    var parts = [a('id_nama'), a('id_kelas'), a('id_no')].map(norm);
+    return parts.every(Boolean) ? parts.join('|') : '';
+  }
+  function myLock() { var k = idKey(); return k ? locks[k] || null : null; }
 
   function $(sel, root) { return (root || document).querySelector(sel); }
   function $all(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
 
+  function code(b) { return O.BOTTOMS[b].code; }
   function comboName(key) {
     var p = key.split('-');
     return O.TOPS[p[0]].name + ' + ' + O.BOTTOMS[p[1]].short;
   }
-  function comboCode(key) { var p = key.split('-'); return '(' + p[0] + ', ' + p[1] + ')'; }
+  function comboCode(key) { var p = key.split('-'); return '(' + p[0] + ', ' + code(p[1]) + ')'; }
 
   function esc(s) {
     return String(s).replace(/[&<>"']/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]; });
   }
+  function comma(x) { return x.toFixed(2).replace('.', ','); }
 
   /* ---------- toast ---------- */
 
@@ -68,41 +90,50 @@
     t.textContent = msg;
     t.hidden = false;
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { t.hidden = true; }, 2600);
+    toastTimer = setTimeout(function () { t.hidden = true; }, 2800);
   }
 
   /* ---------- rumus (KaTeX) ---------- */
 
+  function tex(el, src, display) {
+    if (window.katex) window.katex.render(src, el, { throwOnError: false, displayMode: !!display });
+    else el.textContent = src.replace(/\\[dt]?frac\{([^}]*)\}\{([^}]*)\}/g, '$1/$2').replace(/\\times/g, '×').replace(/\\ldots/g, '…').replace(/[{}\\]/g, '');
+  }
   function renderTex(root) {
-    $all('.tex', root).forEach(function (el) {
-      var tex = el.getAttribute('data-tex');
-      if (window.katex) {
-        window.katex.render(tex, el, { throwOnError: false, displayMode: el.getAttribute('data-display') === '1' });
-      } else {
-        el.textContent = tex.replace(/\\[dt]?frac\{([^}]*)\}\{([^}]*)\}/g, '$1/$2').replace(/\\times/g, '×').replace(/[{}\\]/g, '');
-      }
+    $all('.tex', root).forEach(function (el) { tex(el, el.getAttribute('data-tex'), el.getAttribute('data-display') === '1'); });
+  }
+
+  // Baris substitusi di bagian Jawab diisi dari angka yang ditulis siswa di Diketahui.
+  function renderSubs() {
+    $all('.sub').forEach(function (el) {
+      var expr = el.getAttribute('data-sub');
+      var v = function (k) { return a(k) ? a(k).replace(/[^0-9]/g, '') || '\\ldots' : '\\ldots'; };
+      var m = expr.split('*');
+      var fracPart = m[m.length - 1].split('/');
+      var f = '\\dfrac{' + v(fracPart[0]) + '}{' + v(fracPart[1]) + '}';
+      tex(el, m.length > 1 ? v(m[0]) + '\\times' + f : f);
     });
   }
 
   /* ---------- navigasi halaman ---------- */
 
   function showPage(n, focusKey) {
+    n = Math.max(1, Math.min(PAGES, n));
     state.page = n;
     save();
     $all('.page').forEach(function (p) { p.hidden = Number(p.getAttribute('data-page')) !== n; });
     $all('.tab').forEach(function (t) {
-      if (Number(t.getAttribute('data-page')) === n) {
-        t.setAttribute('aria-current', 'page');
-        var bar = t.parentNode;
-        bar.scrollLeft = t.offsetLeft - (bar.clientWidth - t.offsetWidth) / 2;
-      } else t.removeAttribute('aria-current');
+      if (Number(t.getAttribute('data-page')) === n) t.setAttribute('aria-current', 'page');
+      else t.removeAttribute('aria-current');
     });
+    $('#mnav-page').value = String(n);
+    $('#mnav-prev').disabled = n === 1;
+    $('#mnav-next').disabled = n === PAGES;
     if (n === 1) startCover(); else stopCover();
-    if (n === 4) renderFrTable();
-    if (n === 5) renderCmp();
+    if (n === 5) { renderFrTable(); renderAkt4(); }
     if (n === 6) { renderRecap(); renderSubmission(); }
     var target = focusKey && $('[data-key="' + focusKey + '"]');
-    if (target) {
+    if (target && !target.closest('[hidden]')) {
       target.scrollIntoView({ block: 'center' });
       target.focus({ preventScroll: true });
     } else {
@@ -135,6 +166,14 @@
 
   /* ---------- isian jawaban ---------- */
 
+  function onAnswer(key) {
+    save();
+    updateStatuses();
+    renderSubs();
+    renderAkt4();
+    if (key.indexOf('id_') === 0) renderLockUI();
+  }
+
   function bindInputs(root) {
     $all('[data-key]', root).forEach(function (el) {
       if (el.dataset.bound) return;
@@ -142,25 +181,22 @@
       var key = el.getAttribute('data-key');
       if (el.type === 'radio') {
         el.checked = state.answers[key] === el.value;
-        el.addEventListener('change', function () { state.answers[key] = el.value; touched(); updateStatuses(); renderCmp(); });
+        el.addEventListener('change', function () { state.answers[key] = el.value; onAnswer(key); });
       } else {
         if (state.answers[key] != null) el.value = state.answers[key];
-        el.addEventListener('input', function () { state.answers[key] = el.value; touched(); updateStatuses(); renderCmp(); });
+        el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', function () { state.answers[key] = el.value; onAnswer(key); });
       }
+    });
+  }
+
+  function buildAsks() {
+    $all('select.ask').forEach(function (sel) {
+      sel.innerHTML = ASK.map(function (o) { return '<option value="' + o[0] + '">' + o[1] + '</option>'; }).join('');
     });
   }
 
   /* ---------- kunci jawaban & penilaian ---------- */
 
-  function parseNum(s) {
-    if (s == null) return NaN;
-    s = String(s).trim().replace(/\s+/g, ' ').replace(/,/g, '.');
-    var m;
-    if ((m = s.match(/^(\d+) (\d+)\/(\d+)$/))) return Number(m[3]) === 0 ? NaN : Number(m[1]) + Number(m[2]) / Number(m[3]);
-    if ((m = s.match(/^(\d+(?:\.\d+)?)\/(\d+(?:\.\d+)?)$/))) return Number(m[2]) === 0 ? NaN : Number(m[1]) / Number(m[2]);
-    if (/^\d+(\.\d+)?$/.test(s)) return Number(s);
-    return NaN;
-  }
   function a(key) { return state.answers[key] == null ? '' : String(state.answers[key]).trim(); }
   function isInt(key, n) { return a(key) === String(n); }
   function fracEq(numKey, denKey, tNum, tDen) {
@@ -168,95 +204,161 @@
     if (!/^\d+$/.test(num) || !/^\d+$/.test(den) || Number(den) === 0) return false;
     return Number(num) * tDen === Number(den) * tNum;
   }
-  function near(key, target, tol) { var v = parseNum(a(key)); return !isNaN(v) && Math.abs(v - target) <= tol; }
-  // Pasangan pakaian kesukaan siswa menjadi kejadian A pada Aktivitas 1 sampai 3.
+  function frac(numKey, denKey) { return (a(numKey) || '…') + '/' + (a(denKey) || '…'); }
+  function val(key) { return a(key) || '…'; }
+  function askName(key) { var o = ASK.filter(function (x) { return x[0] === a(key); })[0]; return o && o[0] ? o[1] : '…'; }
+
+  // Pasangan pakaian kesukaan siswa menjadi kejadian A.
   function fav() { var k = a('fav'); return COMBOS.some(function (c) { return c.key === k; }) ? k : ''; }
-  function favReady() { return !!fav() && state.sim.total === N_TRIALS; }
+  function simDone() { return state.sim.total === N_TRIALS; }
+  function favReady() { return !!fav() && simDone(); }
   function favK() { return fav() ? state.sim.counts[fav()] : 0; }
   function friend() { var k = a('friend'); return k && k !== fav() && COMBOS.some(function (c) { return c.key === k; }) ? k : ''; }
   function allCountsEqual() { return COMBOS.every(function (c) { return state.sim.counts[c.key] === N_TRIALS / 6; }); }
-  function frac(numKey, denKey) { return (a(numKey) || '…') + '/' + (a(denKey) || '…'); }
-  function val(key) { return a(key) || '…'; }
+  function savedCount() { return COMBOS.filter(function (c) { return state.boutique.saved[c.key]; }).length; }
+
+  // Selisih rata-rata frekuensi relatif keenam pasangan terhadap 1/6.
+  function meanGap(counts, total) {
+    return COMBOS.reduce(function (s, c) { return s + Math.abs(counts[c.key] / total - 1 / 6); }, 0) / COMBOS.length;
+  }
 
   var MCQ = {
     cmp_dir: { a: 'Lebih sering dari yang diharapkan.', b: 'Sama dengan yang diharapkan.', c: 'Lebih jarang dari yang diharapkan.' },
-    a34_1: { a: 'Ya, semuanya sama persis.', b: 'Tidak, ada yang berbeda.' },
-    a34_2: { a: 'Roda putar tidak adil.', b: 'Hasil setiap putaran acak dan percobaan hanya 30 kali.', c: 'Peluang teoretisnya salah dihitung.' },
-    a34_3: { a: 'Hasil percobaan selalu sama dengan peluang teoretis.', b: 'Frekuensi relatif bisa berbeda, tetapi cenderung mendekati 1/6 jika percobaan diperbanyak.', c: 'Pasangan yang paling sering muncul pasti memiliki peluang teoretis terbesar.' }
+    q45: { a: 'Hasil 30 putaran.', b: 'Hasil 300 putaran.' },
+    k1: { a: 'Ya, semuanya tepat 1/6.', b: 'Tidak, ada yang lebih besar atau lebih kecil dari 1/6.' },
+    k2: { a: 'Bagian roda untuk setiap pasangan tidak sama besar.', b: 'Hasil setiap putaran acak, dan 30 putaran masih sedikit.', c: 'Peluang teoretis hanya berlaku jika roda diputar 6 kali.', d: 'Pasangan kesukaanmu lebih mudah muncul.' },
+    k3: { a: 'Frekuensi relatif setiap pasangan pasti tepat 1/6.', b: 'Frekuensi relatif setiap pasangan cenderung makin dekat ke 1/6.', c: 'Frekuensi relatif setiap pasangan makin jauh dari 1/6.', d: 'Pasangan yang paling sering muncul di 30 putaran akan tetap paling sering muncul.' },
+    ref3: { a: 'Sangat paham', b: 'Paham', c: 'Kurang paham', d: 'Belum paham' }
   };
 
-  // Setiap butir: id, judul, kunci isian, tampilan jawaban, dan aturan benar.
+  function num(id, label, key, target, how) {
+    return { id: id, label: label, keys: [key], show: function () { return val(key); }, ok: function () { return isInt(key, typeof target === 'function' ? target() : target); }, how: how };
+  }
+  function fr(id, label, nk, dk, tn, td, how) {
+    return { id: id, label: label, keys: [nk, dk], show: function () { return frac(nk, dk); },
+      ok: function () { return fracEq(nk, dk, typeof tn === 'function' ? tn() : tn, td); }, how: how };
+  }
+  function ask(id, label, key, target) {
+    return { id: id, label: label, keys: [key], show: function () { return askName(key); }, ok: function () { return a(key) === target; },
+      how: 'Baca lagi kalimat tanyanya. Pilih besaran yang diminta soal.' };
+  }
+  function mcq(id, label, key, target, how) {
+    return { id: id, label: label, keys: [key], show: function () { return MCQ[key][a(key)] || '…'; },
+      ok: function () { return a(key) === (typeof target === 'function' ? target() : target); }, how: how };
+  }
+
+  // Setiap butir: id, label, kunci isian, tampilan jawaban, aturan benar, dan
+  // cara menyelesaikan (umpan balik tanpa angka jawaban akhir).
   var GROUPS = [
     { id: 'apersepsi', title: 'Apersepsi', page: 2, items: [
-      { id: 'ap1', label: 'Sederhanakan 2/6', keys: ['ap1_num', 'ap1_den'], show: function () { return frac('ap1_num', 'ap1_den'); }, ok: function () { return isInt('ap1_num', 1) && isInt('ap1_den', 3); } },
-      { id: 'ap2', label: '60 × 1/6', keys: ['ap2'], show: function () { return val('ap2'); }, ok: function () { return near('ap2', 10, 1e-9); } },
-      { id: 'ap3', label: '3 × 2', keys: ['ap3'], show: function () { return val('ap3'); }, ok: function () { return isInt('ap3', 6); } }
+      fr('ap1', '1. Sederhanakan 2/6', 'ap1_num', 'ap1_den', 1, 3, 'Bagi pembilang dan penyebut dengan bilangan yang sama sampai tidak bisa dibagi lagi.'),
+      num('ap2', '2. 60 × 1/6', 'ap2', 10, 'Kalikan 60 dengan pembilang, lalu bagi dengan penyebut.'),
+      num('ap3', '3. Banyak pasangan dari 3 baju dan 2 kain', 'ap3', 6, 'Setiap baju bisa dipasangkan dengan setiap kain. Kalikan banyak baju dengan banyak kain.')
     ] },
-    { id: 'akt1', title: 'Aktivitas 1', page: 3, items: [
-      { id: 'tabel', label: 'Tabel ruang sampel', keys: [], filled: function () { return savedCount() === COMBOS.length; }, show: function () { return savedCount() + ' dari 6 pasangan'; }, ok: function () { return savedCount() === COMBOS.length; } },
-      { id: 'a1_nS', label: 'n(S)', keys: ['a1_nS'], show: function () { return val('a1_nS'); }, ok: function () { return isInt('a1_nS', 6); } },
-      { id: 'a1_nA', label: 'n(A), pasangan pakaian kesukaan', keys: ['a1_nA'], show: function () { return val('a1_nA'); }, ok: function () { return isInt('a1_nA', 1); } }
+    { id: 'akt1', title: 'Aktivitas 1: Ruang Sampel', page: 3, items: [
+      { id: 'tabel', label: 'Tabel Aktivitas 1', keys: [], filled: function () { return savedCount() === COMBOS.length; }, show: function () { return savedCount() + ' dari 6 pasangan'; },
+        ok: function () { return savedCount() === COMBOS.length; }, how: 'Simpan semua pasangan atasan dan bawahan yang berbeda sampai tabel penuh.' },
+      num('a1_nS', 'n(S), semua pasangan', 'a1_nS', 6, 'Hitung semua sel di tabel Aktivitas 1.'),
+      num('a1_nA', 'n(A), pasangan kesukaanmu', 'a1_nA', 1, 'Cari sel yang sama dengan pasangan kesukaanmu. Hitung ada berapa.')
     ] },
-    { id: 'akt2', title: 'Aktivitas 2', page: 3, items: [
-      { id: 'a2_p', label: 'P(A), pasangan pakaian kesukaan', keys: ['a2_pNum', 'a2_pDen'], show: function () { return frac('a2_pNum', 'a2_pDen'); }, ok: function () { return fracEq('a2_pNum', 'a2_pDen', 1, 6); } },
-      { id: 'a2_q', label: 'Peluang pasangan pakaian kesukaan teman', keys: ['a2_qNum', 'a2_qDen'], show: function () { return frac('a2_qNum', 'a2_qDen'); }, ok: function () { return fracEq('a2_qNum', 'a2_qDen', 1, 6); } }
+    { id: 'akt2', title: 'Aktivitas 2: Peluang Teoretis', page: 3, items: [
+      num('a21_nA', '2.1 Diketahui n(A)', 'a21_nA', 1, 'Cari sel yang sama dengan pasangan kesukaanmu di tabel. Hitung ada berapa.'),
+      num('a21_nS', '2.1 Diketahui n(S)', 'a21_nS', 6, 'Hitung semua sel di tabel Aktivitas 1.'),
+      ask('a21_q', '2.1 Ditanya', 'a21_q', 'P'),
+      fr('a21_p', '2.1 Jawab P(A)', 'a21_pNum', 'a21_pDen', 1, 6, 'Peluang teoretis = n(A) dibagi n(S).'),
+      fr('a22', '2.2 Peluang pasangan teman', 'a22_num', 'a22_den', 1, 6, 'Setiap pasangan punya kesempatan sama. Hitung seperti peluang pasanganmu.'),
+      num('a23_nB', '2.3 Diketahui n(B)', 'a23_nB', 3, 'Lihat kolom Songket di tabel. Hitung pasangan yang memakai Songket.'),
+      num('a23_nS', '2.3 Diketahui n(S)', 'a23_nS', 6, 'Hitung semua sel di tabel Aktivitas 1.'),
+      ask('a23_q', '2.3 Ditanya', 'a23_q', 'P'),
+      fr('a23_p', '2.3 Jawab P(B)', 'a23_pNum', 'a23_pDen', 3, 6, 'P(B) = n(B) dibagi n(S). Pecahan boleh disederhanakan.'),
+      fr('a24', '2.4 Peluang pasangan ber-Aesan Gede', 'a24_num', 'a24_den', 2, 6, 'Lihat baris Aesan Gede di tabel. Hitung pasangannya, lalu bagi dengan banyak semua pasangan.')
     ] },
-    { id: 'akt33', title: 'Aktivitas 3.1 dan 3.2', page: 4, items: [
-      { id: 'sim', label: 'Banyak percobaan', keys: [], filled: function () { return state.sim.total === N_TRIALS; }, show: function () { return state.sim.total + ' dari ' + N_TRIALS; }, ok: function () { return state.sim.total === N_TRIALS; } }
-    ].concat(COMBOS.map(function (c) {
-      return { id: 'a33_' + c.key, label: 'Fr ' + comboCode(c.key) + ', k = ' + state.sim.counts[c.key], dynamicLabel: true, keys: ['a33n_' + c.key, 'a33d_' + c.key],
-        show: function () { return frac('a33n_' + c.key, 'a33d_' + c.key); },
-        ok: function () { return state.sim.total === N_TRIALS && fracEq('a33n_' + c.key, 'a33d_' + c.key, state.sim.counts[c.key], N_TRIALS); } };
-    })) },
-    { id: 'akt31', title: 'Aktivitas 3.3', page: 5, items: [
-      { id: 'a31_N', label: 'N', keys: ['a31_N'], show: function () { return val('a31_N'); }, ok: function () { return isInt('a31_N', N_TRIALS); } },
-      { id: 'a31_p', label: 'P(A)', keys: ['a31_pNum', 'a31_pDen'], show: function () { return frac('a31_pNum', 'a31_pDen'); }, ok: function () { return fracEq('a31_pNum', 'a31_pDen', 1, 6); } },
-      { id: 'a31_res', label: 'Frekuensi harapan pasangan kesukaan', keys: ['a31_res'], show: function () { return val('a31_res'); }, ok: function () { return isInt('a31_res', N_TRIALS / 6); } }
+    { id: 'akt3', title: 'Aktivitas 3: Frekuensi Harapan', page: 4, items: [
+      num('a31_N', '3.1 Diketahui N', 'a31_N', N_TRIALS, 'N adalah banyak putaran roda yang disebut di soal.'),
+      fr('a31_p', '3.1 Diketahui P(A)', 'a31_pNum', 'a31_pDen', 1, 6, 'Pakai peluang pasangan kesukaanmu dari soal 2.1.'),
+      ask('a31_q', '3.1 Ditanya', 'a31_q', 'Fh'),
+      num('a31_res', '3.1 Jawab Fh', 'a31_res', N_TRIALS / 6, 'Frekuensi harapan = N dikali P(A).'),
+      num('a32_N', '3.2 Diketahui N', 'a32_N', 60, 'N adalah banyak putaran roda yang disebut di soal.'),
+      fr('a32_p', '3.2 Diketahui P(B)', 'a32_pNum', 'a32_pDen', 3, 6, 'Pakai peluang pasangan bersongket dari soal 2.3.'),
+      ask('a32_q', '3.2 Ditanya', 'a32_q', 'Fh'),
+      num('a32_res', '3.2 Jawab Fh', 'a32_res', 30, 'Frekuensi harapan = N dikali P(B).')
     ] },
-    { id: 'akt34', title: 'Aktivitas 3.4', page: 5, items: [
-      { id: 'cmp_k', label: 'Banyak muncul pasangan kesukaan', keys: ['cmp_k'], show: function () { return val('cmp_k') + ' kali'; }, ok: function () { return favReady() && near('cmp_k', favK(), 1e-6); } },
-      { id: 'cmp_dir', label: 'Dibanding yang diharapkan', keys: ['cmp_dir'], show: function () { return MCQ.cmp_dir[a('cmp_dir')] || '…'; },
-        ok: function () {
-          var fh = N_TRIALS / 6;
-          return favReady() && a('cmp_dir') === (favK() > fh ? 'a' : favK() === fh ? 'b' : 'c');
-        } }
+    { id: 'akt4', title: 'Aktivitas 4: Frekuensi Relatif', page: 5, items: [
+      { id: 'sim', label: '4.1 Banyak putaran', keys: [], filled: simDone, show: function () { return state.sim.total + ' dari ' + N_TRIALS; },
+        ok: simDone, how: 'Putar roda sampai 30 kali.' },
+      num('a42_k', '4.2 Diketahui k', 'a42_k', favK, 'Lihat angka pasangan kesukaanmu di tabel hasil roda.'),
+      num('a42_N', '4.2 Diketahui N', 'a42_N', N_TRIALS, 'N adalah banyak putaran roda.'),
+      ask('a42_q', '4.2 Ditanya', 'a42_q', 'Fr'),
+      fr('a42_fr', '4.2 Jawab Fr', 'a42_num', 'a42_den', favK, N_TRIALS, 'Frekuensi relatif = k dibagi N.')
     ] },
-    { id: 'akt35', title: 'Aktivitas 3.5', page: 5, items: [
-      { id: 'a34_1', label: 'Pertanyaan 1', keys: ['a34_1'], show: function () { return MCQ.a34_1[a('a34_1')] || '…'; },
-        ok: function () { return state.sim.total === N_TRIALS && a('a34_1') === (allCountsEqual() ? 'a' : 'b'); } },
-      { id: 'a34_2', label: 'Pertanyaan 2', keys: ['a34_2'], show: function () { return MCQ.a34_2[a('a34_2')] || '…'; }, ok: function () { return a('a34_2') === 'b'; } },
-      { id: 'a34_3', label: 'Pertanyaan 3', keys: ['a34_3'], show: function () { return MCQ.a34_3[a('a34_3')] || '…'; }, ok: function () { return a('a34_3') === 'b'; } }
+    { id: 'akt43', title: 'Aktivitas 4.3: Frekuensi Relatif Semua Pasangan', page: 5, items: function () {
+      return COMBOS.filter(function (c) { return c.key !== fav(); }).map(function (c) {
+        return { id: 'a43_' + c.key, label: 'Fr ' + comboCode(c.key) + ', k = ' + state.sim.counts[c.key], keys: ['a43n_' + c.key, 'a43d_' + c.key],
+          show: function () { return frac('a43n_' + c.key, 'a43d_' + c.key); },
+          ok: function () { return simDone() && fracEq('a43n_' + c.key, 'a43d_' + c.key, state.sim.counts[c.key], N_TRIALS); },
+          how: 'Frekuensi relatif = k dibagi 30. Ambil k dari tabel hasil roda.' };
+      });
+    } },
+    { id: 'akt44', title: 'Aktivitas 4.4 dan 4.5: Membandingkan', page: 5, items: [
+      mcq('cmp_dir', '4.4 Dibanding yang diharapkan', 'cmp_dir', function () { var h = N_TRIALS / 6; return favK() > h ? 'a' : favK() === h ? 'b' : 'c'; },
+        'Bandingkan banyak muncul pasangan kesukaanmu dengan frekuensi harapannya di soal 3.1.'),
+      { id: 'q45', label: '4.5 Lebih dekat ke 1/6', keys: ['q45'], filled: function () { return !!state.sim300 && a('q45') !== ''; },
+        show: function () { return MCQ.q45[a('q45')] || '…'; },
+        ok: function () { return !!state.sim300 && simDone() && a('q45') === (meanGap(state.sim300.counts, N_FAST) <= meanGap(state.sim.counts, N_TRIALS) ? 'b' : 'a'); },
+        how: 'Lihat diagram 4.5. Bandingkan jarak batang 30 putaran dan 300 putaran dari garis 1/6.' }
+    ] },
+    { id: 'kesimpulan', title: 'Kesimpulan', page: 6, items: [
+      mcq('k1', 'Kesimpulan 1', 'k1', function () { return allCountsEqual() ? 'a' : 'b'; }, 'Lihat tabel 4.3. Apakah semua frekuensi relatif sama dengan 1/6?'),
+      mcq('k2', 'Kesimpulan 2', 'k2', 'b', 'Ingat, bagian roda sama besar, tetapi hasil setiap putaran acak.'),
+      mcq('k3', 'Kesimpulan 3', 'k3', 'b', 'Lihat lagi hasil Putar Cepat 300 Kali di 4.5.')
     ] }
   ];
 
-  function itemLabel(it) {
-    if (!it.dynamicLabel) return it.label;
-    var key = it.id.replace('a33_', '');
-    return 'Fr ' + comboCode(key) + ', k = ' + state.sim.counts[key];
-  }
+  // Isian tertulis dinilai guru dari PDF, tidak dinilai otomatis.
+  var WRITTEN = [
+    { key: 'r1', page: 3, label: 'Mengapa banyak semua pasangan pakaian ada sebanyak itu?' },
+    { key: 'r2', page: 3, label: 'Mengapa peluang pasangan temanmu sama dengan peluang pasanganmu?' },
+    { key: 'r3', page: 5, label: 'Mengapa hasil roda bisa berbeda dari frekuensi harapan?' },
+    { key: 'k_text', page: 6, label: 'Kesimpulan dengan kalimatmu sendiri' }
+  ];
+  var REFLECT = [
+    { key: 'ref1', label: 'Apa yang kamu pelajari hari ini?' },
+    { key: 'ref2', label: 'Bagian mana yang masih sulit untukmu?' },
+    { key: 'ref3', label: 'Seberapa paham kamu tentang materi ini?', choice: true }
+  ];
+
+  function groupItems(g) { return typeof g.items === 'function' ? g.items() : g.items; }
   function itemFilled(it) {
     if (it.filled) return it.filled();
     return it.keys.every(function (k) { return a(k) !== ''; });
   }
   function allItems() {
     var list = [];
-    GROUPS.forEach(function (g) { g.items.forEach(function (it) { list.push(it); }); });
+    GROUPS.forEach(function (g) { groupItems(g).forEach(function (it) { list.push(it); }); });
     return list;
   }
+  function evaluate() {
+    var results = {};
+    var correct = 0;
+    var items = allItems();
+    items.forEach(function (it) { var ok = !!it.ok(); results[it.id] = ok; if (ok) correct += 1; });
+    return { results: results, correct: correct, total: items.length, score: Math.round(correct / items.length * 100) };
+  }
 
-  // Status terisi per aktivitas, tanpa membuka benar atau salah.
+  // Status terisi per bagian, tanpa membuka benar atau salah.
   function updateStatuses() {
     $all('[data-status]').forEach(function (el) {
       var gid = el.getAttribute('data-status');
-      var items = [];
-      GROUPS.forEach(function (g) { if (g.id === gid) items = g.items.filter(function (it) { return it.keys.length; }); });
+      var g = GROUPS.filter(function (x) { return x.id === gid; })[0];
+      if (!g) return;
+      var items = groupItems(g).filter(function (it) { return it.keys.length; });
       var done = items.filter(itemFilled).length;
-      el.textContent = 'Terisi ' + done + ' dari ' + items.length + '. Jawaban bisa diubah kapan saja sebelum dikumpulkan.';
+      el.textContent = 'Terisi ' + done + ' dari ' + items.length + '.';
       el.classList.toggle('is-done', done === items.length);
     });
   }
 
-  /* ---------- butik digital ---------- */
+  /* ---------- butik ---------- */
 
   function buildWardrobe() {
     $('#top-choices').innerHTML = ['AG', 'AP', 'BK'].map(function (t) {
@@ -326,12 +428,29 @@
       return;
     }
     b.saved[key] = true;
-    touched();
+    save();
     sfx('success');
     renderCross();
     updateStatuses();
     var n = savedCount();
-    notice('ok', 'Pasangan pakaian tersimpan!', comboName(key) + ' ' + comboCode(key) + (n === COMBOS.length ? '. Keenam pasangan pakaian lengkap, Aktivitas 2 sudah terbuka.' : '. ' + n + ' dari 6 pasangan pakaian tersimpan.'), key);
+    notice('ok', 'Pasangan pakaian tersimpan!', comboName(key) + ' ' + comboCode(key) + (n === COMBOS.length ? '. Tabel sudah lengkap. Aktivitas 2 sudah terbuka.' : '. ' + n + ' dari 6 pasangan tersimpan.'), key);
+  }
+
+  function renderCross() {
+    $('#cross-table tbody').innerHTML = ['AG', 'AP', 'BK'].map(function (t) {
+      return '<tr><th scope="row">' + O.TOPS[t].name + '</th>' + ['S', 'J'].map(function (bt) {
+        var key = t + '-' + bt;
+        if (state.boutique.saved[key]) {
+          return '<td id="cell-' + key + '" class="filled"><div class="cell-fig">' + O.character(t, bt) + '</div><span class="cell-code">' + t + ', ' + code(bt) + '</span></td>';
+        }
+        return '<td id="cell-' + key + '">Belum diisi</td>';
+      }).join('') + '</tr>';
+    }).join('');
+    var n = savedCount();
+    $('#akt1-progress').textContent = n + ' dari 6';
+    var done = n === COMBOS.length;
+    $('#akt2-lock').hidden = done;
+    $('#akt2').hidden = !done;
   }
 
   /* ---------- pasangan pakaian kesukaan ---------- */
@@ -346,7 +465,7 @@
       btn.addEventListener('click', function () {
         state.answers.fav = btn.getAttribute('data-fav');
         pickFriend();
-        touched();
+        save();
         renderFav();
         renderSim();
         updateStatuses();
@@ -370,45 +489,11 @@
       el.textContent = k ? comboName(k) + ' ' + comboCode(k) : el.dataset.empty;
     });
     $('#fav-note').innerHTML = k
-      ? 'Pasangan pakaian kesukaanmu: <b>' + esc(comboName(k) + ' ' + comboCode(k)) + '</b>. Pasangan ini menjadi kejadian <i>A</i> pada aktivitas berikutnya.'
-      : 'Pilih satu pasangan pakaian. Pasangan pakaian kesukaanmu akan menjadi kejadian <i>A</i> pada aktivitas berikutnya.';
+      ? 'Pasangan kesukaanmu: <b>' + esc(comboName(k) + ' ' + comboCode(k)) + '</b>. Pasangan ini menjadi kejadian <i>A</i> di aktivitas berikutnya.'
+      : 'Pilih satu pasangan pakaian. Pasangan ini menjadi kejadian <i>A</i> di aktivitas berikutnya.';
     var f = friend();
-    $('#friend-ref').textContent = f ? comboName(f) + ' ' + comboCode(f) : '(pilih pasangan pakaian kesukaanmu dulu)';
-    renderCmp();
-  }
-
-  // Langkah 3.4 terbuka bertahap: langkah berikutnya tampil setelah langkah
-  // sebelumnya diisi. Jawaban yang sudah diisi tetap bisa diubah.
-  function renderCmp() {
-    var ready = favReady();
-    $('#cmp-lock').hidden = ready;
-    $('#cmp-body').hidden = !ready;
-    var s1 = a('cmp_k') !== '';
-    var s2 = s1 && a('cmp_dir') !== '';
-    $('#cmp-step2').hidden = !s1;
-    $('#cmp-take').hidden = !s2;
-    $('#cmp-fh').textContent = a('a31_res') || '(isi 3.3 dulu)';
-    $('#cmp-kshow').textContent = a('cmp_k') || '…';
-    $('#cmp-fr').textContent = (a('cmp_k') || '…') + '/' + N_TRIALS;
-  }
-
-  function savedCount() { return COMBOS.filter(function (c) { return state.boutique.saved[c.key]; }).length; }
-
-  function renderCross() {
-    $('#cross-table tbody').innerHTML = ['AG', 'AP', 'BK'].map(function (t) {
-      return '<tr><th scope="row">' + O.TOPS[t].name + '</th>' + ['S', 'J'].map(function (bt) {
-        var key = t + '-' + bt;
-        if (state.boutique.saved[key]) {
-          return '<td id="cell-' + key + '" class="filled"><div class="cell-fig">' + O.character(t, bt) + '</div><span class="cell-code">' + t + ', ' + bt + '</span></td>';
-        }
-        return '<td id="cell-' + key + '">Belum diisi</td>';
-      }).join('') + '</tr>';
-    }).join('');
-    var n = savedCount();
-    $('#akt1-progress').textContent = n + ' dari 6';
-    var done = n === COMBOS.length;
-    $('#akt2-lock').hidden = done;
-    $('#akt2').hidden = !done;
+    $('#friend-ref').textContent = f ? comboName(f) + ' ' + comboCode(f) : '(pilih pasangan kesukaanmu dulu)';
+    renderAkt4();
   }
 
   /* ---------- roda putar ---------- */
@@ -423,11 +508,11 @@
       var x1 = (r * Math.sin(a1)).toFixed(3), y1 = (-r * Math.cos(a1)).toFixed(3);
       var col = SECTOR[c.key];
       parts.push('<path d="M0,0 L' + x0 + ',' + y0 + ' A' + r + ',' + r + ' 0 0,1 ' + x1 + ',' + y1 + ' Z" fill="' + col.fill + '" stroke="#3A2318" stroke-width="2"/>');
-      parts.push('<g transform="rotate(' + (i * 60 + 30) + ') translate(0,-64)"><text text-anchor="middle" font-family="Fredoka, Nunito, sans-serif" font-weight="700" font-size="17" fill="' + col.text + '"><tspan x="0" dy="-2">' + c.top + '</tspan><tspan x="0" dy="19">' + c.bottom + '</tspan></text></g>');
+      parts.push('<g transform="rotate(' + (i * 60 + 30) + ') translate(0,-64)"><text text-anchor="middle" font-family="Fredoka, Nunito, sans-serif" font-weight="700" font-size="17" fill="' + col.text + '"><tspan x="0" dy="-2">' + c.top + '</tspan><tspan x="0" dy="19">' + code(c.bottom) + '</tspan></text></g>');
     });
     var ring = '<circle r="104" fill="none" stroke="#D9A82E" stroke-width="8"/><circle r="108" fill="none" stroke="#3A2318" stroke-width="2"/>';
     var hub = '<circle r="16" fill="#D9A82E" stroke="#3A2318" stroke-width="2"/><circle r="6" fill="#7A1F2B"/>';
-    $('#wheel').innerHTML = '<svg viewBox="-112 -112 224 224" role="img" aria-label="Roda putar enam pasangan pakaian dengan sektor sama besar">' + parts.join('') + ring + hub + '</svg>';
+    $('#wheel').innerHTML = '<svg viewBox="-112 -112 224 224" role="img" aria-label="Roda putar enam pasangan pakaian dengan bagian sama besar">' + parts.join('') + ring + hub + '</svg>';
     setWheel(state.sim.rotation || 0, 0);
   }
 
@@ -499,14 +584,14 @@
     sim.counts[key] += 1;
     sim.total += 1;
     sim.last = key;
-    touched();
+    save();
     renderSim();
   }
 
   function renderSim() {
     var sim = state.sim;
     $('#stats-table tbody').innerHTML = COMBOS.map(function (c) {
-      var star = fav() === c.key ? ' <span class="star" title="Pasangan pakaian kesukaanmu">★</span>' : '';
+      var star = fav() === c.key ? ' <span class="star" title="Pasangan kesukaanmu">★</span>' : '';
       return '<tr class="' + (sim.last === c.key ? 'hit' : '') + '"><td><span class="swatch" style="background:' + SECTOR[c.key].fill + '"></span>' + comboCode(c.key) + star + '</td><td class="num">' + sim.counts[c.key] + '</td></tr>';
     }).join('');
     $('#stats-total').textContent = sim.total;
@@ -518,7 +603,7 @@
       : 'Percobaan ke-0 dari ' + N_TRIALS;
     updateSpinButtons();
     renderFrTable();
-    renderCmp();
+    renderAkt4();
   }
 
   function updateSpinButtons() {
@@ -531,8 +616,10 @@
     var rot = state.sim.rotation || 0;
     state.sim = freshSim();
     state.sim.rotation = rot;
-    touched();
+    state.sim300 = null;
+    save();
     renderSim();
+    renderBars();
     updateStatuses();
   }
 
@@ -545,13 +632,13 @@
         spinning = false;
         updateSpinButtons();
         updateStatuses();
-        if (state.sim.total === N_TRIALS) toast(N_TRIALS + ' percobaan selesai! Lanjutkan ke bagian 3.2.');
+        if (state.sim.total === N_TRIALS) toast('30 putaran selesai. Lanjutkan ke soal 4.2.');
       });
     });
 
     $('#spin-auto').addEventListener('click', function () {
       if (spinning) return;
-      if (state.sim.total > 0 && !window.confirm('Data percobaan akan diulang dari nol, lalu roda diputar ' + N_TRIALS + ' kali. Lanjutkan?')) return;
+      if (state.sim.total > 0 && !window.confirm('Data putaran akan dihapus, lalu roda diputar 30 kali dari awal. Lanjutkan?')) return;
       resetSim();
       spinning = true;
       updateSpinButtons();
@@ -561,7 +648,7 @@
           spinning = false;
           updateSpinButtons();
           updateStatuses();
-          toast(N_TRIALS + ' percobaan selesai! Lanjutkan ke bagian 3.2.');
+          toast('30 putaran selesai. Lanjutkan ke soal 4.2.');
           return;
         }
         spinOnce(step).then(loop);
@@ -571,7 +658,19 @@
     $('#spin-reset').addEventListener('click', function () {
       if (spinning) return;
       resetSim();
-      toast('Data percobaan diatur ulang ke nol.');
+      toast('Data putaran sudah dihapus.');
+    });
+
+    $('#spin-300').addEventListener('click', function () {
+      if (!simDone()) { toast('Selesaikan 30 putaran di 4.1 dulu.'); return; }
+      var counts = {};
+      COMBOS.forEach(function (c) { counts[c.key] = 0; });
+      for (var i = 0; i < N_FAST; i++) counts[COMBOS[fairIndex(COMBOS.length)].key] += 1;
+      state.sim300 = { counts: counts, total: N_FAST };
+      save();
+      sfx('stop');
+      renderBars();
+      updateStatuses();
     });
   }
 
@@ -579,56 +678,64 @@
     return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   }
 
+  /* ---------- aktivitas 4 ---------- */
+
+  function renderAkt4() {
+    var ready = favReady();
+    var lock = $('#fr-lock');
+    lock.hidden = ready;
+    lock.textContent = !fav() ? 'Pilih pasangan kesukaanmu di halaman Butik dulu.' : 'Putar roda sampai 30 kali untuk membuka soal 4.2 sampai 4.5.';
+    $('#akt4-body').hidden = !ready;
+    $('#cmp-fh').textContent = a('a31_res') || '…';
+    $('#cmp-k').textContent = a('a42_k') || '…';
+    $('#cmp-fr').textContent = a('a42_k') ? a('a42_k') + '/' + N_TRIALS : '…';
+    var favCell = $('#fr-table .fr-fav');
+    if (favCell) favCell.textContent = favFr();
+  }
+  function favFr() { return a('a42_num') && a('a42_den') ? frac('a42_num', 'a42_den') : 'isi di 4.2'; }
+
   function renderFrTable() {
     var sim = state.sim;
-    var ready = sim.total === N_TRIALS;
-    $('#fr-lock').hidden = ready;
     var body = $('#fr-table tbody');
     body.innerHTML = COMBOS.map(function (c) {
       var isFav = fav() === c.key;
-      return '<tr' + (isFav ? ' class="fav-row"' : '') + '><td>' + comboCode(c.key) + (isFav ? ' <span class="star" title="Pasangan pakaian kesukaanmu">★</span>' : '') + '</td><td class="num">' + (ready ? sim.counts[c.key] : '–') + '</td><td class="num">' + N_TRIALS + '</td>' +
-        '<td><span class="frac-input">' +
-        '<input type="text" inputmode="numeric" data-key="a33n_' + c.key + '" aria-label="Pembilang frekuensi relatif ' + comboCode(c.key) + '"' + (ready ? '' : ' disabled') + '>' +
-        '<span class="bar"></span>' +
-        '<input type="text" inputmode="numeric" data-key="a33d_' + c.key + '" aria-label="Penyebut frekuensi relatif ' + comboCode(c.key) + '"' + (ready ? '' : ' disabled') + '>' +
-        '</span></td></tr>';
+      var cell = isFav
+        ? '<td class="fr-fav">' + esc(favFr()) + '</td>'
+        : '<td><span class="frac-input">' +
+          '<input type="text" inputmode="numeric" data-key="a43n_' + c.key + '" aria-label="Pembilang frekuensi relatif ' + comboCode(c.key) + '">' +
+          '<span class="bar"></span>' +
+          '<input type="text" inputmode="numeric" data-key="a43d_' + c.key + '" aria-label="Penyebut frekuensi relatif ' + comboCode(c.key) + '">' +
+          '</span></td>';
+      return '<tr' + (isFav ? ' class="fav-row"' : '') + '><td>' + comboCode(c.key) + (isFav ? ' <span class="star" title="Pasangan kesukaanmu">★</span>' : '') + '</td>' +
+        '<td class="num">' + sim.counts[c.key] + '</td><td class="num">' + N_TRIALS + '</td>' + cell + '</tr>';
     }).join('');
     bindInputs(body);
+    updateStatuses();
   }
 
-  /* ---------- periksa & kumpulkan ---------- */
-
-  function renderRecap() {
-    var sub = state.submission;
-    var results = sub ? sub.results : null;
-    var html = '<div class="card"><div class="recap-head"><h2>Identitas</h2><button type="button" class="btn-edit" data-edit="1" data-focus="id_nama">Ubah</button></div><ul class="recap-list">' +
-      '<li><span>Nama lengkap</span><span>' + esc(a('id_nama') || '-') + '</span></li>' +
-      '<li><span>Kelas/Semester</span><span>' + esc(a('id_kelas') || '-') + '</span></li>' +
-      '<li><span>Nomor presensi</span><span>' + esc(a('id_no') || '-') + '</span></li>' +
-      '<li><span>Pasangan pakaian kesukaan (kejadian A)</span><span>' + (fav() ? esc(comboName(fav()) + ' ' + comboCode(fav())) : '<span class="status-empty">Belum dipilih</span>') + '</span></li></ul></div>';
-
-    html += '<div class="recap-grid">';
-    GROUPS.forEach(function (g) {
-      html += '<div class="card"><div class="recap-head"><h2>' + g.title + '</h2></div><ul class="recap-list">';
-      g.items.forEach(function (it) {
-        var filled = itemFilled(it);
-        var mark = '';
-        if (results && it.id in results) mark = results[it.id] ? '<span class="mark mark-ok" title="Benar">✓</span>' : '<span class="mark mark-bad" title="Belum tepat">✗</span>';
-        var focus = it.keys[0] || (it.id === 'tabel' ? '' : '');
-        html += '<li class="r-row"><span class="r-lbl">' + esc(itemLabel(it)) + '</span><span class="r-ans">' +
-          (filled ? esc(it.show()) : '<span class="status-empty">Belum diisi</span>') + mark + '</span>' +
-          '<button type="button" class="btn-edit" data-edit="' + g.page + '"' + (focus ? ' data-focus="' + focus + '"' : '') + '>Ubah</button></li>';
-      });
-      html += '</ul></div>';
-    });
-    html += '<div class="card"><div class="recap-head"><h2>Kesimpulanmu</h2><button type="button" class="btn-edit" data-edit="5" data-focus="a34_text">Ubah</button></div><p>' +
-      (a('a34_text') ? esc(a('a34_text')) : '<span class="status-empty">Belum ditulis</span>') + '</p></div>';
-    html += '</div>';
-    $('#recap').innerHTML = html;
-    $all('#recap [data-edit]').forEach(function (b) {
-      b.addEventListener('click', function () { showPage(Number(b.getAttribute('data-edit')), b.getAttribute('data-focus')); });
-    });
+  // Diagram batang: frekuensi relatif 30 putaran dan 300 putaran, dengan garis 1/6.
+  function renderBars() {
+    var box = $('#bars300');
+    var q = $('#q45-box');
+    if (!state.sim300) { box.hidden = true; q.hidden = true; return; }
+    var max = 0.5;
+    var line = (1 / 6) / max * 100;
+    box.innerHTML = '<p class="bars-legend"><span><i class="key k30"></i>30 putaran</span><span><i class="key k300"></i>300 putaran</span><span><i class="key kline"></i>garis 1/6</span></p>' +
+      COMBOS.map(function (c) {
+        var f30 = state.sim.counts[c.key] / N_TRIALS;
+        var f300 = state.sim300.counts[c.key] / N_FAST;
+        var w = function (f) { return Math.min(100, f / max * 100).toFixed(1); };
+        return '<div class="bar-row"><span class="bar-label">' + comboCode(c.key) + '</span><div class="bar-track" style="--mark:' + line.toFixed(1) + '%">' +
+          '<span class="bar-line"><span class="bar-fill b30" style="width:' + w(f30) + '%"></span><span class="bar-val">' + comma(f30) + '</span></span>' +
+          '<span class="bar-line"><span class="bar-fill b300" style="width:' + w(f300) + '%"></span><span class="bar-val">' + comma(f300) + '</span></span>' +
+          '</div></div>';
+      }).join('') +
+      '<p class="hint">Nilai 1/6 kira-kira 0,17.</p>';
+    box.hidden = false;
+    q.hidden = false;
   }
+
+  /* ---------- kunci pengumpulan pertama ---------- */
 
   function fmtWhen(ms) {
     var d = new Date(ms);
@@ -636,103 +743,190 @@
       ' pukul ' + d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
   }
 
+  function renderLockUI() {
+    var lock = myLock();
+    $all('[data-lock-banner]').forEach(function (el) {
+      el.hidden = !lock;
+      if (lock) el.textContent = 'Nama ini sudah mengumpulkan pada ' + fmtWhen(lock.at) + '. Nilai akhirnya ' + lock.score + '. Kamu boleh berlatih lagi, tetapi nilai akhir tidak berubah.';
+    });
+    if (state.page === 6) { renderRecap(); renderSubmission(); }
+  }
+
+  // Hasil yang ditandai di daftar periksa: latihan terbaru jika ada, jika tidak pengumpulan pertama.
+  function shownResults() {
+    var lock = myLock();
+    if (!lock) return null;
+    var p = state.practice;
+    if (p && p.id === idKey() && p.at > lock.at) return p.results;
+    return lock.results;
+  }
+
+  function figure(key, cls) {
+    if (!key) return '';
+    var p = key.split('-');
+    return '<figure class="' + cls + '">' + O.character(p[0], p[1]) + '<figcaption>' + esc(comboName(key)) + '<br>' + comboCode(key) + '</figcaption></figure>';
+  }
+
+  function renderRecap() {
+    var results = shownResults();
+    var html = '<div class="card recap-id"><div class="recap-head"><h2>Identitasmu</h2><button type="button" class="btn-edit" data-edit="1" data-focus="id_nama">Ubah</button></div>' +
+      '<div class="recap-id-body"><ul class="recap-list">' +
+      '<li><span>Nama lengkap</span><span>' + esc(a('id_nama') || '-') + '</span></li>' +
+      '<li><span>Kelas/Semester</span><span>' + esc(a('id_kelas') || '-') + '</span></li>' +
+      '<li><span>Nomor presensi</span><span>' + esc(a('id_no') || '-') + '</span></li>' +
+      '<li><span>Tabel Aktivitas 1</span><span>' + savedCount() + ' dari 6 pasangan</span></li></ul>' +
+      (fav() ? figure(fav(), 'recap-fav') : '<p class="status-empty">Pasangan kesukaan belum dipilih.</p>') +
+      '</div></div>';
+
+    html += '<div class="recap-grid">';
+    GROUPS.forEach(function (g) {
+      html += '<div class="card"><div class="recap-head"><h2>' + esc(g.title) + '</h2></div><ul class="recap-list">';
+      groupItems(g).forEach(function (it) {
+        var filled = itemFilled(it);
+        var mark = '';
+        var how = '';
+        if (results && it.id in results) {
+          mark = results[it.id] ? '<span class="mark mark-ok" title="Benar">✓</span>' : '<span class="mark mark-bad" title="Belum tepat">✗</span>';
+          if (!results[it.id]) how = '<p class="cara"><b>Cara:</b> ' + esc(it.how) + '</p>';
+        }
+        var focus = it.keys[0] || '';
+        html += '<li class="r-row"><span class="r-lbl">' + esc(it.label) + '</span><span class="r-ans">' +
+          (filled ? esc(it.show()) : '<span class="status-empty">Belum diisi</span>') + mark + '</span>' +
+          '<button type="button" class="btn-edit" data-edit="' + g.page + '"' + (focus ? ' data-focus="' + focus + '"' : '') + '>Ubah</button>' + how + '</li>';
+      });
+      html += '</ul></div>';
+    });
+    html += '<div class="card"><div class="recap-head"><h2>Jawaban Tertulis</h2></div><p class="hint">Bagian ini dinilai guru.</p><ul class="recap-list">' +
+      WRITTEN.map(function (w) {
+        return '<li class="r-row"><span class="r-lbl">' + esc(w.label) + '</span><span class="r-ans r-text">' +
+          (a(w.key) ? esc(a(w.key)) : '<span class="status-empty">Belum ditulis</span>') + '</span>' +
+          '<button type="button" class="btn-edit" data-edit="' + w.page + '" data-focus="' + w.key + '">Ubah</button></li>';
+      }).join('') + '</ul></div>';
+    html += '</div>';
+    $('#recap').innerHTML = html;
+    $all('#recap [data-edit]').forEach(function (b) {
+      b.addEventListener('click', function () { showPage(Number(b.getAttribute('data-edit')), b.getAttribute('data-focus')); });
+    });
+  }
+
   function renderSubmission() {
-    var sub = state.submission;
-    var first = state.firstSubmission;
+    var lock = myLock();
     var box = $('#submit-result');
-    $('#print-btn').disabled = !first;
-    if (!sub) {
-      box.innerHTML = '<p>Jawaban belum dikumpulkan. Kamu masih bisa mengubah semua jawaban.</p>' +
-        '<p class="hint">Unduh PDF tersedia setelah jawaban dikumpulkan, dan selalu berisi hasil pengumpulan pertama.</p>';
+    $('#print-btn').disabled = !lock;
+    if (!lock) {
+      box.innerHTML = '<p>Jawabanmu belum dikumpulkan.</p>';
       $('#submit-btn').textContent = 'Kumpulkan Jawaban';
       return;
     }
-    var html = '<p class="score">Skor: <b>' + sub.score + '</b> / 100</p>' +
-      '<p>' + sub.correct + ' dari ' + sub.total + ' jawaban benar. Dikumpulkan ' + fmtWhen(sub.at) + ' (pengumpulan ke-' + sub.count + ').</p>';
-    if (first) {
-      html += '<p class="first-note">PDF yang diunduh berisi hasil pengumpulan pertama: skor <b>' + first.score + '</b>, dikumpulkan ' + fmtWhen(first.at) + '.</p>';
+    var html = '<p class="score">Nilai akhir: <b>' + lock.score + '</b> / 100</p>' +
+      '<p>' + lock.correct + ' dari ' + lock.total + ' jawaban benar. Dikumpulkan ' + fmtWhen(lock.at) + '.</p>' +
+      '<p>Soal yang belum tepat diberi tanda ✗ dan petunjuk <b>Cara</b>. Perbaiki jawabanmu, lalu tekan <b>Periksa Jawaban Latihan</b>.</p>';
+    var p = state.practice;
+    if (p && p.id === idKey() && p.at > lock.at) {
+      html += '<p class="first-note">Hasil latihan terakhir: <b>' + p.score + '</b> / 100. Nilai akhirmu tetap <b>' + lock.score + '</b>.</p>';
     }
-    if (sub.sent === 'ok') html += '<p class="status-ok">Jawaban sudah dikirim ke guru.</p>';
-    else if (sub.sent === 'fail') html += '<p class="status-bad">Jawaban gagal dikirim. Simpan sebagai PDF sebagai cadangan.</p>';
-    if (sub.changed) html += '<p class="status-bad">Ada jawaban yang diubah setelah dikumpulkan. Tekan Kumpulkan Ulang untuk memperbarui.</p>';
+    if (lock.sent === 'ok') html += '<p class="status-ok">Hasil pertama sudah tercatat di data guru.</p>';
+    else if (lock.sent === 'fail') html += '<p class="status-bad">Hasil gagal tercatat di data guru. Tetap kirim PDF ke WhatsApp gurumu.</p>';
     box.innerHTML = html;
-    $('#submit-btn').textContent = 'Kumpulkan Ulang';
+    $('#submit-btn').textContent = 'Periksa Jawaban Latihan';
   }
 
-  function openModal(title, bodyHtml, onOk) {
+  function openModal(title, bodyHtml, okLabel, cancelLabel, onOk) {
     var m = $('#modal');
+    var okBtn = $('#modal-ok'), cancelBtn = $('#modal-cancel');
     $('#modal-title').textContent = title;
     $('#modal-body').innerHTML = bodyHtml;
+    okBtn.textContent = okLabel;
+    cancelBtn.textContent = cancelLabel;
     m.hidden = false;
-    $('#modal-ok').focus();
+    okBtn.focus();
     function close() { m.hidden = true; okBtn.removeEventListener('click', ok); cancelBtn.removeEventListener('click', close); }
     function ok() { close(); onOk(); }
-    var okBtn = $('#modal-ok'), cancelBtn = $('#modal-cancel');
     okBtn.addEventListener('click', ok);
     cancelBtn.addEventListener('click', close);
   }
 
   function askSubmit() {
+    if (!idKey()) {
+      openModal('Identitas belum lengkap', '<p>Isi nama lengkap, kelas/semester, dan nomor presensi dulu.</p>', 'Isi Identitas', 'Tutup', function () { showPage(1, 'id_nama'); });
+      return;
+    }
+    if (myLock()) { practice(); return; }
     var missing = [];
     GROUPS.forEach(function (g) {
-      var n = g.items.filter(function (it) { return !itemFilled(it); }).length;
-      if (n) missing.push('<li>' + g.title + ': ' + n + ' belum diisi</li>');
+      var n = groupItems(g).filter(function (it) { return !itemFilled(it); }).length;
+      if (n) missing.push('<li>' + esc(g.title) + ': ' + n + ' belum diisi</li>');
     });
-    var body = missing.length
-      ? '<p>Masih ada jawaban yang kosong:</p><ul>' + missing.join('') + '</ul><p>Tetap kumpulkan sekarang?</p>'
-      : '<p>Semua jawaban sudah terisi. Setelah dikumpulkan, skor akan ditampilkan.</p>';
-    openModal('Kumpulkan jawaban?', body, submit);
+    var body = '<p><b>Kamu hanya bisa mengumpulkan satu kali.</b> Pengumpulan ini menjadi nilai akhirmu.</p>' +
+      (missing.length ? '<p>Masih ada jawaban yang kosong:</p><ul>' + missing.join('') + '</ul>' : '<p>Semua jawaban sudah terisi.</p>');
+    openModal('Kumpulkan jawaban?', body, 'Kumpulkan Sekarang', 'Periksa Dulu', submitFirst);
   }
 
-  function submit() {
-    var results = {};
-    var correct = 0;
-    var items = allItems();
-    items.forEach(function (it) { var ok = !!it.ok(); results[it.id] = ok; if (ok) correct += 1; });
-    var prev = state.submission;
-    // Pengumpulan pertama disimpan utuh dan tidak pernah ditimpa; dipakai untuk cetak.
-    if (!state.firstSubmission) {
-      state.firstSubmission = JSON.parse(JSON.stringify({
-        at: Date.now(),
-        correct: correct,
-        total: items.length,
-        score: Math.round(correct / items.length * 100),
-        results: results,
-        answers: state.answers,
-        saved: state.boutique.saved,
-        sim: state.sim
-      }));
-    }
-    state.submission = {
+  function submitFirst() {
+    var ev = evaluate();
+    var lock = JSON.parse(JSON.stringify({
       at: Date.now(),
-      count: prev ? prev.count + 1 : 1,
-      correct: correct,
-      total: items.length,
-      score: Math.round(correct / items.length * 100),
-      results: results,
-      changed: false,
+      identity: { nama: a('id_nama'), kelas: a('id_kelas'), no: a('id_no') },
+      results: ev.results,
+      correct: ev.correct,
+      total: ev.total,
+      score: ev.score,
+      answers: state.answers,
+      saved: state.boutique.saved,
+      sim: state.sim,
+      sim300: state.sim300,
       sent: CFG.submitUrl ? 'sending' : null
-    };
+    }));
+    var key = idKey();
+    locks[key] = lock;
+    saveLocks();
+    state.practice = null;
+    save();
+    sfx('submit');
+    renderLockUI();
+    renderRecap();
+    renderSubmission();
+    toast('Jawaban terkumpul. Nilai akhirmu ' + lock.score + '.');
+    if (CFG.submitUrl) send(key);
+  }
+
+  // Latihan sesudah pengumpulan pertama: dinilai ulang, tetapi nilai akhir tetap.
+  function practice() {
+    var ev = evaluate();
+    state.practice = { id: idKey(), at: Date.now(), results: ev.results, score: ev.score };
     save();
     sfx('submit');
     renderRecap();
     renderSubmission();
-    if (CFG.submitUrl) send();
+    toast('Hasil latihan ' + ev.score + '. Nilai akhirmu tetap ' + myLock().score + '.');
+  }
+
+  function newStudent() {
+    openModal('Mulai sebagai siswa baru?', '<p>Jawaban yang sedang terbuka di perangkat ini akan dihapus. Hasil yang sudah dikumpulkan tetap tersimpan.</p>',
+      'Ya, Mulai Baru', 'Batal', function () {
+        state = freshState();
+        save();
+        window.location.reload();
+      });
   }
 
   // Isi sementara state dengan salinan pengumpulan pertama, agar butir soal
   // membaca jawaban saat itu, lalu kembalikan.
   function withSnapshot(snap, fn) {
-    var keep = { answers: state.answers, boutique: state.boutique, sim: state.sim };
+    var keep = { answers: state.answers, boutique: state.boutique, sim: state.sim, sim300: state.sim300 };
     state.answers = snap.answers;
     state.boutique = { top: null, bottom: null, saved: snap.saved };
     state.sim = snap.sim;
+    state.sim300 = snap.sim300;
     try { return fn(); } finally {
       state.answers = keep.answers;
       state.boutique = keep.boutique;
       state.sim = keep.sim;
+      state.sim300 = keep.sim300;
     }
   }
+
+  /* ---------- PDF ---------- */
 
   // PDF dibuat langsung di browser (jsPDF) lalu diunduh, tanpa dialog cetak.
   // Library dimuat saat tombol pertama kali ditekan agar halaman tetap ringan.
@@ -755,13 +949,32 @@
     return pdfLibs;
   }
 
+  // Gambar pasangan kesukaan diubah dari SVG ke JPEG agar bisa masuk PDF dengan ukuran kecil.
+  function svgToImg(svg, w, h) {
+    return new Promise(function (resolve) {
+      var src = svg.replace('<svg ', '<svg width="' + w + '" height="' + h + '" ');
+      var img = new Image();
+      img.onload = function () {
+        var cv = document.createElement('canvas');
+        cv.width = w;
+        cv.height = h;
+        var ctx = cv.getContext('2d');
+        ctx.fillStyle = '#FCE9C8';
+        ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(cv.toDataURL('image/jpeg', 0.9));
+      };
+      img.onerror = function () { resolve(null); };
+      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(src);
+    });
+  }
+
   var MAROON = [122, 31, 43];
   var INK = [58, 35, 24];
+  var HEAD = { fillColor: MAROON, textColor: [255, 244, 226] };
 
-  // Isi PDF selalu dari salinan pengumpulan pertama.
-  function makePdf() {
-    var snap = state.firstSubmission;
-    return withSnapshot(snap, function () {
+  function makePdf(lock, favPng) {
+    return withSnapshot(lock, function () {
       var doc = new window.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
       var W = 210, M = 14;
 
@@ -775,8 +988,8 @@
       doc.text('Hasil Pengumpulan Pertama', M, 11);
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9.5);
-      doc.text('E-LKPD Matematika Kelas VIII - Stylist Studio Sriwijaya Heritage Edition', M, 17.5);
-      doc.text('Dikumpulkan ' + fmtWhen(snap.at), M, 23);
+      doc.text('Butik Warisan Sriwijaya - E-LKPD Matematika Kelas VIII', M, 17.5);
+      doc.text('Dikumpulkan ' + fmtWhen(lock.at), M, 23);
 
       var bx = W - M - 38, by = 34;
       doc.setDrawColor(122, 31, 43);
@@ -786,42 +999,47 @@
       doc.setTextColor(58, 35, 24);
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(10);
-      doc.text('Skor', bx + 19, by + 7, { align: 'center' });
+      doc.text('Nilai akhir', bx + 19, by + 7, { align: 'center' });
       doc.setTextColor(122, 31, 43);
       doc.setFontSize(24);
-      doc.text(String(snap.score), bx + 19, by + 19, { align: 'center' });
+      doc.text(String(lock.score), bx + 19, by + 19, { align: 'center' });
       doc.setTextColor(58, 35, 24);
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(8.5);
-      doc.text(snap.correct + ' dari ' + snap.total + ' benar', bx + 19, by + 26, { align: 'center' });
+      doc.text(lock.correct + ' dari ' + lock.total + ' benar', bx + 19, by + 26, { align: 'center' });
+
+      if (favPng) doc.addImage(favPng, 'JPEG', bx + 5, by + 33, 28, 39.5);
 
       doc.autoTable({
         startY: 33,
         margin: { left: M, right: M + 44 },
         theme: 'plain',
         styles: { fontSize: 10, cellPadding: 1.4, textColor: INK },
-        columnStyles: { 0: { fontStyle: 'bold', cellWidth: 32 } },
+        columnStyles: { 0: { fontStyle: 'bold', cellWidth: 38 } },
         body: [
-          ['Nama lengkap', a('id_nama') || '-'],
-          ['Kelas/Semester', a('id_kelas') || '-'],
-          ['Nomor presensi', a('id_no') || '-'],
-          ['Pasangan kesukaan', fav() ? comboName(fav()) + ' ' + comboCode(fav()) : '-']
+          ['Nama lengkap', lock.identity.nama || '-'],
+          ['Kelas/Semester', lock.identity.kelas || '-'],
+          ['Nomor presensi', lock.identity.no || '-'],
+          ['Pasangan kesukaan', fav() ? comboName(fav()) + ' ' + comboCode(fav()) : '-'],
+          ['Pasangan teman (2.2)', friend() ? comboName(friend()) + ' ' + comboCode(friend()) : '-'],
+          ['Tabel Aktivitas 1', savedCount() + ' dari 6 pasangan']
         ]
       });
-      var y = Math.max(doc.lastAutoTable.finalY, by + 30) + 6;
+      var y = Math.max(doc.lastAutoTable.finalY, by + 76) + 4;
 
       GROUPS.forEach(function (g) {
+        if (y > 255) { doc.addPage(); y = 16; }
         doc.autoTable({
           startY: y,
           margin: { left: M, right: M },
           head: [[g.title, 'Jawaban', 'Hasil']],
-          body: g.items.map(function (it) {
+          body: groupItems(g).map(function (it) {
             var shown = itemFilled(it) || !it.keys.length ? it.show() : '(kosong)';
-            return [itemLabel(it), shown, snap.results[it.id] ? 'Benar' : 'Salah'];
+            return [it.label, shown, lock.results[it.id] ? 'Benar' : 'Salah'];
           }),
           styles: { fontSize: 9.5, cellPadding: 1.8, textColor: INK },
-          headStyles: { fillColor: MAROON, textColor: [255, 244, 226] },
-          columnStyles: { 0: { cellWidth: 70 }, 2: { cellWidth: 20, halign: 'center', fontStyle: 'bold' } },
+          headStyles: HEAD,
+          columnStyles: { 0: { cellWidth: 78 }, 2: { cellWidth: 20, halign: 'center', fontStyle: 'bold' } },
           didParseCell: function (d) {
             if (d.section === 'body' && d.column.index === 2) d.cell.styles.textColor = d.cell.raw === 'Benar' ? [47, 107, 58] : [163, 39, 27];
           }
@@ -832,86 +1050,109 @@
       doc.autoTable({
         startY: y,
         margin: { left: M, right: M },
-        head: [['Data roda putar (N = ' + state.sim.total + ')', 'Banyak muncul (k)']],
-        body: COMBOS.map(function (c) { return [comboName(c.key) + ' ' + comboCode(c.key), String(state.sim.counts[c.key])]; }),
+        head: [['Jawaban tertulis (dinilai guru)', 'Jawaban siswa']],
+        body: WRITTEN.map(function (w) { return [w.label, a(w.key) || '(kosong)']; }),
         styles: { fontSize: 9.5, cellPadding: 1.8, textColor: INK },
-        headStyles: { fillColor: MAROON, textColor: [255, 244, 226] },
-        columnStyles: { 1: { cellWidth: 40, halign: 'center' } }
+        headStyles: HEAD,
+        columnStyles: { 0: { cellWidth: 70 } }
       });
-      y = doc.lastAutoTable.finalY + 8;
+      y = doc.lastAutoTable.finalY + 5;
 
-      var lines = doc.splitTextToSize(a('a34_text') || '(kosong)', W - 2 * M);
-      if (y + 30 + lines.length * 5 > 285) { doc.addPage(); y = 20; }
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(11);
-      doc.setTextColor(122, 31, 43);
-      doc.text('Kesimpulan', M, y);
-      doc.setFont('helvetica', 'normal');
+      doc.autoTable({
+        startY: y,
+        margin: { left: M, right: M },
+        head: [['Data roda putar', 'Muncul dari 30', 'Muncul dari 300']],
+        body: COMBOS.map(function (c) {
+          return [comboName(c.key) + ' ' + comboCode(c.key), String(state.sim.counts[c.key]), state.sim300 ? String(state.sim300.counts[c.key]) : '-'];
+        }),
+        styles: { fontSize: 9.5, cellPadding: 1.8, textColor: INK },
+        headStyles: HEAD,
+        columnStyles: { 1: { cellWidth: 32, halign: 'center' }, 2: { cellWidth: 32, halign: 'center' } }
+      });
+      y = doc.lastAutoTable.finalY + 5;
+
+      doc.autoTable({
+        startY: y,
+        margin: { left: M, right: M },
+        head: [['Refleksi (tidak dinilai)', 'Jawaban siswa']],
+        body: REFLECT.map(function (r) { return [r.label, (r.choice ? MCQ.ref3[a(r.key)] : a(r.key)) || '(kosong)']; }),
+        styles: { fontSize: 9.5, cellPadding: 1.8, textColor: INK },
+        headStyles: HEAD,
+        columnStyles: { 0: { cellWidth: 70 } }
+      });
+      y = doc.lastAutoTable.finalY + 10;
+
+      if (y > 270) { doc.addPage(); y = 20; }
       doc.setFontSize(10);
       doc.setTextColor(58, 35, 24);
-      doc.text(lines, M, y + 6);
-      y += 6 + lines.length * 5 + 12;
       doc.text('Paraf Guru:', M, y);
       doc.setDrawColor(58, 35, 24);
       doc.setLineWidth(0.3);
       doc.line(M + 22, y + 1, M + 80, y + 1);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Kirim file PDF ini ke WhatsApp gurumu.', M, y + 9);
       return doc;
     });
   }
 
-  function pdfName() {
-    var g = (a('id_nama') || 'siswa').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'siswa';
+  function pdfName(lock) {
+    var g = (lock.identity.nama || 'siswa').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'siswa';
     return 'Hasil-ELKPD-' + g + '.pdf';
   }
 
   function downloadPdf() {
-    if (!state.firstSubmission) { toast('Kumpulkan jawaban dulu, lalu unduh PDF.'); return; }
+    var lock = myLock();
+    if (!lock) { toast('Kumpulkan jawaban dulu, lalu unduh PDF.'); return; }
     var btn = $('#print-btn');
     btn.disabled = true;
     btn.textContent = 'Membuat PDF…';
+    var fk = lock.answers.fav;
+    var p = fk ? fk.split('-') : null;
     loadPdfLibs()
-      .then(function () {
-        var name = withSnapshot(state.firstSubmission, pdfName);
-        makePdf().save(name);
-        toast('PDF diunduh: ' + name);
+      .then(function () { return p ? svgToImg(O.character(p[0], p[1]), 440, 620) : null; })
+      .then(function (png) {
+        var name = pdfName(lock);
+        makePdf(lock, png).save(name);
+        toast('PDF diunduh: ' + name + '. Kirim ke WhatsApp gurumu.');
       })
       .catch(function () { toast('PDF gagal dibuat. Periksa koneksi internet, lalu coba lagi.'); })
       .then(function () {
-        btn.disabled = !state.firstSubmission;
+        btn.disabled = !myLock();
         btn.textContent = 'Unduh PDF';
       });
   }
 
+  // Hanya pengumpulan pertama yang dikirim ke Google Sheet guru.
   // Google Apps Script menerima teks JSON; mode no-cors menghindari preflight.
-  function send() {
-    var sub = state.submission;
+  function send(key) {
+    var lock = locks[key];
     var payload = {
-      waktu: new Date(sub.at).toISOString(),
-      nama: a('id_nama'),
-      kelas: a('id_kelas'),
-      presensi: a('id_no'),
-      skor: sub.score,
-      benar: sub.correct,
-      total: sub.total,
-      pengumpulanKe: sub.count,
-      kesimpulan: a('a34_text'),
-      pasanganKesukaan: fav(),
-      pasanganTeman: friend(),
-      jawaban: state.answers,
-      hasilButir: sub.results,
-      tabelAktivitas1: Object.keys(state.boutique.saved),
-      simulasi: state.sim.counts
+      waktu: new Date(lock.at).toISOString(),
+      nama: lock.identity.nama,
+      kelas: lock.identity.kelas,
+      presensi: lock.identity.no,
+      skor: lock.score,
+      benar: lock.correct,
+      total: lock.total,
+      kesimpulan: lock.answers.k_text || '',
+      pasanganKesukaan: lock.answers.fav || '',
+      pasanganTeman: lock.answers.friend || '',
+      jawaban: lock.answers,
+      hasilButir: lock.results,
+      tabelAktivitas1: Object.keys(lock.saved),
+      simulasi: lock.sim.counts
     };
     fetch(CFG.submitUrl, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
-      .then(function () { sub.sent = 'ok'; })
-      .catch(function () { sub.sent = 'fail'; })
-      .then(function () { save(); renderSubmission(); });
+      .then(function () { lock.sent = 'ok'; })
+      .catch(function () { lock.sent = 'fail'; })
+      .then(function () { saveLocks(); renderSubmission(); });
   }
 
   /* ---------- mulai ---------- */
 
   function init() {
     renderTex();
+    buildAsks();
     buildWardrobe();
     buildWheel();
     buildFav();
@@ -919,8 +1160,11 @@
     updateDressing();
     renderCross();
     renderSim();
+    renderBars();
     if (fav()) pickFriend();
     renderFav();
+    renderSubs();
+    renderLockUI();
     updateStatuses();
 
     $('#cover-a').innerHTML = coverSvgs[0];
@@ -928,10 +1172,14 @@
 
     $all('.tab').forEach(function (t) { t.addEventListener('click', function () { showPage(Number(t.getAttribute('data-page'))); }); });
     $all('[data-go]').forEach(function (b) { b.addEventListener('click', function () { showPage(Number(b.getAttribute('data-go'))); }); });
+    $('#mnav-page').addEventListener('change', function (e) { showPage(Number(e.target.value)); });
+    $('#mnav-prev').addEventListener('click', function () { showPage(state.page - 1); });
+    $('#mnav-next').addEventListener('click', function () { showPage(state.page + 1); });
     $('#save-set').addEventListener('click', saveSet);
     $('#notice-close').addEventListener('click', hideNotice);
     $('#submit-btn').addEventListener('click', askSubmit);
     $('#print-btn').addEventListener('click', downloadPdf);
+    $('#new-student').addEventListener('click', newStudent);
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape') return;
       if (!$('#modal').hidden) $('#modal-cancel').click();

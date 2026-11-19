@@ -1,47 +1,47 @@
-# Stylist Studio – Sriwijaya Heritage Edition
+# Butik Warisan Sriwijaya
 
-E-LKPD interaktif Matematika SMP kelas VIII: peluang teoretis, frekuensi relatif, dan frekuensi harapan, dengan tema busana adat perempuan Palembang.
+E-LKPD interaktif Matematika SMP kelas VIII: peluang teoretis, frekuensi relatif, dan frekuensi harapan, dengan tema busana adat perempuan Palembang. Alokasi waktu 2 JP (2 × 40 menit).
 
 ## Isi
 
 | Halaman | Isi |
 | --- | --- |
-| 1. Sampul | Judul, topik, karakter chibi yang berganti 6 pasangan busana tiap 1 detik, identitas peserta didik (nama, kelas/semester, nomor presensi) |
-| 2. Petunjuk | Petunjuk penggunaan, capaian dan tujuan pembelajaran, apersepsi (3 soal) |
-| 3. Butik Digital | Aktivitas 1 (butik bermanekin, tabel silang 3 × 2), pertanyaan pemantik pasangan pakaian kesukaan, pengertian peluang teoretis, Aktivitas 2 (2 soal) |
-| 4. Roda Putar | Pengertian frekuensi relatif, 3.1 Eksperimen Roda Putar 30 kali, 3.2 Menentukan Frekuensi Relatif |
-| 5. Frekuensi Harapan | Pengertian frekuensi harapan, 3.3 Menghitung Frekuensi Harapan, 3.4 Membandingkan (2 langkah bertahap), 3.5 Kesimpulan |
-| 6. Kumpulkan | Daftar semua jawaban dengan tombol Ubah, tombol Kumpulkan Jawaban, skor, Unduh PDF |
+| 1. Sampul | Judul, topik, karakter chibi yang berganti 6 pasangan busana tiap 1 detik, identitas peserta didik, tautan "Mulai sebagai siswa baru" |
+| 2. Petunjuk | Petunjuk penggunaan, alokasi waktu, capaian dan 3 tujuan pembelajaran, apersepsi (3 soal) |
+| 3. Butik | Aktivitas 1 (Kenali Busananya, butik bermanekin, tabel 3 × 2), pertanyaan pemantik, Ayo Isi, pengertian peluang teoretis, Aktivitas 2 (2.1–2.4) |
+| 4. Frekuensi Harapan | Pengertian frekuensi harapan, Aktivitas 3 (3.1–3.2), dikerjakan sebelum roda diputar |
+| 5. Roda Putar | Pengertian frekuensi relatif, Aktivitas 4 (4.1 roda 30 kali, 4.2–4.4, 4.5 Putar Cepat 300 Kali) |
+| 6. Kumpulkan | Kesimpulan, refleksi, daftar semua jawaban dengan tombol Ubah, Kumpulkan Jawaban, Unduh PDF |
 
-`informasi-media.html` (Informasi Media) berisi kesesuaian materi dengan kurikulum, sumber setiap detail busana, bagian ilustrasi yang disederhanakan, dan catatan musik latar. Dokumen produk lengkap, termasuk kunci jawaban 23 butir, ada di `product.md`.
+`informasi-media.html` (Informasi Media) berisi kesesuaian materi dengan kurikulum, sumber setiap detail busana, bagian ilustrasi yang disederhanakan, dan catatan musik latar. Dokumen produk lengkap, termasuk kunci jawaban 39 butir, ada di `product.md`.
 
 ## Perilaku penting
 
-- Setiap pasangan pakaian hanya bisa disimpan satu kali. Notifikasi muncul di tengah layar; pasangan yang sama memunculkan "Pasangan pakaian ini sudah kamu pilih!" disertai layar bergetar.
-- Pasangan pakaian kesukaan yang dipilih siswa pada pertanyaan pemantik menjadi kejadian A di Aktivitas 1, 2, dan 3. Pasangan teman di Aktivitas 2 diacak sekali lalu tetap.
-- Aktivitas 2 terbuka setelah keenam sel tabel terisi.
-- Roda putar memakai `crypto.getRandomValues` dengan rejection sampling, sehingga peluang tiap sektor tepat 1/6.
-- Total percobaan dikunci tepat 30. "Putar Acak 30 Kali" selalu mulai dari nol lalu memutar tepat 30 kali.
-- "Atur Ulang Data" hanya menghapus data percobaan. Jawaban dan tabel Aktivitas 1 tetap tersimpan.
-- Jawaban tidak pernah dikunci. Setiap aktivitas hanya menampilkan status "Terisi x dari y"; benar atau salah baru ditampilkan setelah siswa menekan Kumpulkan Jawaban.
-- Jika siswa mengubah jawaban setelah mengumpulkan, halaman Kumpulkan meminta pengumpulan ulang. Nomor pengumpulan ikut tercatat.
-- Tombol **Unduh PDF** langsung mengunduh file `Hasil-ELKPD-<nama siswa>.pdf` (dibuat di browser dengan jsPDF, tanpa dialog cetak) yang selalu berisi **hasil pengumpulan pertama** (jawaban, skor, dan data percobaan saat itu), walaupun siswa sudah mengumpulkan ulang. Tombol aktif setelah pengumpulan pertama.
-- Jawaban tersimpan di `sessionStorage` (kunci `stylist-studio-sriwijaya-v7`) selama tab browser terbuka, termasuk saat halaman dimuat ulang.
+- Soal hitungan memakai langkah **Diketahui, Ditanya** (pilih dari daftar), **Jawab**. Baris substitusi di Jawab terisi otomatis dari angka yang ditulis siswa. Setiap soal diberi label Mudah, Sedang, atau Sulit.
+- Kotak "Tulis alasanmu" dan kesimpulan dengan kalimat sendiri dinilai guru dari PDF.
+- Kode Songket ditulis **Sg** agar tidak tertukar dengan lambang ruang sampel S.
+- Setiap pasangan pakaian hanya bisa disimpan satu kali. Pasangan yang sama memunculkan "Pasangan pakaian ini sudah kamu pilih!" disertai layar bergetar.
+- Roda putar memakai `crypto.getRandomValues` dengan rejection sampling, sehingga peluang tiap sektor tepat 1/6. Total percobaan dikunci tepat 30.
+- **Pengumpulan hanya satu kali.** Pengumpulan pertama disimpan per identitas (nama + kelas + nomor presensi) di `localStorage`, sehingga tetap diingat walau web ditutup. Sesudahnya siswa melihat ✓/✗ dan petunjuk **Cara** untuk soal yang salah, lalu boleh berlatih (Periksa Jawaban Latihan) tanpa mengubah nilai akhir.
+- Tombol **Unduh PDF** langsung mengunduh `Hasil-ELKPD-<nama siswa>.pdf` berisi pengumpulan pertama, termasuk gambar pasangan kesukaan. Siswa mengirim file ini ke WhatsApp guru.
+- Keterbatasan: kunci disimpan di browser, jadi siswa masih bisa mengumpulkan ulang dari perangkat atau browser lain. Gunakan PDF pertama dan kolom "Kiriman ke-" di Google Sheet sebagai pengaman.
 
 ## Suara
 
-- Efek suara (klik, pilih manekin, simpan berhasil, pasangan ganda, putaran roda, detak roda, roda berhenti, kumpulkan) dibuat oleh browser lewat Web Audio, tanpa file.
-- Musik latar diputar berulang dari `audio/musik-latar.mp3`: komposisi orisinal berupa melodi dan petikan senar sintetis (G mayor, tempo 112, tanpa bas dan kendang), **bukan rekaman alat musik tradisional**. Cara mengganti dengan rekaman asli ada di `audio/README.md`.
-- Panel Suara di kanan atas: musik aktif atau nonaktif, volume musik, efek suara aktif atau nonaktif, volume efek. Musik otomatis dikecilkan sebentar setiap efek suara berbunyi.
+- Efek suara dibuat oleh browser lewat Web Audio, tanpa file.
+- Musik latar diputar berulang dari `audio/musik-latar.mp3`: komposisi orisinal berupa melodi dan petikan senar sintetis (G mayor, tempo 112), **bukan rekaman alat musik tradisional**. Cara mengganti dengan rekaman asli ada di `audio/README.md`.
+- Panel Suara di kanan atas: musik dan efek suara, masing-masing dengan tombol aktif dan volume.
 
-## Mengirim jawaban ke guru (opsional)
+## Mencatat hasil ke Google Sheet (opsional)
 
-Tanpa pengaturan, jawaban dikumpulkan lewat tombol Unduh PDF. Agar jawaban otomatis masuk ke Google Sheet:
+Tanpa pengaturan, hasil dikumpulkan lewat PDF ke WhatsApp guru. Agar pengumpulan pertama juga tercatat di Google Sheet:
 
 1. Ikuti petunjuk di `tools/google-apps-script.gs`.
 2. Tempel URL aplikasi web ke `submitUrl` di `js/config.js`, lalu deploy ulang.
 
-Browser tidak bisa membaca balasan Google Apps Script (mode `no-cors`), jadi pesan "sudah dikirim" berarti permintaan terkirim. Periksa sheet untuk memastikan baris baru masuk.
+Sheet "Jawaban" punya kolom "Kiriman ke-". Nilai 2 ke atas (baris merah muda) berarti siswa yang sama mengumpulkan lagi dari perangkat lain. Pakai baris dengan nilai 1.
+
+Browser tidak bisa membaca balasan Google Apps Script (mode `no-cors`), jadi pesan "tercatat" berarti permintaan terkirim. Periksa sheet untuk memastikan baris baru masuk.
 
 ## Menjalankan
 
@@ -57,4 +57,4 @@ Vercel: impor repositori, pilih Framework Preset "Other", kosongkan build comman
 
 Netlify: impor repositori, kosongkan build command, publish directory `.`.
 
-KaTeX (rumus) sudah disertakan di `vendor/katex`, sehingga rumus tetap tampil walau CDN diblokir jaringan sekolah. Font Google (Fredoka, Nunito) butuh internet; tanpa internet browser memakai font cadangan.
+KaTeX (rumus) dan jsPDF sudah disertakan di folder `vendor`, sehingga tetap berjalan walau CDN diblokir jaringan sekolah. Font Google (Fredoka, Nunito) butuh internet; tanpa internet browser memakai font cadangan.

@@ -3,7 +3,7 @@
  *
  * submitUrl : alamat Web App Google Apps Script untuk menerima jawaban
  *             (lihat tools/google-apps-script.gs dan README). Biarkan kosong
- *             jika jawaban cukup dikumpulkan lewat Cetak / Simpan PDF.
+ *             jika hasil cukup dikumpulkan lewat PDF ke WhatsApp guru.
  * musicSrc  : lokasi file musik latar instrumental. Letakkan file rekaman
  *             yang izin pemakaiannya jelas di folder audio/.
  */
