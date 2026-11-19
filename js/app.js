@@ -11,7 +11,7 @@
   // Jawaban disimpan di localStorage agar tetap ada walau web ditutup.
   // Pengumpulan pertama tiap siswa (nama + kelas + presensi) disimpan terpisah
   // dan tidak pernah ditimpa: itulah nilai akhir.
-  var STORE = 'butik-warisan-sriwijaya-v1';
+  var STORE = 'butik-warisan-sriwijaya-v2';
   var DRAFT_KEY = STORE + ':draft';
   var LOCK_KEY = STORE + ':locks';
 
@@ -103,15 +103,50 @@
     $all('.tex', root).forEach(function (el) { tex(el, el.getAttribute('data-tex'), el.getAttribute('data-display') === '1'); });
   }
 
-  // Baris substitusi di bagian Jawab diisi dari angka yang ditulis siswa di Diketahui.
-  function renderSubs() {
-    $all('.sub').forEach(function (el) {
-      var expr = el.getAttribute('data-sub');
-      var v = function (k) { return a(k) ? a(k).replace(/[^0-9]/g, '') || '\\ldots' : '\\ldots'; };
-      var m = expr.split('*');
-      var fracPart = m[m.length - 1].split('/');
-      var f = '\\dfrac{' + v(fracPart[0]) + '}{' + v(fracPart[1]) + '}';
-      tex(el, m.length > 1 ? v(m[0]) + '\\times' + f : f);
+  // Bagian Jawab: tiga langkah yang diisi siswa sendiri.
+  // kind P = peluang teoretis, Fh = frekuensi harapan, Fr = frekuensi relatif.
+  var JAWAB = {
+    a21: { ev: 'A', kind: 'P', res: ['a21_pNum', 'a21_pDen'] },
+    a23: { ev: 'B', kind: 'P', res: ['a23_pNum', 'a23_pDen'] },
+    a24: { ev: 'C', kind: 'P', res: ['a24_num', 'a24_den'] },
+    a31: { ev: 'A', kind: 'Fh', res: ['a31_res'] },
+    a32: { ev: 'B', kind: 'Fh', res: ['a32_res'] },
+    a42: { ev: 'A', kind: 'Fr', res: ['a42_num', 'a42_den'] }
+  };
+  function formulaTex(kind, ev) {
+    if (kind === 'P') return 'P(' + ev + ')=\\dfrac{n(' + ev + ')}{n(S)}';
+    if (kind === 'Fh') return 'F_h=N\\times P(' + ev + ')';
+    return 'F_r=\\dfrac{k}{N}';
+  }
+  function formulaText(kind, ev) {
+    if (kind === 'P') return 'P(' + ev + ') = n(' + ev + ')/n(S)';
+    if (kind === 'Fh') return 'Fh = N × P(' + ev + ')';
+    return 'Fr = k/N';
+  }
+  function lhsTex(kind, ev) { return kind === 'P' ? 'P(' + ev + ')=' : kind === 'Fh' ? 'F_h=' : 'F_r='; }
+  function fracBox(nk, dk, label) {
+    return '<span class="frac-input"><input type="text" inputmode="numeric" data-key="' + nk + '" aria-label="Pembilang ' + label + '">' +
+      '<span class="bar"></span><input type="text" inputmode="numeric" data-key="' + dk + '" aria-label="Penyebut ' + label + '"></span>';
+  }
+  function buildJawab() {
+    $all('[data-jawab]').forEach(function (box) {
+      var id = box.getAttribute('data-jawab');
+      var j = JAWAB[id];
+      var no = id.charAt(1) + '.' + id.charAt(2);
+      var opts = ['P', 'Fh', 'Fr'].map(function (k) {
+        return '<label><input type="radio" name="' + id + '_f" value="' + k + '" data-key="' + id + '_f"><span class="tex" data-tex="' + formulaTex(k, j.ev) + '"></span></label>';
+      }).join('');
+      var step2 = j.kind === 'Fh'
+        ? '<input type="text" inputmode="numeric" class="box" data-key="' + id + '_sN" aria-label="Angka N"><span class="tex" data-tex="\\times"></span>' + fracBox(id + '_sNum', id + '_sDen', 'peluang')
+        : fracBox(id + '_sNum', id + '_sDen', 'langkah 2');
+      var step3 = j.kind === 'Fh'
+        ? '<input type="text" inputmode="numeric" class="box" data-key="' + j.res[0] + '" aria-label="Hasil soal ' + no + '"><span>kali</span>'
+        : fracBox(j.res[0], j.res[1], 'hasil soal ' + no);
+      box.innerHTML = '<p class="ddj-title">Jawab</p><ol class="jawab-steps">' +
+        '<li><p>Pilih rumus yang dipakai.</p><div class="rumus" role="radiogroup" aria-label="Rumus soal ' + no + '">' + opts + '</div></li>' +
+        '<li><p>Masukkan angka dari bagian Diketahui ke dalam rumus.</p><div class="eq-row"><span class="tex" data-tex="' + lhsTex(j.kind, j.ev) + '"></span>' + step2 + '</div></li>' +
+        '<li><p>' + (j.kind === 'Fh' ? 'Hitung hasilnya.' : 'Tulis hasilnya. Sederhanakan jika bisa.') + '</p><div class="eq-row"><span class="tex" data-tex="' + lhsTex(j.kind, j.ev) + '"></span>' + step3 + '</div></li>' +
+        '</ol>';
     });
   }
 
@@ -169,7 +204,6 @@
   function onAnswer(key) {
     save();
     updateStatuses();
-    renderSubs();
     renderAkt4();
     if (key.indexOf('id_') === 0) renderLockUI();
   }
@@ -242,6 +276,26 @@
     return { id: id, label: label, keys: [key], show: function () { return askName(key); }, ok: function () { return a(key) === target; },
       how: 'Baca lagi kalimat tanyanya. Pilih besaran yang diminta soal.' };
   }
+  // Langkah 1 (rumus) dan langkah 2 (substitusi) pada bagian Jawab.
+  var KIND_NAME = { P: 'peluang teoretis', Fh: 'frekuensi harapan', Fr: 'frekuensi relatif' };
+  function steps(id, no, sub) {
+    var j = JAWAB[id];
+    var keys = j.kind === 'Fh' ? [id + '_sN', id + '_sNum', id + '_sDen'] : [id + '_sNum', id + '_sDen'];
+    return [
+      { id: id + '_f', label: no + ' Langkah 1: rumus', keys: [id + '_f'],
+        show: function () { return a(id + '_f') ? formulaText(a(id + '_f'), j.ev) : '…'; },
+        ok: function () { return a(id + '_f') === j.kind; },
+        how: 'Lihat lagi bagian Ditanya. Yang ditanya ' + KIND_NAME[j.kind] + ', jadi pakai rumus ' + KIND_NAME[j.kind] + '.' },
+      { id: id + '_s', label: no + ' Langkah 2: masukkan angka', keys: keys,
+        show: function () { return j.kind === 'Fh' ? val(id + '_sN') + ' × ' + frac(id + '_sNum', id + '_sDen') : frac(id + '_sNum', id + '_sDen'); },
+        ok: sub,
+        how: j.kind === 'P' ? 'Ganti n(' + j.ev + ') dan n(S) pada rumus dengan angka di bagian Diketahui.'
+          : j.kind === 'Fh' ? 'Ganti N dan P(' + j.ev + ') pada rumus dengan angka di bagian Diketahui.'
+          : 'Ganti k dan N pada rumus dengan angka di bagian Diketahui.' }
+    ];
+  }
+  function exactFrac(nk, dk, n, d) { return isInt(nk, n) && isInt(dk, d); }
+
   function mcq(id, label, key, target, how) {
     return { id: id, label: label, keys: [key], show: function () { return MCQ[key][a(key)] || '…'; },
       ok: function () { return a(key) === (typeof target === 'function' ? target() : target); }, how: how };
@@ -261,36 +315,46 @@
       num('a1_nS', 'n(S), semua pasangan', 'a1_nS', 6, 'Hitung semua sel di tabel Aktivitas 1.'),
       num('a1_nA', 'n(A), pasangan kesukaanmu', 'a1_nA', 1, 'Cari sel yang sama dengan pasangan kesukaanmu. Hitung ada berapa.')
     ] },
-    { id: 'akt2', title: 'Aktivitas 2: Peluang Teoretis', page: 3, items: [
+    { id: 'akt2', title: 'Aktivitas 2: Peluang Teoretis', page: 3, items: [].concat(
       num('a21_nA', '2.1 Diketahui n(A)', 'a21_nA', 1, 'Cari sel yang sama dengan pasangan kesukaanmu di tabel. Hitung ada berapa.'),
       num('a21_nS', '2.1 Diketahui n(S)', 'a21_nS', 6, 'Hitung semua sel di tabel Aktivitas 1.'),
       ask('a21_q', '2.1 Ditanya', 'a21_q', 'P'),
-      fr('a21_p', '2.1 Jawab P(A)', 'a21_pNum', 'a21_pDen', 1, 6, 'Peluang teoretis = n(A) dibagi n(S).'),
+      steps('a21', '2.1', function () { return exactFrac('a21_sNum', 'a21_sDen', 1, 6); }),
+      fr('a21_p', '2.1 Langkah 3: hasil P(A)', 'a21_pNum', 'a21_pDen', 1, 6, 'Bagi n(A) dengan n(S).'),
       fr('a22', '2.2 Peluang pasangan teman', 'a22_num', 'a22_den', 1, 6, 'Setiap pasangan punya kesempatan sama. Hitung seperti peluang pasanganmu.'),
       num('a23_nB', '2.3 Diketahui n(B)', 'a23_nB', 3, 'Lihat kolom Songket di tabel. Hitung pasangan yang memakai Songket.'),
       num('a23_nS', '2.3 Diketahui n(S)', 'a23_nS', 6, 'Hitung semua sel di tabel Aktivitas 1.'),
       ask('a23_q', '2.3 Ditanya', 'a23_q', 'P'),
-      fr('a23_p', '2.3 Jawab P(B)', 'a23_pNum', 'a23_pDen', 3, 6, 'P(B) = n(B) dibagi n(S). Pecahan boleh disederhanakan.'),
-      fr('a24', '2.4 Peluang pasangan ber-Aesan Gede', 'a24_num', 'a24_den', 2, 6, 'Lihat baris Aesan Gede di tabel. Hitung pasangannya, lalu bagi dengan banyak semua pasangan.')
-    ] },
-    { id: 'akt3', title: 'Aktivitas 3: Frekuensi Harapan', page: 4, items: [
+      steps('a23', '2.3', function () { return exactFrac('a23_sNum', 'a23_sDen', 3, 6); }),
+      fr('a23_p', '2.3 Langkah 3: hasil P(B)', 'a23_pNum', 'a23_pDen', 3, 6, 'Bagi n(B) dengan n(S). Pecahan boleh disederhanakan.'),
+      num('a24_nC', '2.4 Diketahui n(C)', 'a24_nC', 2, 'Lihat baris Aesan Gede di tabel. Hitung pasangan yang memakai Aesan Gede.'),
+      num('a24_nS', '2.4 Diketahui n(S)', 'a24_nS', 6, 'Hitung semua sel di tabel Aktivitas 1.'),
+      ask('a24_q', '2.4 Ditanya', 'a24_q', 'P'),
+      steps('a24', '2.4', function () { return exactFrac('a24_sNum', 'a24_sDen', 2, 6); }),
+      fr('a24', '2.4 Langkah 3: hasil P(C)', 'a24_num', 'a24_den', 2, 6, 'Bagi n(C) dengan n(S). Pecahan boleh disederhanakan.')
+    ) },
+    { id: 'akt3', title: 'Aktivitas 3: Frekuensi Harapan', page: 4, items: [].concat(
       num('a31_N', '3.1 Diketahui N', 'a31_N', N_TRIALS, 'N adalah banyak putaran roda yang disebut di soal.'),
       fr('a31_p', '3.1 Diketahui P(A)', 'a31_pNum', 'a31_pDen', 1, 6, 'Pakai peluang pasangan kesukaanmu dari soal 2.1.'),
       ask('a31_q', '3.1 Ditanya', 'a31_q', 'Fh'),
-      num('a31_res', '3.1 Jawab Fh', 'a31_res', N_TRIALS / 6, 'Frekuensi harapan = N dikali P(A).'),
+      steps('a31', '3.1', function () { return isInt('a31_sN', N_TRIALS) && fracEq('a31_sNum', 'a31_sDen', 1, 6); }),
+      num('a31_res', '3.1 Langkah 3: hasil Fh', 'a31_res', N_TRIALS / 6, 'Kalikan N dengan pembilang, lalu bagi dengan penyebut.'),
       num('a32_N', '3.2 Diketahui N', 'a32_N', 60, 'N adalah banyak putaran roda yang disebut di soal.'),
       fr('a32_p', '3.2 Diketahui P(B)', 'a32_pNum', 'a32_pDen', 3, 6, 'Pakai peluang pasangan bersongket dari soal 2.3.'),
       ask('a32_q', '3.2 Ditanya', 'a32_q', 'Fh'),
-      num('a32_res', '3.2 Jawab Fh', 'a32_res', 30, 'Frekuensi harapan = N dikali P(B).')
-    ] },
+      steps('a32', '3.2', function () { return isInt('a32_sN', 60) && fracEq('a32_sNum', 'a32_sDen', 3, 6); }),
+      num('a32_res', '3.2 Langkah 3: hasil Fh', 'a32_res', 30, 'Kalikan N dengan pembilang, lalu bagi dengan penyebut.')
+    ) },
     { id: 'akt4', title: 'Aktivitas 4: Frekuensi Relatif', page: 5, items: [
       { id: 'sim', label: '4.1 Banyak putaran', keys: [], filled: simDone, show: function () { return state.sim.total + ' dari ' + N_TRIALS; },
         ok: simDone, how: 'Putar roda sampai 30 kali.' },
       num('a42_k', '4.2 Diketahui k', 'a42_k', favK, 'Lihat angka pasangan kesukaanmu di tabel hasil roda.'),
       num('a42_N', '4.2 Diketahui N', 'a42_N', N_TRIALS, 'N adalah banyak putaran roda.'),
-      ask('a42_q', '4.2 Ditanya', 'a42_q', 'Fr'),
-      fr('a42_fr', '4.2 Jawab Fr', 'a42_num', 'a42_den', favK, N_TRIALS, 'Frekuensi relatif = k dibagi N.')
-    ] },
+      ask('a42_q', '4.2 Ditanya', 'a42_q', 'Fr')
+    ].concat(
+      steps('a42', '4.2', function () { return simDone() && exactFrac('a42_sNum', 'a42_sDen', favK(), N_TRIALS); }),
+      fr('a42_fr', '4.2 Langkah 3: hasil Fr', 'a42_num', 'a42_den', favK, N_TRIALS, 'Bagi k dengan N.')
+    ) },
     { id: 'akt43', title: 'Aktivitas 4.3: Frekuensi Relatif Semua Pasangan', page: 5, items: function () {
       return COMBOS.filter(function (c) { return c.key !== fav(); }).map(function (c) {
         return { id: 'a43_' + c.key, label: 'Fr ' + comboCode(c.key) + ', k = ' + state.sim.counts[c.key], keys: ['a43n_' + c.key, 'a43d_' + c.key],
@@ -316,9 +380,9 @@
 
   // Isian tertulis dinilai guru dari PDF, tidak dinilai otomatis.
   var WRITTEN = [
-    { key: 'r1', page: 3, label: 'Mengapa banyak semua pasangan pakaian ada sebanyak itu?' },
-    { key: 'r2', page: 3, label: 'Mengapa peluang pasangan temanmu sama dengan peluang pasanganmu?' },
-    { key: 'r3', page: 5, label: 'Mengapa hasil roda bisa berbeda dari frekuensi harapan?' },
+    { key: 'r1', page: 3, label: 'Jelaskan cara kamu menghitung banyak semua pasangan pakaian.' },
+    { key: 'r2', page: 3, label: 'Apakah peluang pasangan temanmu sama dengan peluang pasanganmu? Jelaskan alasannya.' },
+    { key: 'r3', page: 5, label: 'Mengapa hasil putaran roda tidak selalu sama dengan frekuensi harapan?' },
     { key: 'k_text', page: 6, label: 'Kesimpulan dengan kalimatmu sendiri' }
   ];
   var REFLECT = [
@@ -1151,6 +1215,7 @@
   /* ---------- mulai ---------- */
 
   function init() {
+    buildJawab();
     renderTex();
     buildAsks();
     buildWardrobe();
@@ -1163,7 +1228,6 @@
     renderBars();
     if (fav()) pickFriend();
     renderFav();
-    renderSubs();
     renderLockUI();
     updateStatuses();
 

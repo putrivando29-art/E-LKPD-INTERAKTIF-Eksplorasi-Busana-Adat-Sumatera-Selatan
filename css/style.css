@@ -783,3 +783,26 @@ select.ask:focus { outline: none; border-color: var(--gold-dk); box-shadow: 0 0 
 @media (max-width: 400px) {
   .kenali summary { flex-wrap: wrap; }
 }
+
+/* Jawab tiga langkah: pilih rumus, masukkan angka, hasil */
+.jawab-steps { list-style: none; counter-reset: langkah; margin: 0; padding: 0; }
+.jawab-steps > li { counter-increment: langkah; position: relative; padding: 0 0 4px 38px; margin-bottom: 12px; }
+.jawab-steps > li::before {
+  content: counter(langkah); position: absolute; left: 0; top: 0; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--gold); color: var(--maroon-dk); font-weight: 800; font-size: .9rem; display: grid; place-items: center;
+}
+.jawab-steps > li > p { margin: 0 0 8px; font-weight: 700; }
+.jawab-steps .eq-row { margin-bottom: 0; }
+.rumus { display: flex; flex-wrap: wrap; gap: 8px; }
+.rumus label {
+  display: inline-flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer; background: #FFFFFF;
+  border: 2px solid var(--line); border-radius: 12px; padding: 6px 12px; min-height: 48px;
+}
+.rumus label:has(input:checked) { border-color: var(--maroon); background: var(--gold-lt); }
+.rumus input[type="radio"] { width: 20px; height: 20px; margin: 0; accent-color: var(--maroon); flex: none; }
+.rumus .katex { font-size: 1.05em; }
+@media (max-width: 760px) {
+  .jawab-steps > li { padding-left: 34px; }
+  .rumus label { padding: 6px 10px; }
+}
+.jawab > .ddj-title:first-child { margin-top: 14px; }

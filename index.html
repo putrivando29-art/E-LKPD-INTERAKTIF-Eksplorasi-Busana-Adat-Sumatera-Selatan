@@ -233,7 +233,7 @@
           <div class="eq-row"><span>Banyak semua pasangan pakaian pada tabel:</span> <span class="tex" data-tex="n(S)="></span><input type="text" inputmode="numeric" class="box" data-key="a1_nS" aria-label="n(S)"></div>
           <div class="eq-row"><span>Banyak pasangan pakaian kesukaanmu pada tabel:</span> <span class="tex" data-tex="n(A)="></span><input type="text" inputmode="numeric" class="box" data-key="a1_nA" aria-label="n(A)"></div>
         </div>
-        <label class="why">Tulis alasanmu: mengapa banyak semua pasangan pakaian ada sebanyak itu?
+        <label class="why">Jelaskan cara kamu menghitung banyak semua pasangan pakaian.
           <textarea rows="2" data-key="r1"></textarea>
         </label>
         <p class="fill-status" data-status="akt1"></p>
@@ -258,7 +258,7 @@
 
         <div class="card">
           <h2>Aktivitas 2: Menentukan Peluang Teoretis</h2>
-          <p class="lead">Kerjakan dengan langkah <b>Diketahui</b>, <b>Ditanya</b>, lalu <b>Jawab</b>.</p>
+          <p class="lead">Kerjakan dengan langkah <b>Diketahui</b>, <b>Ditanya</b>, lalu <b>Jawab</b>. Bagian Jawab punya tiga langkah: pilih rumus, masukkan angka, lalu hitung hasilnya.</p>
 
           <div class="soal">
             <p class="soal-head"><span class="soal-no">2.1</span><span class="level level-1">Mudah</span></p>
@@ -269,10 +269,7 @@
               <div class="eq-row"><span class="tex" data-tex="n(S)="></span><input type="text" inputmode="numeric" class="box" data-key="a21_nS" aria-label="n(S)"><span class="ddj-note">semua pasangan</span></div>
               <p class="ddj-title">Ditanya</p>
               <select class="ask" data-key="a21_q" aria-label="Yang ditanya pada soal 2.1"></select>
-              <p class="ddj-title">Jawab</p>
-              <div class="eq-row"><span class="tex" data-tex="P(A)=\dfrac{n(A)}{n(S)}="></span><span class="sub" data-sub="a21_nA/a21_nS"></span><span class="tex" data-tex="="></span>
-                <span class="frac-input"><input type="text" inputmode="numeric" data-key="a21_pNum" aria-label="Pembilang P(A)"><span class="bar"></span><input type="text" inputmode="numeric" data-key="a21_pDen" aria-label="Penyebut P(A)"></span>
-              </div>
+              <div class="jawab" data-jawab="a21"></div>
             </div>
           </div>
 
@@ -280,7 +277,7 @@
             <p class="soal-head"><span class="soal-no">2.2</span><span class="level level-1">Mudah</span></p>
             <p>Temanmu memilih pasangan pakaian kesukaan yang berbeda, yaitu <b id="friend-ref">(pilih pasangan kesukaanmu dulu)</b>. Berapa peluang teoretis pasangan kesukaan temanmu?</p>
             <div class="eq-row"><span class="tex" data-tex="P="></span><span class="frac-input"><input type="text" inputmode="numeric" data-key="a22_num" aria-label="Pembilang"><span class="bar"></span><input type="text" inputmode="numeric" data-key="a22_den" aria-label="Penyebut"></span></div>
-            <label class="why">Tulis alasanmu: mengapa peluang pasangan temanmu sama dengan peluang pasanganmu?
+            <label class="why">Apakah peluang pasangan temanmu sama dengan peluang pasanganmu? Jelaskan alasannya.
               <textarea rows="2" data-key="r2"></textarea>
             </label>
           </div>
@@ -294,17 +291,21 @@
               <div class="eq-row"><span class="tex" data-tex="n(S)="></span><input type="text" inputmode="numeric" class="box" data-key="a23_nS" aria-label="n(S)"><span class="ddj-note">semua pasangan</span></div>
               <p class="ddj-title">Ditanya</p>
               <select class="ask" data-key="a23_q" aria-label="Yang ditanya pada soal 2.3"></select>
-              <p class="ddj-title">Jawab</p>
-              <div class="eq-row"><span class="tex" data-tex="P(B)=\dfrac{n(B)}{n(S)}="></span><span class="sub" data-sub="a23_nB/a23_nS"></span><span class="tex" data-tex="="></span>
-                <span class="frac-input"><input type="text" inputmode="numeric" data-key="a23_pNum" aria-label="Pembilang P(B)"><span class="bar"></span><input type="text" inputmode="numeric" data-key="a23_pDen" aria-label="Penyebut P(B)"></span>
-              </div>
+              <div class="jawab" data-jawab="a23"></div>
             </div>
           </div>
 
           <div class="soal">
             <p class="soal-head"><span class="soal-no">2.4</span><span class="level level-2">Sedang</span></p>
             <p>Kejadian <span class="tex" data-tex="C"></span> = terpilihnya pasangan yang memakai <b>Aesan Gede</b>. Berapa peluang teoretis kejadian <span class="tex" data-tex="C"></span>?</p>
-            <div class="eq-row"><span class="tex" data-tex="P(C)="></span><span class="frac-input"><input type="text" inputmode="numeric" data-key="a24_num" aria-label="Pembilang P(C)"><span class="bar"></span><input type="text" inputmode="numeric" data-key="a24_den" aria-label="Penyebut P(C)"></span></div>
+            <div class="ddj">
+              <p class="ddj-title">Diketahui</p>
+              <div class="eq-row"><span class="tex" data-tex="n(C)="></span><input type="text" inputmode="numeric" class="box" data-key="a24_nC" aria-label="n(C)"><span class="ddj-note">pasangan yang memakai Aesan Gede</span></div>
+              <div class="eq-row"><span class="tex" data-tex="n(S)="></span><input type="text" inputmode="numeric" class="box" data-key="a24_nS" aria-label="n(S)"><span class="ddj-note">semua pasangan</span></div>
+              <p class="ddj-title">Ditanya</p>
+              <select class="ask" data-key="a24_q" aria-label="Yang ditanya pada soal 2.4"></select>
+              <div class="jawab" data-jawab="a24"></div>
+            </div>
           </div>
           <p class="fill-status" data-status="akt2"></p>
         </div>
@@ -339,10 +340,7 @@
             <div class="eq-row"><span class="tex" data-tex="P(A)="></span><span class="frac-input"><input type="text" inputmode="numeric" data-key="a31_pNum" aria-label="Pembilang P(A)"><span class="bar"></span><input type="text" inputmode="numeric" data-key="a31_pDen" aria-label="Penyebut P(A)"></span><span class="ddj-note">dari soal 2.1</span></div>
             <p class="ddj-title">Ditanya</p>
             <select class="ask" data-key="a31_q" aria-label="Yang ditanya pada soal 3.1"></select>
-            <p class="ddj-title">Jawab</p>
-            <div class="eq-row"><span class="tex" data-tex="F_h=N\times P(A)="></span><span class="sub" data-sub="a31_N*a31_pNum/a31_pDen"></span><span class="tex" data-tex="="></span>
-              <input type="text" inputmode="numeric" class="box" data-key="a31_res" aria-label="Frekuensi harapan"><span>kali</span>
-            </div>
+            <div class="jawab" data-jawab="a31"></div>
           </div>
         </div>
 
@@ -355,10 +353,7 @@
             <div class="eq-row"><span class="tex" data-tex="P(B)="></span><span class="frac-input"><input type="text" inputmode="numeric" data-key="a32_pNum" aria-label="Pembilang P(B)"><span class="bar"></span><input type="text" inputmode="numeric" data-key="a32_pDen" aria-label="Penyebut P(B)"></span><span class="ddj-note">dari soal 2.3</span></div>
             <p class="ddj-title">Ditanya</p>
             <select class="ask" data-key="a32_q" aria-label="Yang ditanya pada soal 3.2"></select>
-            <p class="ddj-title">Jawab</p>
-            <div class="eq-row"><span class="tex" data-tex="F_h=N\times P(B)="></span><span class="sub" data-sub="a32_N*a32_pNum/a32_pDen"></span><span class="tex" data-tex="="></span>
-              <input type="text" inputmode="numeric" class="box" data-key="a32_res" aria-label="Frekuensi harapan"><span>kali</span>
-            </div>
+            <div class="jawab" data-jawab="a32"></div>
           </div>
         </div>
         <p class="hint">Ingat jawaban 3.1. Di Aktivitas 4 kamu membandingkannya dengan hasil roda.</p>
@@ -426,10 +421,7 @@
               <div class="eq-row"><span class="tex" data-tex="N="></span><input type="text" inputmode="numeric" class="box" data-key="a42_N" aria-label="N"><span class="ddj-note">banyak putaran</span></div>
               <p class="ddj-title">Ditanya</p>
               <select class="ask" data-key="a42_q" aria-label="Yang ditanya pada soal 4.2"></select>
-              <p class="ddj-title">Jawab</p>
-              <div class="eq-row"><span class="tex" data-tex="F_r=\dfrac{k}{N}="></span><span class="sub" data-sub="a42_k/a42_N"></span><span class="tex" data-tex="="></span>
-                <span class="frac-input"><input type="text" inputmode="numeric" data-key="a42_num" aria-label="Pembilang frekuensi relatif"><span class="bar"></span><input type="text" inputmode="numeric" data-key="a42_den" aria-label="Penyebut frekuensi relatif"></span>
-              </div>
+              <div class="jawab" data-jawab="a42"></div>
             </div>
           </div>
           <p class="fill-status" data-status="akt4"></p>
@@ -469,7 +461,7 @@
             <label><input type="radio" name="cmp_dir" value="b" data-key="cmp_dir"> sama dengan yang diharapkan.</label>
             <label><input type="radio" name="cmp_dir" value="c" data-key="cmp_dir"> lebih jarang dari yang diharapkan.</label>
           </fieldset>
-          <label class="why">Tulis alasanmu: mengapa hasil roda bisa berbeda dari frekuensi harapan?
+          <label class="why">Mengapa hasil putaran roda tidak selalu sama dengan frekuensi harapan? Jelaskan.
             <textarea rows="2" data-key="r3"></textarea>
           </label>
         </div>
@@ -515,7 +507,7 @@
           <label><input type="radio" name="k3" value="c" data-key="k3"> Frekuensi relatif setiap pasangan makin jauh dari <span class="tex" data-tex="\tfrac{1}{6}"></span>.</label>
           <label><input type="radio" name="k3" value="d" data-key="k3"> Pasangan yang paling sering muncul di 30 putaran akan tetap paling sering muncul.</label>
         </fieldset>
-        <label class="why">Tulis kesimpulanmu dengan kalimatmu sendiri.
+        <label class="why">Tulis kesimpulanmu dengan kalimatmu sendiri tentang peluang teoretis, frekuensi harapan, dan frekuensi relatif.
           <textarea rows="3" data-key="k_text"></textarea>
         </label>
         <p class="fill-status" data-status="kesimpulan"></p>

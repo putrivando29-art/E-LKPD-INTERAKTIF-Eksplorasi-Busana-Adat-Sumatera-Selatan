@@ -21,7 +21,7 @@ Dokumen produk lengkap untuk E-LKPD (Lembar Kerja Peserta Didik Elektronik) inte
 
 Siswa berperan sebagai penata busana di Butik Warisan Sriwijaya. Mereka memasangkan 3 atasan adat dengan 2 kain bawahan untuk menyusun ruang sampel (6 pasangan), lalu memilih **pasangan pakaian kesukaan** yang menjadi kejadian A. Siswa menghitung peluang teoretis, menghitung frekuensi harapan sebelum roda diputar, memutar roda 30 kali, menghitung frekuensi relatif, membandingkan hasilnya, lalu melihat hasil 300 putaran.
 
-Soal hitungan memakai langkah **Diketahui, Ditanya, Jawab**, dengan tingkat kesulitan Mudah, Sedang, dan Sulit. Ada juga kotak "Tulis alasanmu" yang dinilai guru.
+Soal hitungan memakai langkah **Diketahui, Ditanya, Jawab**, dengan tingkat kesulitan Mudah, Sedang, dan Sulit. Bagian Jawab terdiri dari tiga langkah yang diisi siswa sendiri: pilih rumus, masukkan angka, lalu tulis hasilnya. Ada juga pertanyaan alasan tertulis yang dinilai guru.
 
 Siswa hanya bisa mengumpulkan **satu kali**. Pengumpulan pertama menjadi nilai akhir dan diingat oleh browser walaupun web ditutup. Sesudah itu siswa melihat tanda ✓/✗ dan petunjuk **Cara** untuk soal yang salah, lalu boleh berlatih memperbaiki jawaban tanpa mengubah nilai akhir. PDF yang diunduh selalu berisi pengumpulan pertama dan dikirim ke WhatsApp guru.
 
@@ -122,18 +122,23 @@ Tabel silang 3 × 2. Keterangan kode: AG = Aesan Gede, AP = Aesan Paksangko, BK 
 
 **Pertanyaan pemantik:** "Pasangan pakaian mana yang paling kamu suka?" Pasangan terpilih menjadi **kejadian A** dan namanya muncul otomatis di soal berikutnya.
 
-**Ayo Isi:** n(S), n(A), dan "Tulis alasanmu: mengapa banyak semua pasangan pakaian ada sebanyak itu?"
+**Ayo Isi:** n(S), n(A), dan "Jelaskan cara kamu menghitung banyak semua pasangan pakaian."
 
 **Aktivitas 2: Menentukan Peluang Teoretis** (terbuka setelah keenam sel tabel terisi):
 
 | Soal | Tingkat | Isi |
 | --- | --- | --- |
-| 2.1 | Mudah | Peluang pasangan kesukaanmu. Diketahui n(A), n(S); Ditanya (pilih dari daftar); Jawab P(A) = n(A)/n(S) = [angka siswa] = ▢/▢ |
-| 2.2 | Mudah | Peluang pasangan teman (diacak sekali, lalu tetap) dan "Tulis alasanmu" |
+| 2.1 | Mudah | Peluang pasangan kesukaanmu (kejadian A), langkah Diketahui/Ditanya/Jawab |
+| 2.2 | Mudah | Peluang pasangan teman (diacak sekali, lalu tetap) dan "Apakah peluang pasangan temanmu sama dengan peluang pasanganmu? Jelaskan alasannya." |
 | 2.3 | Sedang | Peluang kejadian B = pasangan bersongket, langkah Diketahui/Ditanya/Jawab |
-| 2.4 | Sedang | Peluang kejadian C = pasangan ber-Aesan Gede |
+| 2.4 | Sedang | Peluang kejadian C = pasangan ber-Aesan Gede, langkah Diketahui/Ditanya/Jawab |
 
-Pilihan **Ditanya**: Peluang teoretis, Frekuensi harapan, Frekuensi relatif, Banyak anggota ruang sampel. Baris substitusi di bagian Jawab terisi otomatis dari angka yang siswa tulis di Diketahui, sehingga langkahnya terlihat utuh.
+Pilihan **Ditanya**: Peluang teoretis, Frekuensi harapan, Frekuensi relatif, Banyak anggota ruang sampel.
+
+**Jawab** (semua kotak kosong, diisi siswa):
+1. Pilih rumus yang dipakai: P = n(kejadian)/n(S), F_h = N × P, atau F_r = k/N.
+2. Masukkan angka dari bagian Diketahui ke dalam rumus.
+3. Tulis hasilnya (sederhanakan jika bisa) atau hitung hasilnya.
 
 ### 3.4 Halaman 4: Frekuensi Harapan
 
@@ -141,7 +146,7 @@ Aktivitas 3 dikerjakan **sebelum** roda diputar.
 
 | Soal | Tingkat | Isi |
 | --- | --- | --- |
-| 3.1 | Sedang | Roda diputar 30 kali. Frekuensi harapan pasangan kesukaanmu. Diketahui N, P(A); Ditanya; Jawab F_h = N × P(A) = [angka siswa] = ▢ |
+| 3.1 | Sedang | Roda diputar 30 kali. Frekuensi harapan pasangan kesukaanmu. Diketahui N, P(A); Ditanya; Jawab tiga langkah: rumus, F_h = ▢ × ▢/▢, F_h = ▢ kali |
 | 3.2 | Sulit | Roda diputar 60 kali. Frekuensi harapan pasangan bersongket |
 
 ### 3.5 Halaman 5: Roda Putar
@@ -150,9 +155,9 @@ Aktivitas 3 dikerjakan **sebelum** roda diputar.
 
 Soal 4.2 sampai 4.5 terbuka setelah pasangan kesukaan dipilih dan roda diputar tepat 30 kali.
 
-- **4.2 (Mudah):** frekuensi relatif pasangan kesukaan, langkah Diketahui k dan N, Ditanya, Jawab F_r = k/N.
+- **4.2 (Mudah):** frekuensi relatif pasangan kesukaan, langkah Diketahui k dan N, Ditanya, Jawab tiga langkah.
 - **4.3:** tabel frekuensi relatif lima pasangan lain; baris ★ menampilkan jawaban 4.2.
-- **4.4:** dua kartu (frekuensi harapan dari 3.1 dan banyak muncul nyata), pilihan lebih sering / sama dengan / lebih jarang, lalu "Tulis alasanmu: mengapa hasil roda bisa berbeda dari frekuensi harapan?"
+- **4.4:** dua kartu (frekuensi harapan dari 3.1 dan banyak muncul nyata), pilihan lebih sering / sama dengan / lebih jarang, lalu "Mengapa hasil putaran roda tidak selalu sama dengan frekuensi harapan? Jelaskan."
 - **4.5 Putar Lebih Banyak:** tombol **Putar Cepat 300 Kali** (hasil 30 putaran tidak berubah). Muncul diagram batang frekuensi relatif 30 putaran dan 300 putaran untuk keenam pasangan dengan garis 1/6, lalu soal "Hasil mana yang secara umum lebih dekat ke 1/6?"
 
 ### 3.6 Halaman 6: Kesimpulan dan Pengumpulan
@@ -206,25 +211,27 @@ Rincian per detail beserta tautan sumbernya ada di halaman Informasi Media (`inf
 
 ## 5. Kunci jawaban dan penilaian
 
-Total **39 butir** yang dinilai otomatis. Skor = pembulatan (benar ÷ 39 × 100). Pecahan senilai diterima kecuali pada apersepsi nomor 1. Setiap butir punya petunjuk **Cara** yang ditampilkan jika jawabannya salah, tanpa menyebut angka jawaban akhir.
+Total **54 butir** yang dinilai otomatis. Skor = pembulatan (benar ÷ 54 × 100). Pecahan senilai diterima kecuali pada apersepsi nomor 1. Setiap butir punya petunjuk **Cara** yang ditampilkan jika jawabannya salah, tanpa menyebut angka jawaban akhir.
 
 | Bagian | Butir | Kunci |
 | --- | --- | --- |
 | Apersepsi (3) | 2/6 disederhanakan; 60 × 1/6; 3 × 2 | 1/3 (harus paling sederhana); 10; 6 |
 | Aktivitas 1 (3) | Tabel; n(S); n(A) | 6 dari 6 pasangan; 6; 1 |
-| 2.1 (4) | n(A); n(S); Ditanya; P(A) | 1; 6; Peluang teoretis; 1/6 |
+| 2.1 (6) | n(A); n(S); Ditanya; rumus; masukkan angka; hasil | 1; 6; Peluang teoretis; P(A) = n(A)/n(S); 1/6 (tepat 1 dan 6); 1/6 |
 | 2.2 (1) | Peluang pasangan teman | 1/6 |
-| 2.3 (4) | n(B); n(S); Ditanya; P(B) | 3; 6; Peluang teoretis; 3/6 atau 1/2 |
-| 2.4 (1) | Peluang pasangan ber-Aesan Gede | 2/6 atau 1/3 |
-| 3.1 (4) | N; P(A); Ditanya; F_h | 30; 1/6; Frekuensi harapan; 5 |
-| 3.2 (4) | N; P(B); Ditanya; F_h | 60; 3/6; Frekuensi harapan; 30 |
-| 4.1–4.2 (5) | Putaran; k; N; Ditanya; F_r | 30 dari 30; k pasangan kesukaan; 30; Frekuensi relatif; k/30 |
+| 2.3 (6) | n(B); n(S); Ditanya; rumus; masukkan angka; hasil | 3; 6; Peluang teoretis; P(B) = n(B)/n(S); 3/6; 3/6 atau 1/2 |
+| 2.4 (6) | n(C); n(S); Ditanya; rumus; masukkan angka; hasil | 2; 6; Peluang teoretis; P(C) = n(C)/n(S); 2/6; 2/6 atau 1/3 |
+| 3.1 (6) | N; P(A); Ditanya; rumus; masukkan angka; hasil | 30; 1/6; Frekuensi harapan; F_h = N × P(A); 30 × 1/6; 5 |
+| 3.2 (6) | N; P(B); Ditanya; rumus; masukkan angka; hasil | 60; 3/6; Frekuensi harapan; F_h = N × P(B); 60 × 3/6 (atau 1/2); 30 |
+| 4.1–4.2 (7) | Putaran; k; N; Ditanya; rumus; masukkan angka; hasil | 30 dari 30; k pasangan kesukaan; 30; Frekuensi relatif; F_r = k/N; k/30; k/30 atau pecahan senilai |
 | 4.3 (5) | F_r lima pasangan lain | k/30 sesuai data siswa |
 | 4.4 (1) | Dibanding yang diharapkan | lebih sering jika k > 5, sama dengan jika k = 5, lebih jarang jika k < 5 |
 | 4.5 (1) | Lebih dekat ke 1/6 | Dihitung dari data siswa: hasil dengan rata-rata selisih \|F_r − 1/6\| lebih kecil. Hampir selalu "300 putaran" |
 | Kesimpulan (3) | Soal 1; 2; 3 | "Ya" hanya jika keenam k = 5, selain itu "Tidak"; hasil acak dan 30 putaran masih sedikit; cenderung makin dekat ke 1/6 |
 
-**Dinilai guru dari PDF (tidak otomatis):** empat jawaban tertulis (alasan Ayo Isi, alasan 2.2, alasan 4.4, kesimpulan dengan kalimat sendiri). **Tidak dinilai:** refleksi dan pasangan kesukaan.
+Langkah "masukkan angka" untuk peluang harus memakai angka asli dari Diketahui (misalnya 3/6, bukan 1/2); penyederhanaan dilakukan di langkah hasil.
+
+**Dinilai guru dari PDF (tidak otomatis):** empat jawaban tertulis (cara menghitung n(S), alasan 2.2, alasan 4.4, kesimpulan dengan kalimat sendiri). **Tidak dinilai:** refleksi dan pasangan kesukaan.
 
 ---
 
@@ -258,8 +265,8 @@ Total **39 butir** yang dinilai otomatis. Skor = pembulatan (benar ÷ 39 × 100)
 
 | Data | Tempat | Masa simpan |
 | --- | --- | --- |
-| Jawaban yang sedang dikerjakan, pasangan kesukaan dan teman, tabel, data roda, hasil latihan, halaman terakhir | `localStorage`, kunci `butik-warisan-sriwijaya-v1:draft` | Permanen di browser itu sampai "Mulai sebagai siswa baru" atau data browser dihapus |
-| Pengumpulan pertama per identitas | `localStorage`, kunci `butik-warisan-sriwijaya-v1:locks` | Permanen di browser itu; tidak pernah ditimpa oleh website |
+| Jawaban yang sedang dikerjakan, pasangan kesukaan dan teman, tabel, data roda, hasil latihan, halaman terakhir | `localStorage`, kunci `butik-warisan-sriwijaya-v2:draft` | Permanen di browser itu sampai "Mulai sebagai siswa baru" atau data browser dihapus |
+| Pengumpulan pertama per identitas | `localStorage`, kunci `butik-warisan-sriwijaya-v2:locks` | Permanen di browser itu; tidak pernah ditimpa oleh website |
 | Pengaturan suara | `localStorage`, kunci `stylist-studio-audio` | Permanen di perangkat itu |
 | Hasil pengumpulan | Google Sheet milik guru | Permanen, jika `submitUrl` diisi |
 
@@ -367,7 +374,7 @@ vendor/jspdf/              jsPDF 2.5.1 dan jspdf-autotable 3.8.2 (lisensi MIT)
 - `Outfits.mannequinTop(top)` dan `Outfits.mannequinBottom(bottom)`: SVG manekin.
 - `Outfits.combos()`: daftar 6 pasangan.
 - `Sfx.play(nama)`: efek suara (`click`, `select`, `success`, `error`, `spin`, `tick`, `stop`, `submit`).
-- `app.js`: `state` disimpan ke `localStorage` setiap ada perubahan; `locks` menyimpan pengumpulan pertama per identitas. `GROUPS` berisi definisi 39 butir (label, kunci isian, tampilan, aturan benar, petunjuk Cara). `WRITTEN` dan `REFLECT` berisi isian tertulis.
+- `app.js`: `state` disimpan ke `localStorage` setiap ada perubahan; `locks` menyimpan pengumpulan pertama per identitas. `GROUPS` berisi definisi 54 butir (label, kunci isian, tampilan, aturan benar, petunjuk Cara). `WRITTEN` dan `REFLECT` berisi isian tertulis.
 
 ---
 
@@ -405,10 +412,10 @@ Browser tidak bisa membaca balasan Apps Script (mode `no-cors`), jadi pesan "sud
 
 ## 13. Pengujian yang sudah dilakukan
 
-Uji otomatis di Chromium headless (Playwright), versi 12, di HP 360 px dan laptop 1280 px:
+Uji otomatis di Chromium headless (Playwright), versi 12 dan 13, di HP 360 px dan laptop 1280 px:
 
 - Enam pasangan tersimpan; kode sel tampil "AG, Sg".
-- Baris substitusi Jawab terisi otomatis (contoh 2.1: 1/6, 3.1: 30 × 1/6).
+- Versi 13: semua kotak Jawab kosong sebelum diisi; isian benar kecuali satu rumus salah (2.4) dan satu langkah masukkan angka salah (3.2) menghasilkan 96 (52 dari 54) dengan dua petunjuk Cara yang sesuai.
 - Soal 4.2–4.5 terkunci sampai 30 putaran; Putar Cepat 300 Kali menampilkan diagram 6 baris dan soal 4.5.
 - Pengumpulan pertama dengan 3 jawaban salah sengaja: nilai 92 (36 dari 39), 3 petunjuk Cara tampil.
 - Memperbaiki satu jawaban lalu Periksa Jawaban Latihan: hasil latihan 95, nilai akhir tetap 92, jawaban di kunci tetap jawaban lama.
@@ -451,6 +458,7 @@ Belum diuji: HP fisik, Safari iOS, dan pengiriman ke Google Sheet sungguhan.
 | 10 | Cetak / Simpan PDF diganti Unduh PDF dengan jsPDF, tanpa dialog cetak di HP |
 | 11 | Istilah "set" menjadi "pasangan pakaian"; Roda Spin menjadi Roda Putar (Putar 1 Kali, Putar Acak 30 Kali, Atur Ulang Data); Aktivitas 2 langsung dua soal dengan pasangan teman acak-tetap; percobaan 30 kali (F_r = k/30, F_h = 5, opsi "sama dengan"); halaman dipecah menjadi 6; definisi formal dengan kalimat sederhana; identitas perorangan; 23 butir |
 | 12 | Revisi validator: nama menjadi Butik Warisan Sriwijaya; langkah Diketahui/Ditanya/Jawab; soal Mudah/Sedang/Sulit (2.3, 2.4, 3.2); kotak Tulis alasanmu; frekuensi harapan sebelum roda diputar; 4.5 Putar Cepat 300 Kali; refleksi; TP ruang sampel; alokasi 2 JP; Kenali Busananya; kode Songket menjadi Sg; pengumpulan hanya satu kali dan diingat browser; umpan balik ✓/✗ dan Cara; mode latihan; PDF dengan gambar pasangan kesukaan untuk WhatsApp; kolom Kiriman ke- di Google Sheet; navigasi HP; 39 butir |
+| 13 | Bagian Jawab tidak lagi terisi otomatis; Jawab menjadi tiga langkah (pilih rumus, masukkan angka, hasil); 2.4 memakai Diketahui/Ditanya/Jawab; kalimat "Tulis alasanmu" diganti pertanyaan langsung; Apps Script punya doGet untuk cek aktif; 54 butir |
 ---
 
 ## 16. Sumber

@@ -13,12 +13,12 @@ E-LKPD interaktif Matematika SMP kelas VIII: peluang teoretis, frekuensi relatif
 | 5. Roda Putar | Pengertian frekuensi relatif, Aktivitas 4 (4.1 roda 30 kali, 4.2–4.4, 4.5 Putar Cepat 300 Kali) |
 | 6. Kumpulkan | Kesimpulan, refleksi, daftar semua jawaban dengan tombol Ubah, Kumpulkan Jawaban, Unduh PDF |
 
-`informasi-media.html` (Informasi Media) berisi kesesuaian materi dengan kurikulum, sumber setiap detail busana, bagian ilustrasi yang disederhanakan, dan catatan musik latar. Dokumen produk lengkap, termasuk kunci jawaban 39 butir, ada di `product.md`.
+`informasi-media.html` (Informasi Media) berisi kesesuaian materi dengan kurikulum, sumber setiap detail busana, bagian ilustrasi yang disederhanakan, dan catatan musik latar. Dokumen produk lengkap, termasuk kunci jawaban 54 butir, ada di `product.md`.
 
 ## Perilaku penting
 
-- Soal hitungan memakai langkah **Diketahui, Ditanya** (pilih dari daftar), **Jawab**. Baris substitusi di Jawab terisi otomatis dari angka yang ditulis siswa. Setiap soal diberi label Mudah, Sedang, atau Sulit.
-- Kotak "Tulis alasanmu" dan kesimpulan dengan kalimat sendiri dinilai guru dari PDF.
+- Soal hitungan memakai langkah **Diketahui, Ditanya** (pilih dari daftar), **Jawab**. Jawab berisi tiga langkah yang diisi siswa sendiri: pilih rumus, masukkan angka, tulis hasil. Setiap soal diberi label Mudah, Sedang, atau Sulit.
+- Pertanyaan alasan tertulis dan kesimpulan dengan kalimat sendiri dinilai guru dari PDF.
 - Kode Songket ditulis **Sg** agar tidak tertukar dengan lambang ruang sampel S.
 - Setiap pasangan pakaian hanya bisa disimpan satu kali. Pasangan yang sama memunculkan "Pasangan pakaian ini sudah kamu pilih!" disertai layar bergetar.
 - Roda putar memakai `crypto.getRandomValues` dengan rejection sampling, sehingga peluang tiap sektor tepat 1/6. Total percobaan dikunci tepat 30.
@@ -36,7 +36,7 @@ E-LKPD interaktif Matematika SMP kelas VIII: peluang teoretis, frekuensi relatif
 
 Tanpa pengaturan, hasil dikumpulkan lewat PDF ke WhatsApp guru. Agar pengumpulan pertama juga tercatat di Google Sheet:
 
-1. Ikuti petunjuk di `tools/google-apps-script.gs`.
+1. Ikuti petunjuk di `tools/google-apps-script.gs`. Membuka URL `/exec` di browser harus menampilkan "Penerima hasil E-LKPD Butik Warisan Sriwijaya aktif".
 2. Tempel URL aplikasi web ke `submitUrl` di `js/config.js`, lalu deploy ulang.
 
 Sheet "Jawaban" punya kolom "Kiriman ke-". Nilai 2 ke atas (baris merah muda) berarti siswa yang sama mengumpulkan lagi dari perangkat lain. Pakai baris dengan nilai 1.

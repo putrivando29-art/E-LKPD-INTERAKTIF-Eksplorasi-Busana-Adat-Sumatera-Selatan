@@ -23,6 +23,11 @@ function norm(s) {
   return String(s || '').trim().replace(/\s+/g, ' ').toLowerCase();
 }
 
+// Dibuka lewat browser untuk memeriksa bahwa penerima sudah aktif.
+function doGet() {
+  return ContentService.createTextOutput('Penerima hasil E-LKPD Butik Warisan Sriwijaya aktif. Hasil siswa masuk ke tab Jawaban.');
+}
+
 function doPost(e) {
   var lock = LockService.getScriptLock();
   lock.waitLock(10000);
