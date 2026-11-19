@@ -8,6 +8,6 @@
  *             yang izin pemakaiannya jelas di folder audio/.
  */
 window.ELKPD_CONFIG = {
-  submitUrl: '',
+  submitUrl: 'https://script.google.com/macros/s/AKfycbz8hx2yK4s8fi-XtcDneCmFPDVT750Xktqd1MJeaGubvfzgVtEaHNXSrq0WeplM95sN-w/exec',
   musicSrc: 'audio/musik-latar.mp3'
 };
