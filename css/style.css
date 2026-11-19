@@ -669,14 +669,6 @@ main.shake, .notice-dup.pop { animation: shake .45s ease-in-out; }
 .ddj-title:first-child { margin-top: 0; }
 .ddj .eq-row { margin-bottom: 8px; }
 .ddj-note { font-size: .88rem; color: var(--ink-soft); }
-.sub .katex { font-size: 1.2em; }
-select.ask {
-  font: inherit; font-weight: 700; color: var(--ink); background: #FFFFFF; border: 2px solid var(--line); border-radius: 10px;
-  padding: 8px 36px 8px 12px; min-height: 44px; max-width: 100%; appearance: none; -webkit-appearance: none; cursor: pointer;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1 L6 6 L11 1' stroke='%237A1F2B' stroke-width='2.4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 12px center;
-}
-select.ask:focus { outline: none; border-color: var(--gold-dk); box-shadow: 0 0 0 3px var(--gold-lt); }
 
 .why { margin-top: 14px; font-weight: 700; }
 .why textarea { display: block; margin-top: 6px; font-weight: 400; resize: vertical; }
@@ -784,25 +776,51 @@ select.ask:focus { outline: none; border-color: var(--gold-dk); box-shadow: 0 0 
   .kenali summary { flex-wrap: wrap; }
 }
 
-/* Jawab tiga langkah: pilih rumus, masukkan angka, hasil */
-.jawab-steps { list-style: none; counter-reset: langkah; margin: 0; padding: 0; }
-.jawab-steps > li { counter-increment: langkah; position: relative; padding: 0 0 4px 38px; margin-bottom: 12px; }
-.jawab-steps > li::before {
-  content: counter(langkah); position: absolute; left: 0; top: 0; width: 26px; height: 26px; border-radius: 50%;
-  background: var(--gold); color: var(--maroon-dk); font-weight: 800; font-size: .9rem; display: grid; place-items: center;
+
+/* ---------- Jawaban uraian dengan kotak rumus ---------- */
+body {
+  --keyboard-accent-color: #7A1F2B;
+  --keyboard-background: #F6E9D2;
+  --keyboard-toolbar-text-active: #7A1F2B;
 }
-.jawab-steps > li > p { margin: 0 0 8px; font-weight: 700; }
-.jawab-steps .eq-row { margin-bottom: 0; }
-.rumus { display: flex; flex-wrap: wrap; gap: 8px; }
-.rumus label {
-  display: inline-flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer; background: #FFFFFF;
-  border: 2px solid var(--line); border-radius: 12px; padding: 6px 12px; min-height: 48px;
+.essay { border-left: 4px solid var(--gold); padding: 2px 0 2px 14px; margin: 10px 0 4px; }
+.essay-part { margin-bottom: 12px; }
+.essay-part .ddj-title { margin-top: 0; }
+.essay-lines { display: flex; flex-direction: column; gap: 8px; }
+math-field.mf {
+  display: block; width: 100%; min-height: 48px; padding: 6px 10px; font-size: 1.2rem;
+  border: 2px solid var(--line); border-radius: 10px; background: #FFFFFF; color: var(--ink);
+  --caret-color: #7A1F2B; --selection-background-color: #F6E2A8; --contains-highlight-background-color: #FFF6E4;
 }
-.rumus label:has(input:checked) { border-color: var(--maroon); background: var(--gold-lt); }
-.rumus input[type="radio"] { width: 20px; height: 20px; margin: 0; accent-color: var(--maroon); flex: none; }
-.rumus .katex { font-size: 1.05em; }
+math-field.mf:focus-within { outline: none; border-color: var(--gold-dk); box-shadow: 0 0 0 3px var(--gold-lt); }
+math-field.mf::part(menu-toggle) { display: none; }
+math-field.mf::part(placeholder) { color: #9A8573; }
+.add-line {
+  margin-top: 6px; border: 2px dashed var(--gold-dk); background: #FFF6E4; color: var(--maroon); border-radius: 10px;
+  padding: 6px 12px; font-weight: 800; font-size: .9rem; cursor: pointer; min-height: 40px;
+}
+.add-line:hover { background: var(--gold-lt); }
+.essay-jadi {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-weight: 700;
+  background: #FFF6E4; border-radius: 12px; padding: 10px 12px;
+}
+.essay-jadi math-field.mf { display: inline-block; width: auto; min-width: 120px; flex: 0 1 160px; }
+
+.type-tip { background: #FFF6E4; border: 2px dashed var(--gold); border-radius: 12px; padding: 10px 14px; margin-bottom: 8px; }
+.type-tip p { margin: 0 0 4px; }
+.type-tip ul { margin: 0; padding-left: 1.2em; }
+.key-demo { display: inline-block; border: 2px solid var(--brown); border-bottom-width: 4px; border-radius: 6px; padding: 0 6px; font-weight: 800; font-size: .9em; background: #FFFFFF; }
+
+.worked { background: #FFF6E4; border-left: 5px solid var(--bata); border-radius: 0 10px 10px 0; padding: 10px 14px; }
+.worked p { margin: 0 0 6px; }
+.worked p:last-child { margin-bottom: 0; }
+.worked-title { font-family: var(--font-head); font-weight: 600; color: var(--maroon); }
+.worked .ddj-title { margin: 8px 0 2px; }
+
+.recap-list li.r-essay .r-ans { flex-direction: column; align-items: flex-end; gap: 2px; }
+.r-tex { display: block; font-weight: 400; margin: 2px 0; }
+.r-tex .katex { font-weight: 400; }
 @media (max-width: 760px) {
-  .jawab-steps > li { padding-left: 34px; }
-  .rumus label { padding: 6px 10px; }
+  .essay { padding-left: 10px; }
+  .recap-list li.r-essay .r-ans { align-items: flex-start; }
 }
-.jawab > .ddj-title:first-child { margin-top: 14px; }

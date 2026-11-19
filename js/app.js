@@ -25,15 +25,6 @@
     'BK-J': { fill: '#2B1E1A', text: '#F3D57E' }
   };
 
-  // Pilihan untuk bagian "Ditanya"
-  var ASK = [
-    ['', 'Pilih yang ditanya'],
-    ['P', 'Peluang teoretis'],
-    ['Fh', 'Frekuensi harapan'],
-    ['Fr', 'Frekuensi relatif'],
-    ['nS', 'Banyak anggota ruang sampel']
-  ];
-
   function sfx(name) { if (window.Sfx) window.Sfx.play(name); }
 
   /* ---------- penyimpanan ---------- */
@@ -103,54 +94,163 @@
     $all('.tex', root).forEach(function (el) { tex(el, el.getAttribute('data-tex'), el.getAttribute('data-display') === '1'); });
   }
 
-  // Bagian Jawab: tiga langkah yang diisi siswa sendiri.
-  // kind P = peluang teoretis, Fh = frekuensi harapan, Fr = frekuensi relatif.
-  var JAWAB = {
-    a21: { ev: 'A', kind: 'P', res: ['a21_pNum', 'a21_pDen'] },
-    a23: { ev: 'B', kind: 'P', res: ['a23_pNum', 'a23_pDen'] },
-    a24: { ev: 'C', kind: 'P', res: ['a24_num', 'a24_den'] },
-    a31: { ev: 'A', kind: 'Fh', res: ['a31_res'] },
-    a32: { ev: 'B', kind: 'Fh', res: ['a32_res'] },
-    a42: { ev: 'A', kind: 'Fr', res: ['a42_num', 'a42_den'] }
+  /* ---------- jawaban uraian (Diketahui, Ditanya, Jawab) ---------- */
+
+  // Siswa menulis sendiri setiap baris di kotak rumus (MathLive). Isinya LaTeX.
+  // Hanya kalimat "Jadi" yang dinilai otomatis; langkah lainnya dinilai guru.
+  var ESSAY = {
+    a21: { no: '2.1', jadi: 'Jadi, peluang terpilihnya pasangan kesukaanmu adalah', akhir: '.', target: function () { return 1 / 6; } },
+    a23: { no: '2.3', jadi: 'Jadi, peluang terpilihnya pasangan bersongket adalah', akhir: '.', target: function () { return 3 / 6; } },
+    a24: { no: '2.4', jadi: 'Jadi, peluang terpilihnya pasangan yang memakai Aesan Gede adalah', akhir: '.', target: function () { return 2 / 6; } },
+    a31: { no: '3.1', jadi: 'Jadi, pasangan kesukaanmu diharapkan muncul', akhir: 'kali.', target: function () { return N_TRIALS / 6; } },
+    a32: { no: '3.2', jadi: 'Jadi, pasangan bersongket diharapkan muncul', akhir: 'kali.', target: function () { return 30; } },
+    a42: { no: '4.2', jadi: 'Jadi, frekuensi relatif pasangan kesukaanmu adalah', akhir: '.', target: function () { return favK() / N_TRIALS; } }
   };
-  function formulaTex(kind, ev) {
-    if (kind === 'P') return 'P(' + ev + ')=\\dfrac{n(' + ev + ')}{n(S)}';
-    if (kind === 'Fh') return 'F_h=N\\times P(' + ev + ')';
-    return 'F_r=\\dfrac{k}{N}';
+  var PARTS = [
+    { suffix: '_dk', title: 'Diketahui', lines: 2 },
+    { suffix: '_dt', title: 'Ditanya', lines: 1 },
+    { suffix: '_jw', title: 'Jawab', lines: 3 }
+  ];
+  var MAX_LINES = 8;
+
+  function lines(key) {
+    var v = state.answers[key];
+    return Array.isArray(v) ? v : [];
   }
-  function formulaText(kind, ev) {
-    if (kind === 'P') return 'P(' + ev + ') = n(' + ev + ')/n(S)';
-    if (kind === 'Fh') return 'Fh = N × P(' + ev + ')';
-    return 'Fr = k/N';
+  function filledLines(key) { return lines(key).filter(function (x) { return String(x).trim() !== ''; }); }
+
+  // MathLive menulis pecahan satu digit tanpa kurung kurawal (\frac16). Samakan dulu.
+  function normFrac(src) {
+    return String(src || '')
+      .replace(/\\([dt]?frac)(\d)(\d)/g, '\\$1{$2}{$3}')
+      .replace(/\\([dt]?frac)\{([^{}]*)\}(\d)/g, '\\$1{$2}{$3}')
+      .replace(/\\([dt]?frac)(\d)\{/g, '\\$1{$2}{');
   }
-  function lhsTex(kind, ev) { return kind === 'P' ? 'P(' + ev + ')=' : kind === 'Fh' ? 'F_h=' : 'F_r='; }
-  function fracBox(nk, dk, label) {
-    return '<span class="frac-input"><input type="text" inputmode="numeric" data-key="' + nk + '" aria-label="Pembilang ' + label + '">' +
-      '<span class="bar"></span><input type="text" inputmode="numeric" data-key="' + dk + '" aria-label="Penyebut ' + label + '"></span>';
+
+  // LaTeX ke teks biasa untuk PDF: \frac{1}{6} menjadi 1/6.
+  function latexText(src) {
+    var t = normFrac(src);
+    var wrap = function (x) { return /[+\-=\s]|\\times/.test(x) ? '(' + x + ')' : x; };
+    for (var i = 0; i < 4; i++) {
+      t = t.replace(/\\[dt]?frac\{([^{}]*)\}\{([^{}]*)\}/g, function (m, n, d) { return wrap(n) + '/' + wrap(d); });
+    }
+    t = t.replace(/\\text\{([^{}]*)\}/g, '$1').replace(/\\times/g, '×').replace(/\\cdot/g, '·').replace(/\\div/g, ':')
+      .replace(/\\left|\\right/g, '').replace(/\\ldots|\\dots/g, '...').replace(/\\[,:; ]/g, ' ').replace(/\\placeholder\{\}/g, '')
+      .replace(/_\{([^{}]*)\}/g, '$1').replace(/_(\w)/g, '$1').replace(/\\([A-Za-z]+)/g, '$1').replace(/[{}]/g, '').replace(/\s+/g, ' ').trim();
+    return t;
   }
-  function buildJawab() {
-    $all('[data-jawab]').forEach(function (box) {
-      var id = box.getAttribute('data-jawab');
-      var j = JAWAB[id];
-      var no = id.charAt(1) + '.' + id.charAt(2);
-      var opts = ['P', 'Fh', 'Fr'].map(function (k) {
-        return '<label><input type="radio" name="' + id + '_f" value="' + k + '" data-key="' + id + '_f"><span class="tex" data-tex="' + formulaTex(k, j.ev) + '"></span></label>';
-      }).join('');
-      var step2 = j.kind === 'Fh'
-        ? '<input type="text" inputmode="numeric" class="box" data-key="' + id + '_sN" aria-label="Angka N"><span class="tex" data-tex="\\times"></span>' + fracBox(id + '_sNum', id + '_sDen', 'peluang')
-        : fracBox(id + '_sNum', id + '_sDen', 'langkah 2');
-      var step3 = j.kind === 'Fh'
-        ? '<input type="text" inputmode="numeric" class="box" data-key="' + j.res[0] + '" aria-label="Hasil soal ' + no + '"><span>kali</span>'
-        : fracBox(j.res[0], j.res[1], 'hasil soal ' + no);
-      box.innerHTML = '<p class="ddj-title">Jawab</p><ol class="jawab-steps">' +
-        '<li><p>Pilih rumus yang dipakai.</p><div class="rumus" role="radiogroup" aria-label="Rumus soal ' + no + '">' + opts + '</div></li>' +
-        '<li><p>Masukkan angka dari bagian Diketahui ke dalam rumus.</p><div class="eq-row"><span class="tex" data-tex="' + lhsTex(j.kind, j.ev) + '"></span>' + step2 + '</div></li>' +
-        '<li><p>' + (j.kind === 'Fh' ? 'Hitung hasilnya.' : 'Tulis hasilnya. Sederhanakan jika bisa.') + '</p><div class="eq-row"><span class="tex" data-tex="' + lhsTex(j.kind, j.ev) + '"></span>' + step3 + '</div></li>' +
-        '</ol>';
+
+  // Nilai angka dari jawaban akhir: bagian sesudah tanda = terakhir.
+  function latexValue(src) {
+    var t = normFrac(src).split('=').pop();
+    t = t.replace(/\\left|\\right|\\[,:; ]|\s/g, '').replace(/\\text\{[^{}]*\}/g, '').replace(/kali/g, '').replace(/\{,\}/g, ',');
+    var m = t.match(/^\\[dt]?frac\{(\d+)\}\{(\d+)\}$/) || t.match(/^(\d+)\/(\d+)$/);
+    if (m) return Number(m[2]) === 0 ? null : Number(m[1]) / Number(m[2]);
+    m = t.match(/^\d+([.,]\d+)?$/);
+    return m ? Number(t.replace(',', '.')) : null;
+  }
+  function finalOk(id) {
+    var v = latexValue(a(id + '_final'));
+    return v !== null && Math.abs(v - ESSAY[id].target()) < 1e-9;
+  }
+
+  var mathReady = false;
+  function makeField(key, idx, placeholder) {
+    var mf = document.createElement('math-field');
+    mf.className = 'mf';
+    mf.setAttribute('data-fkey', key);
+    mf.setAttribute('math-virtual-keyboard-policy', 'auto');
+    if (placeholder) mf.setAttribute('placeholder', '\\text{' + placeholder + '}');
+    mf.setAttribute('aria-label', placeholder || 'Baris jawaban');
+    var get = function () { return idx == null ? a(key) : (lines(key)[idx] || ''); };
+    var setValue = function () { try { mf.value = get(); } catch (e) { /* belum siap */ } };
+    if (window.customElements) customElements.whenDefined('math-field').then(setValue);
+    mf.addEventListener('input', function () {
+      if (idx == null) state.answers[key] = mf.value;
+      else {
+        var arr = lines(key).slice();
+        arr[idx] = mf.value;
+        state.answers[key] = arr;
+      }
+      onAnswer(key);
+    });
+    return mf;
+  }
+
+  function buildEssayPart(box, key, part) {
+    var wrap = document.createElement('div');
+    wrap.className = 'essay-part';
+    wrap.innerHTML = '<p class="ddj-title">' + part.title + '</p>';
+    var list = document.createElement('div');
+    list.className = 'essay-lines';
+    wrap.appendChild(list);
+    var n = Math.max(part.lines, lines(key).length);
+    var add = function (i) { list.appendChild(makeField(key, i, i === 0 ? 'Ketik di sini' : '')); };
+    for (var i = 0; i < n; i++) add(i);
+    if (part.suffix !== '_dt') {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'add-line';
+      btn.textContent = '+ Tambah baris';
+      btn.addEventListener('click', function () {
+        var count = list.children.length;
+        if (count >= MAX_LINES) { toast('Paling banyak ' + MAX_LINES + ' baris.'); return; }
+        add(count);
+        list.lastChild.focus();
+      });
+      wrap.appendChild(btn);
+    }
+    box.appendChild(wrap);
+  }
+
+  function buildEssays() {
+    $all('[data-essay]').forEach(function (box) {
+      var id = box.getAttribute('data-essay');
+      var e = ESSAY[id];
+      box.innerHTML = '';
+      PARTS.forEach(function (part) { buildEssayPart(box, id + part.suffix, part); });
+      var jadi = document.createElement('div');
+      jadi.className = 'essay-jadi';
+      jadi.innerHTML = '<span>' + e.jadi + '</span>';
+      jadi.appendChild(makeField(id + '_final', null, 'hasil akhir'));
+      if (e.akhir) jadi.insertAdjacentHTML('beforeend', '<span>' + e.akhir + '</span>');
+      box.appendChild(jadi);
     });
   }
 
-  /* ---------- navigasi halaman ---------- */
+  // Papan ketik HP: angka, operasi, pecahan, dan lambang yang dipakai di E-LKPD.
+  function setupMathKeyboard() {
+    var MFE = window.MathfieldElement;
+    if (!MFE) return;
+    try {
+      MFE.soundsDirectory = null;
+      MFE.fontsDirectory = 'vendor/mathlive/fonts';
+    } catch (e) { /* versi lain */ }
+    var kb = window.mathVirtualKeyboard;
+    if (kb) {
+      kb.layouts = [{
+        label: 'Angka',
+        tooltip: 'Angka dan lambang peluang',
+        rows: [
+          ['7', '8', '9', { latex: '\\frac{#@}{#?}', label: 'a/b' }, { latex: '\\times', label: '×' }, '='],
+          ['4', '5', '6', { insert: 'n(#?)', label: 'n( )' }, { insert: 'P(#?)', label: 'P( )' }, '+'],
+          ['1', '2', '3', { latex: 'F_h' }, { latex: 'F_r' }, '-'],
+          ['0', '{,}', { latex: '\\ldots', label: '…' }, 'A', 'B', 'C'],
+          ['S', 'N', 'k', '(', ')', '[backspace]'],
+          ['[left]', '[right]', '[hide-keyboard]']
+        ]
+      }, 'alphabetic'];
+      // Beri ruang di bawah halaman agar kotak yang sedang diisi tidak tertutup papan ketik.
+      kb.addEventListener('geometrychange', function () {
+        var h = kb.boundingRect ? kb.boundingRect.height : 0;
+        document.body.style.paddingBottom = h ? h + 'px' : '';
+        var f = document.activeElement;
+        if (h && f && f.tagName === 'MATH-FIELD') f.scrollIntoView({ block: 'center' });
+      });
+    }
+  }
+
+  /* ---------- navigasi halaman  /* ---------- navigasi halaman ---------- */
 
   function showPage(n, focusKey) {
     n = Math.max(1, Math.min(PAGES, n));
@@ -167,7 +267,7 @@
     if (n === 1) startCover(); else stopCover();
     if (n === 5) { renderFrTable(); renderAkt4(); }
     if (n === 6) { renderRecap(); renderSubmission(); }
-    var target = focusKey && $('[data-key="' + focusKey + '"]');
+    var target = focusKey && ($('[data-key="' + focusKey + '"]') || $('[data-fkey="' + focusKey + '"]'));
     if (target && !target.closest('[hidden]')) {
       target.scrollIntoView({ block: 'center' });
       target.focus({ preventScroll: true });
@@ -223,12 +323,6 @@
     });
   }
 
-  function buildAsks() {
-    $all('select.ask').forEach(function (sel) {
-      sel.innerHTML = ASK.map(function (o) { return '<option value="' + o[0] + '">' + o[1] + '</option>'; }).join('');
-    });
-  }
-
   /* ---------- kunci jawaban & penilaian ---------- */
 
   function a(key) { return state.answers[key] == null ? '' : String(state.answers[key]).trim(); }
@@ -240,7 +334,6 @@
   }
   function frac(numKey, denKey) { return (a(numKey) || '…') + '/' + (a(denKey) || '…'); }
   function val(key) { return a(key) || '…'; }
-  function askName(key) { var o = ASK.filter(function (x) { return x[0] === a(key); })[0]; return o && o[0] ? o[1] : '…'; }
 
   // Pasangan pakaian kesukaan siswa menjadi kejadian A.
   function fav() { var k = a('fav'); return COMBOS.some(function (c) { return c.key === k; }) ? k : ''; }
@@ -272,29 +365,25 @@
     return { id: id, label: label, keys: [nk, dk], show: function () { return frac(nk, dk); },
       ok: function () { return fracEq(nk, dk, typeof tn === 'function' ? tn() : tn, td); }, how: how };
   }
-  function ask(id, label, key, target) {
-    return { id: id, label: label, keys: [key], show: function () { return askName(key); }, ok: function () { return a(key) === target; },
-      how: 'Baca lagi kalimat tanyanya. Pilih besaran yang diminta soal.' };
+  // Butir uraian: Diketahui, Ditanya, Jawab (dinilai guru) dan kalimat Jadi (dinilai otomatis).
+  function essay(id) {
+    var e = ESSAY[id];
+    var list = PARTS.map(function (part) {
+      var key = id + part.suffix;
+      return { id: key, label: e.no + ' ' + part.title, keys: [key], graded: false,
+        filled: function () { return filledLines(key).length > 0; },
+        texLines: function () { return filledLines(key); },
+        show: function () { return filledLines(key).map(latexText).join('\n'); } };
+    });
+    list.push({ id: id + '_final', label: e.no + ' Jadi (hasil akhir)', keys: [id + '_final'],
+      texLines: function () { return a(id + '_final') ? [a(id + '_final')] : []; },
+      show: function () { return latexText(a(id + '_final')); },
+      ok: function () { return finalOk(id); },
+      how: id.charAt(1) === '2' ? 'Tulis rumus peluang teoretis, masukkan banyak anggota kejadian dan n(S) dari tabel, lalu hitung.'
+        : id.charAt(1) === '3' ? 'Tulis rumus frekuensi harapan, masukkan N dan peluangnya, lalu kalikan.'
+        : 'Tulis rumus frekuensi relatif, masukkan k dari tabel hasil roda dan N, lalu hitung.' });
+    return list;
   }
-  // Langkah 1 (rumus) dan langkah 2 (substitusi) pada bagian Jawab.
-  var KIND_NAME = { P: 'peluang teoretis', Fh: 'frekuensi harapan', Fr: 'frekuensi relatif' };
-  function steps(id, no, sub) {
-    var j = JAWAB[id];
-    var keys = j.kind === 'Fh' ? [id + '_sN', id + '_sNum', id + '_sDen'] : [id + '_sNum', id + '_sDen'];
-    return [
-      { id: id + '_f', label: no + ' Langkah 1: rumus', keys: [id + '_f'],
-        show: function () { return a(id + '_f') ? formulaText(a(id + '_f'), j.ev) : '…'; },
-        ok: function () { return a(id + '_f') === j.kind; },
-        how: 'Lihat lagi bagian Ditanya. Yang ditanya ' + KIND_NAME[j.kind] + ', jadi pakai rumus ' + KIND_NAME[j.kind] + '.' },
-      { id: id + '_s', label: no + ' Langkah 2: masukkan angka', keys: keys,
-        show: function () { return j.kind === 'Fh' ? val(id + '_sN') + ' × ' + frac(id + '_sNum', id + '_sDen') : frac(id + '_sNum', id + '_sDen'); },
-        ok: sub,
-        how: j.kind === 'P' ? 'Ganti n(' + j.ev + ') dan n(S) pada rumus dengan angka di bagian Diketahui.'
-          : j.kind === 'Fh' ? 'Ganti N dan P(' + j.ev + ') pada rumus dengan angka di bagian Diketahui.'
-          : 'Ganti k dan N pada rumus dengan angka di bagian Diketahui.' }
-    ];
-  }
-  function exactFrac(nk, dk, n, d) { return isInt(nk, n) && isInt(dk, d); }
 
   function mcq(id, label, key, target, how) {
     return { id: id, label: label, keys: [key], show: function () { return MCQ[key][a(key)] || '…'; },
@@ -316,45 +405,16 @@
       num('a1_nA', 'n(A), pasangan kesukaanmu', 'a1_nA', 1, 'Cari sel yang sama dengan pasangan kesukaanmu. Hitung ada berapa.')
     ] },
     { id: 'akt2', title: 'Aktivitas 2: Peluang Teoretis', page: 3, items: [].concat(
-      num('a21_nA', '2.1 Diketahui n(A)', 'a21_nA', 1, 'Cari sel yang sama dengan pasangan kesukaanmu di tabel. Hitung ada berapa.'),
-      num('a21_nS', '2.1 Diketahui n(S)', 'a21_nS', 6, 'Hitung semua sel di tabel Aktivitas 1.'),
-      ask('a21_q', '2.1 Ditanya', 'a21_q', 'P'),
-      steps('a21', '2.1', function () { return exactFrac('a21_sNum', 'a21_sDen', 1, 6); }),
-      fr('a21_p', '2.1 Langkah 3: hasil P(A)', 'a21_pNum', 'a21_pDen', 1, 6, 'Bagi n(A) dengan n(S).'),
+      essay('a21'),
       fr('a22', '2.2 Peluang pasangan teman', 'a22_num', 'a22_den', 1, 6, 'Setiap pasangan punya kesempatan sama. Hitung seperti peluang pasanganmu.'),
-      num('a23_nB', '2.3 Diketahui n(B)', 'a23_nB', 3, 'Lihat kolom Songket di tabel. Hitung pasangan yang memakai Songket.'),
-      num('a23_nS', '2.3 Diketahui n(S)', 'a23_nS', 6, 'Hitung semua sel di tabel Aktivitas 1.'),
-      ask('a23_q', '2.3 Ditanya', 'a23_q', 'P'),
-      steps('a23', '2.3', function () { return exactFrac('a23_sNum', 'a23_sDen', 3, 6); }),
-      fr('a23_p', '2.3 Langkah 3: hasil P(B)', 'a23_pNum', 'a23_pDen', 3, 6, 'Bagi n(B) dengan n(S). Pecahan boleh disederhanakan.'),
-      num('a24_nC', '2.4 Diketahui n(C)', 'a24_nC', 2, 'Lihat baris Aesan Gede di tabel. Hitung pasangan yang memakai Aesan Gede.'),
-      num('a24_nS', '2.4 Diketahui n(S)', 'a24_nS', 6, 'Hitung semua sel di tabel Aktivitas 1.'),
-      ask('a24_q', '2.4 Ditanya', 'a24_q', 'P'),
-      steps('a24', '2.4', function () { return exactFrac('a24_sNum', 'a24_sDen', 2, 6); }),
-      fr('a24', '2.4 Langkah 3: hasil P(C)', 'a24_num', 'a24_den', 2, 6, 'Bagi n(C) dengan n(S). Pecahan boleh disederhanakan.')
+      essay('a23'),
+      essay('a24')
     ) },
-    { id: 'akt3', title: 'Aktivitas 3: Frekuensi Harapan', page: 4, items: [].concat(
-      num('a31_N', '3.1 Diketahui N', 'a31_N', N_TRIALS, 'N adalah banyak putaran roda yang disebut di soal.'),
-      fr('a31_p', '3.1 Diketahui P(A)', 'a31_pNum', 'a31_pDen', 1, 6, 'Pakai peluang pasangan kesukaanmu dari soal 2.1.'),
-      ask('a31_q', '3.1 Ditanya', 'a31_q', 'Fh'),
-      steps('a31', '3.1', function () { return isInt('a31_sN', N_TRIALS) && fracEq('a31_sNum', 'a31_sDen', 1, 6); }),
-      num('a31_res', '3.1 Langkah 3: hasil Fh', 'a31_res', N_TRIALS / 6, 'Kalikan N dengan pembilang, lalu bagi dengan penyebut.'),
-      num('a32_N', '3.2 Diketahui N', 'a32_N', 60, 'N adalah banyak putaran roda yang disebut di soal.'),
-      fr('a32_p', '3.2 Diketahui P(B)', 'a32_pNum', 'a32_pDen', 3, 6, 'Pakai peluang pasangan bersongket dari soal 2.3.'),
-      ask('a32_q', '3.2 Ditanya', 'a32_q', 'Fh'),
-      steps('a32', '3.2', function () { return isInt('a32_sN', 60) && fracEq('a32_sNum', 'a32_sDen', 3, 6); }),
-      num('a32_res', '3.2 Langkah 3: hasil Fh', 'a32_res', 30, 'Kalikan N dengan pembilang, lalu bagi dengan penyebut.')
-    ) },
+    { id: 'akt3', title: 'Aktivitas 3: Frekuensi Harapan', page: 4, items: [].concat(essay('a31'), essay('a32')) },
     { id: 'akt4', title: 'Aktivitas 4: Frekuensi Relatif', page: 5, items: [
       { id: 'sim', label: '4.1 Banyak putaran', keys: [], filled: simDone, show: function () { return state.sim.total + ' dari ' + N_TRIALS; },
-        ok: simDone, how: 'Putar roda sampai 30 kali.' },
-      num('a42_k', '4.2 Diketahui k', 'a42_k', favK, 'Lihat angka pasangan kesukaanmu di tabel hasil roda.'),
-      num('a42_N', '4.2 Diketahui N', 'a42_N', N_TRIALS, 'N adalah banyak putaran roda.'),
-      ask('a42_q', '4.2 Ditanya', 'a42_q', 'Fr')
-    ].concat(
-      steps('a42', '4.2', function () { return simDone() && exactFrac('a42_sNum', 'a42_sDen', favK(), N_TRIALS); }),
-      fr('a42_fr', '4.2 Langkah 3: hasil Fr', 'a42_num', 'a42_den', favK, N_TRIALS, 'Bagi k dengan N.')
-    ) },
+        ok: simDone, how: 'Putar roda sampai 30 kali.' }
+    ].concat(essay('a42')) },
     { id: 'akt43', title: 'Aktivitas 4.3: Frekuensi Relatif Semua Pasangan', page: 5, items: function () {
       return COMBOS.filter(function (c) { return c.key !== fav(); }).map(function (c) {
         return { id: 'a43_' + c.key, label: 'Fr ' + comboCode(c.key) + ', k = ' + state.sim.counts[c.key], keys: ['a43n_' + c.key, 'a43d_' + c.key],
@@ -404,7 +464,7 @@
   function evaluate() {
     var results = {};
     var correct = 0;
-    var items = allItems();
+    var items = allItems().filter(function (it) { return it.graded !== false; });
     items.forEach(function (it) { var ok = !!it.ok(); results[it.id] = ok; if (ok) correct += 1; });
     return { results: results, correct: correct, total: items.length, score: Math.round(correct / items.length * 100) };
   }
@@ -750,13 +810,15 @@
     lock.hidden = ready;
     lock.textContent = !fav() ? 'Pilih pasangan kesukaanmu di halaman Butik dulu.' : 'Putar roda sampai 30 kali untuk membuka soal 4.2 sampai 4.5.';
     $('#akt4-body').hidden = !ready;
-    $('#cmp-fh').textContent = a('a31_res') || '…';
-    $('#cmp-k').textContent = a('a42_k') || '…';
-    $('#cmp-fr').textContent = a('a42_k') ? a('a42_k') + '/' + N_TRIALS : '…';
+    texOr($('#cmp-fh'), a('a31_final'));
+    $('#cmp-k').textContent = simDone() ? favK() : '…';
+    texOr($('#cmp-fr'), a('a42_final'));
     var favCell = $('#fr-table .fr-fav');
-    if (favCell) favCell.textContent = favFr();
+    if (favCell) texOr(favCell, a('a42_final'), 'isi di 4.2');
   }
-  function favFr() { return a('a42_num') && a('a42_den') ? frac('a42_num', 'a42_den') : 'isi di 4.2'; }
+  function texOr(el, latex, empty) {
+    if (latex) tex(el, latex); else el.textContent = empty || '…';
+  }
 
   function renderFrTable() {
     var sim = state.sim;
@@ -764,7 +826,7 @@
     body.innerHTML = COMBOS.map(function (c) {
       var isFav = fav() === c.key;
       var cell = isFav
-        ? '<td class="fr-fav">' + esc(favFr()) + '</td>'
+        ? '<td class="fr-fav"></td>'
         : '<td><span class="frac-input">' +
           '<input type="text" inputmode="numeric" data-key="a43n_' + c.key + '" aria-label="Pembilang frekuensi relatif ' + comboCode(c.key) + '">' +
           '<span class="bar"></span>' +
@@ -854,8 +916,10 @@
           if (!results[it.id]) how = '<p class="cara"><b>Cara:</b> ' + esc(it.how) + '</p>';
         }
         var focus = it.keys[0] || '';
-        html += '<li class="r-row"><span class="r-lbl">' + esc(it.label) + '</span><span class="r-ans">' +
-          (filled ? esc(it.show()) : '<span class="status-empty">Belum diisi</span>') + mark + '</span>' +
+        html += '<li class="r-row' + (it.graded === false ? ' r-essay' : '') + '"><span class="r-lbl">' + esc(it.label) + '</span><span class="r-ans">' +
+          (!filled ? '<span class="status-empty">Belum diisi</span>'
+            : it.texLines ? it.texLines().map(function (l) { return '<span class="tex r-tex" data-tex="' + esc('\\displaystyle ' + normFrac(l)) + '"></span>'; }).join('')
+            : esc(it.show())) + mark + '</span>' +
           '<button type="button" class="btn-edit" data-edit="' + g.page + '"' + (focus ? ' data-focus="' + focus + '"' : '') + '>Ubah</button>' + how + '</li>';
       });
       html += '</ul></div>';
@@ -868,6 +932,7 @@
       }).join('') + '</ul></div>';
     html += '</div>';
     $('#recap').innerHTML = html;
+    renderTex($('#recap'));
     $all('#recap [data-edit]').forEach(function (b) {
       b.addEventListener('click', function () { showPage(Number(b.getAttribute('data-edit')), b.getAttribute('data-focus')); });
     });
@@ -1099,13 +1164,13 @@
           head: [[g.title, 'Jawaban', 'Hasil']],
           body: groupItems(g).map(function (it) {
             var shown = itemFilled(it) || !it.keys.length ? it.show() : '(kosong)';
-            return [it.label, shown, lock.results[it.id] ? 'Benar' : 'Salah'];
+            return [it.label, shown, it.graded === false ? 'Dinilai guru' : lock.results[it.id] ? 'Benar' : 'Salah'];
           }),
           styles: { fontSize: 9.5, cellPadding: 1.8, textColor: INK },
           headStyles: HEAD,
-          columnStyles: { 0: { cellWidth: 78 }, 2: { cellWidth: 20, halign: 'center', fontStyle: 'bold' } },
+          columnStyles: { 0: { cellWidth: 62 }, 2: { cellWidth: 26, halign: 'center', fontStyle: 'bold' } },
           didParseCell: function (d) {
-            if (d.section === 'body' && d.column.index === 2) d.cell.styles.textColor = d.cell.raw === 'Benar' ? [47, 107, 58] : [163, 39, 27];
+            if (d.section === 'body' && d.column.index === 2) d.cell.styles.textColor = d.cell.raw === 'Benar' ? [47, 107, 58] : d.cell.raw === 'Salah' ? [163, 39, 27] : [107, 62, 38];
           }
         });
         y = doc.lastAutoTable.finalY + 5;
@@ -1215,9 +1280,9 @@
   /* ---------- mulai ---------- */
 
   function init() {
-    buildJawab();
+    setupMathKeyboard();
+    buildEssays();
     renderTex();
-    buildAsks();
     buildWardrobe();
     buildWheel();
     buildFav();

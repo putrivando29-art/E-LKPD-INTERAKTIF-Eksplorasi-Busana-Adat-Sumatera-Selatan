@@ -13,11 +13,11 @@ E-LKPD interaktif Matematika SMP kelas VIII: peluang teoretis, frekuensi relatif
 | 5. Roda Putar | Pengertian frekuensi relatif, Aktivitas 4 (4.1 roda 30 kali, 4.2–4.4, 4.5 Putar Cepat 300 Kali) |
 | 6. Kumpulkan | Kesimpulan, refleksi, daftar semua jawaban dengan tombol Ubah, Kumpulkan Jawaban, Unduh PDF |
 
-`informasi-media.html` (Informasi Media) berisi kesesuaian materi dengan kurikulum, sumber setiap detail busana, bagian ilustrasi yang disederhanakan, dan catatan musik latar. Dokumen produk lengkap, termasuk kunci jawaban 54 butir, ada di `product.md`.
+`informasi-media.html` (Informasi Media) berisi kesesuaian materi dengan kurikulum, sumber setiap detail busana, bagian ilustrasi yang disederhanakan, dan catatan musik latar. Dokumen produk lengkap, termasuk kunci jawaban 24 butir, ada di `product.md`.
 
 ## Perilaku penting
 
-- Soal hitungan memakai langkah **Diketahui, Ditanya** (pilih dari daftar), **Jawab**. Jawab berisi tiga langkah yang diisi siswa sendiri: pilih rumus, masukkan angka, tulis hasil. Setiap soal diberi label Mudah, Sedang, atau Sulit.
+- Soal hitungan berupa **jawaban uraian**: siswa menulis sendiri Diketahui, Ditanya, dan Jawab baris demi baris, lalu kalimat "Jadi". Setiap baris memakai kotak rumus MathLive (`vendor/mathlive`), jadi pecahan tampil bertumpuk; di HP muncul papan ketik berisi tombol pecahan. Kalimat Jadi dinilai otomatis, langkahnya dinilai guru dari PDF. Setiap soal diberi label Mudah, Sedang, atau Sulit.
 - Pertanyaan alasan tertulis dan kesimpulan dengan kalimat sendiri dinilai guru dari PDF.
 - Kode Songket ditulis **Sg** agar tidak tertukar dengan lambang ruang sampel S.
 - Setiap pasangan pakaian hanya bisa disimpan satu kali. Pasangan yang sama memunculkan "Pasangan pakaian ini sudah kamu pilih!" disertai layar bergetar.
@@ -57,4 +57,4 @@ Vercel: impor repositori, pilih Framework Preset "Other", kosongkan build comman
 
 Netlify: impor repositori, kosongkan build command, publish directory `.`.
 
-KaTeX (rumus) dan jsPDF sudah disertakan di folder `vendor`, sehingga tetap berjalan walau CDN diblokir jaringan sekolah. Font Google (Fredoka, Nunito) butuh internet; tanpa internet browser memakai font cadangan.
+KaTeX (rumus), MathLive (kotak rumus), dan jsPDF sudah disertakan di folder `vendor`, sehingga tetap berjalan walau CDN diblokir jaringan sekolah. Font Google (Fredoka, Nunito) butuh internet; tanpa internet browser memakai font cadangan.
