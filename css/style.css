@@ -328,7 +328,7 @@ input.bad { border-color: var(--bad); background: var(--bad-bg); }
 .stats tfoot th, .stats tfoot td { background: var(--gold-lt); font-weight: 800; }
 .stats tr.hit td, .stats tr.hit th { background: var(--gold-lt); }
 .stats td .swatch { display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: -2px; margin-right: 8px; border: 1px solid var(--ink); }
-.fr-table .frac-input input { width: 56px; min-height: 36px; }
+.fr-table td.fr-fav .katex { font-size: 1.25em; }
 .fr-table td { vertical-align: middle; }
 
 /* ---------- Pilihan ganda ---------- */
@@ -411,10 +411,10 @@ input.bad { border-color: var(--bad); background: var(--bad-bg); }
 
   /* persamaan dengan kotak isian tetap satu baris */
   .eq-row { gap: 6px; }
-  .box { width: 52px !important; }
+  .box { width: 56px !important; }
   .box-wide { width: 76px !important; }
-  .frac-input input { width: 48px; min-height: 38px; padding: 4px; }
-  .frac-input .bar { width: 54px; }
+  .frac-input input { width: 54px; min-height: 42px; padding: 4px; }
+  .frac-input .bar { width: 60px; }
 
   /* roda spin: karakter kecil di samping hasil, tombol rapi dua kolom */
   .spin-char { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 12px; text-align: left; }
@@ -630,7 +630,7 @@ main.shake, .notice-dup.pop { animation: shake .45s ease-in-out; }
   .sound-toggle { padding: 6px 10px; }
   .tab { padding: 6px 11px; }
 }
-@media (min-width: 761px) and (max-width: 1050px) {
+@media (min-width: 761px) and (max-width: 1260px) {
   .tab .t-long { display: none; }
   .tab .t-short { display: inline; }
   .tab { padding: 6px 9px; font-size: .85rem; }
@@ -804,7 +804,7 @@ math-field.mf::part(placeholder) { color: #9A8573; }
   display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-weight: 700;
   background: #FFF6E4; border-radius: 12px; padding: 10px 12px;
 }
-.essay-jadi math-field.mf { display: inline-block; width: auto; min-width: 120px; flex: 0 1 160px; }
+.essay-jadi math-field.mf { display: inline-block; width: auto; min-width: 140px; flex: 1 1 140px; max-width: 240px; }
 
 .type-tip { background: #FFF6E4; border: 2px dashed var(--gold); border-radius: 12px; padding: 10px 14px; margin-bottom: 8px; }
 .type-tip p { margin: 0 0 4px; }
@@ -827,3 +827,13 @@ math-field.mf::part(placeholder) { color: #9A8573; }
 
 /* Kotak rumus: geseran yang dimulai di atas kotak tetap menggulung halaman */
 math-field.mf, math-field.mf::part(container), math-field.mf::part(content) { touch-action: pan-x pan-y; }
+
+/* Isian berlabel: label di baris sendiri, lambang dan kotaknya selalu bersama */
+.eq-labeled .eq-label { flex: 1 1 100%; }
+.eq-pair { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+
+/* tujuh tab: di layar tablet tab mengisi baris kedua dengan rapi */
+@media (min-width: 761px) and (max-width: 1000px) {
+  .tabs { order: 2; width: 100%; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .tab { padding: 6px 4px; text-align: center; }
+}

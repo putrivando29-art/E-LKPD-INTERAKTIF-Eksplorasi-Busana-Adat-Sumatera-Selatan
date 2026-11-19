@@ -83,7 +83,7 @@ Rincian dan tautannya ada di halaman Informasi Media (`informasi-media.html`).
 
 ## 3. Alur halaman
 
-Laptop dan tablet memakai 6 tab di bagian atas (label pendek di lebar 761–1050 px). Di HP (≤ 760 px) tab diganti satu baris navigasi: tombol ‹, daftar pilihan "3 dari 6 · Butik", dan tombol ›.
+Laptop dan tablet memakai 7 tab di bagian atas (label pendek di lebar 761–1260 px; di 761–1000 px tab mengisi baris kedua). Di HP (≤ 760 px) tab diganti satu baris navigasi: tombol ‹, daftar pilihan "3 dari 7 · Butik", dan tombol ›.
 
 **Perilaku di HP:**
 - Tombol **kembali** HP menutup dulu papan ketik rumus atau kotak dialog yang terbuka, lalu pindah ke halaman E-LKPD yang sebelumnya dibuka. Web baru ditinggalkan jika siswa menekan kembali dari halaman pertama yang dibuka.
@@ -97,7 +97,8 @@ Laptop dan tablet memakai 6 tab di bagian atas (label pendek di lebar 761–1050
 | 3. Butik | Aktivitas 1, Kenali Busananya, tabel, pertanyaan pemantik, Ayo Isi, pengertian peluang teoretis, Aktivitas 2 (2.1–2.4) |
 | 4. Frekuensi Harapan | Pengertian frekuensi harapan, Aktivitas 3 (3.1–3.2) |
 | 5. Roda Putar | Pengertian frekuensi relatif, Aktivitas 4 (4.1–4.5) |
-| 6. Kumpulkan | Kesimpulan, refleksi, periksa semua jawaban, kumpulkan, unduh PDF |
+| 6. Kesimpulan | Kesimpulan dan refleksi |
+| 7. Kumpulkan | Periksa semua jawaban, kumpulkan, unduh PDF |
 
 Setiap kotak pengertian memakai susunan yang sama: definisi formal dengan kalimat sederhana, rumus, keterangan simbol tersusun ke bawah, lalu satu baris contoh.
 
@@ -165,7 +166,9 @@ Soal 4.2 sampai 4.5 terbuka setelah pasangan kesukaan dipilih dan roda diputar t
 - **4.4:** dua kartu (frekuensi harapan dari 3.1 dan banyak muncul nyata), pilihan lebih sering / sama dengan / lebih jarang, lalu "Mengapa hasil putaran roda tidak selalu sama dengan frekuensi harapan? Jelaskan."
 - **4.5 Putar Lebih Banyak:** tombol **Putar Cepat 300 Kali** (hasil 30 putaran tidak berubah). Muncul diagram batang frekuensi relatif 30 putaran dan 300 putaran untuk keenam pasangan dengan garis 1/6, lalu soal "Hasil mana yang secara umum lebih dekat ke 1/6?"
 
-### 3.6 Halaman 6: Kesimpulan dan Pengumpulan
+### 3.6 Halaman 6 dan 7: Kesimpulan, lalu Pengumpulan
+
+Halaman 6 berisi Kesimpulan dan Refleksi, ditutup tombol **Lanjut ke Pengumpulan**. Halaman 7 berisi Periksa dan Kumpulkan.
 
 - **Kesimpulan:** 3 soal pilihan ganda dan satu kotak kesimpulan dengan kalimat sendiri.
 - **Refleksi** (tidak dinilai): apa yang dipelajari, bagian yang masih sulit, dan tingkat pemahaman (Sangat paham sampai Belum paham).
@@ -350,7 +353,7 @@ Kotak "Jadi" dibaca dari bagian sesudah tanda = terakhir, sehingga `P(A)=\frac{1
 Situs statis HTML, CSS, dan JavaScript murni, tanpa framework dan tanpa proses build.
 
 ```
-index.html                 Struktur 6 halaman, modal, notifikasi, panel suara
+index.html                 Struktur 7 halaman, modal, notifikasi, panel suara
 informasi-media.html       Informasi Media: kesesuaian kurikulum, sumber busana, status detail, musik
 product.md                 Dokumen ini
 README.md                  Ringkasan teknis dan cara deploy
@@ -464,6 +467,7 @@ Belum diuji: HP fisik, Safari iOS, dan pengiriman ke Google Sheet sungguhan.
 | 14 | Pilihan rumus dan pilihan Ditanya dihapus; soal 2.1, 2.3, 2.4, 3.1, 3.2, 4.2 menjadi jawaban uraian yang ditulis siswa baris demi baris di kotak rumus MathLive dengan papan ketik pecahan; kalimat Jadi dinilai otomatis, langkah dinilai guru; contoh penulisan jawaban; 24 butir otomatis |
 | 15 | Soal Mudah (2.1 dan 4.2) kembali cukup diisi hasilnya; format uraian hanya untuk soal Sedang dan Sulit (2.3, 2.4, 3.1, 3.2) |
 | 16 | HP: tombol kembali menutup papan ketik/dialog lalu pindah halaman; kotak rumus hanya aktif saat diketuk, bukan saat layar digeser; musik berbunyi lagi saat kembali ke web |
+| 17 | Kesimpulan dan pengumpulan dipisah menjadi halaman 6 dan 7; Ayo Isi: label di baris sendiri, lambang dan kotak tidak terpisah; kotak Jadi tanpa tulisan yang terpotong; kotak pecahan tabel 4.3 sama besar dengan kotak lain; diuji di lebar 320 sampai 1366 px |
 ---
 
 ## 16. Sumber

@@ -23,19 +23,21 @@
       <button type="button" class="tab" data-page="3"><b>3.</b> <span class="t-long">Butik</span><span class="t-short">Butik</span></button>
       <button type="button" class="tab" data-page="4"><b>4.</b> <span class="t-long">Frekuensi Harapan</span><span class="t-short">Harapan</span></button>
       <button type="button" class="tab" data-page="5"><b>5.</b> <span class="t-long">Roda Putar</span><span class="t-short">Putar</span></button>
-      <button type="button" class="tab" data-page="6"><b>6.</b> <span class="t-long">Kumpulkan</span><span class="t-short">Kumpul</span></button>
+      <button type="button" class="tab" data-page="6"><b>6.</b> <span class="t-long">Kesimpulan</span><span class="t-short">Simpulan</span></button>
+      <button type="button" class="tab" data-page="7"><b>7.</b> <span class="t-long">Kumpulkan</span><span class="t-short">Kumpul</span></button>
     </nav>
     <nav class="mnav" aria-label="Halaman E-LKPD">
       <button type="button" class="mnav-btn" id="mnav-prev" aria-label="Halaman sebelumnya">‹</button>
       <label class="mnav-select">
         <span class="sr-only">Pilih halaman</span>
         <select id="mnav-page">
-          <option value="1">1 dari 6 · Sampul</option>
-          <option value="2">2 dari 6 · Petunjuk</option>
-          <option value="3">3 dari 6 · Butik</option>
-          <option value="4">4 dari 6 · Frekuensi Harapan</option>
-          <option value="5">5 dari 6 · Roda Putar</option>
-          <option value="6">6 dari 6 · Kumpulkan</option>
+          <option value="1">1 dari 7 · Sampul</option>
+          <option value="2">2 dari 7 · Petunjuk</option>
+          <option value="3">3 dari 7 · Butik</option>
+          <option value="4">4 dari 7 · Frekuensi Harapan</option>
+          <option value="5">5 dari 7 · Roda Putar</option>
+          <option value="6">6 dari 7 · Kesimpulan</option>
+          <option value="7">7 dari 7 · Kumpulkan</option>
         </select>
       </label>
       <button type="button" class="mnav-btn" id="mnav-next" aria-label="Halaman berikutnya">›</button>
@@ -230,8 +232,8 @@
         <h2>Ayo Isi</h2>
         <p>Kejadian <span class="tex" data-tex="A"></span> = terpilihnya pasangan pakaian kesukaanmu, yaitu <b class="fav-ref">pasangan yang kamu pilih di atas</b>.</p>
         <div class="answer-list">
-          <div class="eq-row"><span>Banyak semua pasangan pakaian pada tabel:</span> <span class="tex" data-tex="n(S)="></span><input type="text" inputmode="numeric" class="box" data-key="a1_nS" aria-label="n(S)"></div>
-          <div class="eq-row"><span>Banyak pasangan pakaian kesukaanmu pada tabel:</span> <span class="tex" data-tex="n(A)="></span><input type="text" inputmode="numeric" class="box" data-key="a1_nA" aria-label="n(A)"></div>
+          <div class="eq-row eq-labeled"><span class="eq-label">Banyak semua pasangan pakaian pada tabel:</span><span class="eq-pair"><span class="tex" data-tex="n(S)="></span><input type="text" inputmode="numeric" class="box" data-key="a1_nS" aria-label="n(S)"></span></div>
+          <div class="eq-row eq-labeled"><span class="eq-label">Banyak pasangan pakaian kesukaanmu pada tabel:</span><span class="eq-pair"><span class="tex" data-tex="n(A)="></span><input type="text" inputmode="numeric" class="box" data-key="a1_nA" aria-label="n(A)"></span></div>
         </div>
         <label class="why">Jelaskan cara kamu menghitung banyak semua pasangan pakaian.
           <textarea rows="2" data-key="r1"></textarea>
@@ -459,8 +461,8 @@
     </section>
 
     <!-- HALAMAN 6: KESIMPULAN, REFLEKSI, KUMPULKAN -->
-    <section class="page" data-page="6" aria-labelledby="judul-kumpul" hidden>
-      <h1 id="judul-kumpul" class="page-title">Kesimpulan dan Pengumpulan</h1>
+    <section class="page" data-page="6" aria-labelledby="judul-simpul" hidden>
+      <h1 id="judul-simpul" class="page-title">Kesimpulan dan Refleksi</h1>
 
       <div class="card">
         <h2>Kesimpulan</h2>
@@ -507,7 +509,12 @@
         </fieldset>
       </div>
 
-      <h2 class="page-title sub-title">Periksa dan Kumpulkan</h2>
+      <div class="pager"><button type="button" class="btn btn-ghost" data-go="5">Kembali</button><button type="button" class="btn btn-primary" data-go="7">Lanjut ke Pengumpulan</button></div>
+    </section>
+
+    <!-- HALAMAN 7: PERIKSA DAN KUMPULKAN -->
+    <section class="page" data-page="7" aria-labelledby="judul-kumpul" hidden>
+      <h1 id="judul-kumpul" class="page-title">Periksa dan Kumpulkan</h1>
       <p class="first-rule"><b>Penting:</b> kamu hanya bisa mengumpulkan satu kali. Pengumpulan pertama menjadi nilai akhirmu. Sesudah itu kamu boleh memperbaiki jawaban untuk latihan, tetapi nilai akhirmu tidak berubah.</p>
       <p class="lock-banner" data-lock-banner hidden></p>
       <div id="recap"></div>
@@ -519,7 +526,7 @@
         </div>
         <p class="hint">Setelah PDF terunduh, kirim file PDF ke WhatsApp gurumu.</p>
       </div>
-      <div class="pager"><button type="button" class="btn btn-ghost" data-go="5">Kembali</button><span></span></div>
+      <div class="pager"><button type="button" class="btn btn-ghost" data-go="6">Kembali</button><span></span></div>
     </section>
   </main>
 

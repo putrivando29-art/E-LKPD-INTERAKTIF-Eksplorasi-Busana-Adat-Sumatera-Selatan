@@ -11,7 +11,8 @@ E-LKPD interaktif Matematika SMP kelas VIII: peluang teoretis, frekuensi relatif
 | 3. Butik | Aktivitas 1 (Kenali Busananya, butik bermanekin, tabel 3 × 2), pertanyaan pemantik, Ayo Isi, pengertian peluang teoretis, Aktivitas 2 (2.1–2.4) |
 | 4. Frekuensi Harapan | Pengertian frekuensi harapan, Aktivitas 3 (3.1–3.2), dikerjakan sebelum roda diputar |
 | 5. Roda Putar | Pengertian frekuensi relatif, Aktivitas 4 (4.1 roda 30 kali, 4.2–4.4, 4.5 Putar Cepat 300 Kali) |
-| 6. Kumpulkan | Kesimpulan, refleksi, daftar semua jawaban dengan tombol Ubah, Kumpulkan Jawaban, Unduh PDF |
+| 6. Kesimpulan | Kesimpulan (3 soal pilihan ganda dan kesimpulan tertulis) dan refleksi |
+| 7. Kumpulkan | Daftar semua jawaban dengan tombol Ubah, Kumpulkan Jawaban, Unduh PDF |
 
 `informasi-media.html` (Informasi Media) berisi kesesuaian materi dengan kurikulum, sumber setiap detail busana, bagian ilustrasi yang disederhanakan, dan catatan musik latar. Dokumen produk lengkap, termasuk kunci jawaban 24 butir, ada di `product.md`.
 

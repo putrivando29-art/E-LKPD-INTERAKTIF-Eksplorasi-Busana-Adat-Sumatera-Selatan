@@ -6,7 +6,7 @@
   var COMBOS = O.combos();
   var N_TRIALS = 30;
   var N_FAST = 300;
-  var PAGES = 6;
+  var PAGES = 7;
 
   // Jawaban disimpan di localStorage agar tetap ada walau web ditutup.
   // Pengumpulan pertama tiap siswa (nama + kelas + presensi) disimpan terpisah
@@ -210,7 +210,7 @@
       var jadi = document.createElement('div');
       jadi.className = 'essay-jadi';
       jadi.innerHTML = '<span>' + e.jadi + '</span>';
-      jadi.appendChild(makeField(id + '_final', null, 'hasil akhir'));
+      jadi.appendChild(makeField(id + '_final', null, ''));
       if (e.akhir) jadi.insertAdjacentHTML('beforeend', '<span>' + e.akhir + '</span>');
       box.appendChild(jadi);
     });
@@ -349,7 +349,7 @@
     $('#mnav-next').disabled = n === PAGES;
     if (n === 1) startCover(); else stopCover();
     if (n === 5) { renderFrTable(); renderAkt4(); }
-    if (n === 6) { renderRecap(); renderSubmission(); }
+    if (n === 7) { renderRecap(); renderSubmission(); }
     var target = focusKey && ($('[data-key="' + focusKey + '"]') || $('[data-fkey="' + focusKey + '"]'));
     if (target && !target.closest('[hidden]')) {
       target.scrollIntoView({ block: 'center' });
@@ -899,7 +899,7 @@
     var favCell = $('#fr-table .fr-fav');
     if (favCell) texOr(favCell, favFrTex(), 'isi di 4.2');
   }
-  function favFrTex() { return a('a42_num') && a('a42_den') ? '\\frac{' + a('a42_num').replace(/\D/g, '') + '}{' + a('a42_den').replace(/\D/g, '') + '}' : ''; }
+  function favFrTex() { return a('a42_num') && a('a42_den') ? '\\dfrac{' + a('a42_num').replace(/\D/g, '') + '}{' + a('a42_den').replace(/\D/g, '') + '}' : ''; }
   function texOr(el, latex, empty) {
     if (latex) tex(el, latex); else el.textContent = empty || '…';
   }
@@ -959,7 +959,7 @@
       el.hidden = !lock;
       if (lock) el.textContent = 'Nama ini sudah mengumpulkan pada ' + fmtWhen(lock.at) + '. Nilai akhirnya ' + lock.score + '. Kamu boleh berlatih lagi, tetapi nilai akhir tidak berubah.';
     });
-    if (state.page === 6) { renderRecap(); renderSubmission(); }
+    if (state.page === 7) { renderRecap(); renderSubmission(); }
   }
 
   // Hasil yang ditandai di daftar periksa: latihan terbaru jika ada, jika tidak pengumpulan pertama.
